@@ -2,4 +2,9 @@
     <string name="app_name">androidtbc</string>
     <string name="input_range">შეიყვანეთ დადებითი რიცხვი</string>
     <string name="convert">გარდაქმნა</string>
+    <string name="tgl_georgia_off">ქართული</string>
+    <string name="tgl_english_on">ინგლისური</string>
+    <string name="convertEN">convert</string>
+    <string name="error_message_null_en">Please enter a number</string>
+    <string name="error_message_null_ge">გთხოვთ შეიყვანოთ რიცხვი</string>
 </resources>

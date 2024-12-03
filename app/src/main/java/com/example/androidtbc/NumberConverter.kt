@@ -55,7 +55,7 @@ class NumberConverter {
             900L to "ცხრაას"
         )
 
-        //თუ input რიცხვი უშუალოდ პირდაპირ მოიძებნება ჩვენს map-ებში, დააბრუნოს. მარტივად ;) ხდ
+        //თუ input რიცხვი უშუალოდ პირდაპირ მოიძებნება ჩვენს map-ებში, დააბრუნოს. მარტივად
         if (numbers.containsKey(number)) {
             return numbers[number]!!
         }

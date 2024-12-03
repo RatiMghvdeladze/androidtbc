@@ -28,4 +28,13 @@
         android:layout_marginTop="16dp"
         android:textSize="18sp"/>
 
+    <androidx.appcompat.widget.AppCompatToggleButton
+            android:id="@+id/tglLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff = "@string/tgl_georgia_off"
+            android:textOn = "@string/tgl_english_on"
+        />
+
+
 </androidx.appcompat.widget.LinearLayoutCompat>
