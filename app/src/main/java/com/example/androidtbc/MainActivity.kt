@@ -22,8 +22,10 @@ class MainActivity : AppCompatActivity() {
         toggle.setOnClickListener {
             if (toggle.isChecked) {
                 button.text = getString(R.string.convertEN)
+                inputNum.hint = getString(R.string.insert_positive_number_en)
             } else {
                 button.text = getString(R.string.convert)
+                inputNum.hint = getString(R.string.insert_positive_number_ge)
             }
         }
 

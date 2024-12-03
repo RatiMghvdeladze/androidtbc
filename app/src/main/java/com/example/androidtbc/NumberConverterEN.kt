@@ -45,10 +45,8 @@ class NumberConverterEN {
             number /= 1000
             group++
         }
-
         return result.trim()
     }
-
-
-
 }
+
+
