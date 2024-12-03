@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="input_range">შეიყვანეთ დადებითი რიცხვი</string>
+    <string name="convert">გარდაქმნა</string>
 </resources>

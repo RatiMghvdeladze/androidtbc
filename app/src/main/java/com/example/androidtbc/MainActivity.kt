@@ -1,20 +1,24 @@
-package com.example.androidtbc
-
+package com.example.androidtbc// com.example.androidtbc.MainActivity.kt
+import NumberConverter
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val inputNum: AppCompatEditText= findViewById(R.id.etNumber)
+        val button: AppCompatButton = findViewById(R.id.btnConvert)
+        val output: AppCompatTextView = findViewById(R.id.tvResult)
+
+        val obj = NumberConverter()
+        button.setOnClickListener{
+            val s = inputNum.text.toString().toLong()
+            output.text = obj.numberToText(s)
         }
     }
 }
