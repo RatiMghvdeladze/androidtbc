@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="profile_info">Profile Info</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="age">Age</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="again">Again</string>
+    <string name="clear">Clear</string>
+    <string name="save">Save</string>
+    <string name="fill_all_fields">შეავსეთ ყველა ველი\n</string>
+    <string name="username_invalid_format">username-ის სახელი უნდა შედგებოდეს მინიმუმ 10 სიმბოლოსგან\n</string>
+    <string name="email_invalid_format">შეყვანილი email არასწორ ფორმატშია\n</string>
+    <string name="age_invalid_format">ასაკი უნდა იყოს დადებითი რიცხვი\n</string>
+    <string name="display_email">Email: %1$s</string>
+    <string name="display_username">Username: %1$s</string>
+    <string name="display_age">Age: %1$s</string>
+    <string name="display_full_name">Full Name: %1$s %2$s</string>
 </resources>
