@@ -12,9 +12,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
-    private var savedFieldValues: Array<String>? = null
-
-
     private lateinit var btnSave: AppCompatButton
     private lateinit var btnClear: AppCompatButton
     private lateinit var btnAgain: AppCompatButton
