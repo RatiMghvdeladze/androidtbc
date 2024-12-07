@@ -13,4 +13,5 @@
     <string name="invalid_format">invalid format</string>
     <string name="fullName_of_searched_user">Full Name: %1$s</string>
     <string name="email_of_searched_user">Email: %1$s</string>
+    <string name="email_is_already_taken">email is already taken</string>
 </resources>

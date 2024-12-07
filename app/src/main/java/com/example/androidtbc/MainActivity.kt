@@ -93,16 +93,24 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val user = User(fullName,email)
-        usersList.add(user)
+        val findEmail = usersList.find{ it.email == email}
 
-        binding.tvUsersCounter.text = "Users -> ${usersList.size}"
+        if(findEmail == null) {
+            val user = User(fullName,email)
+            usersList.add(user)
 
-        binding.etFullName.text?.clear()
-        binding.etEmail.text?.clear()
+            binding.tvUsersCounter.text = "Users -> ${usersList.size}"
 
-        binding.tvUserAdded.text = getString(R.string.user_added_successfully)
-        binding.tvUserAdded.visibility = View.VISIBLE
+            binding.etFullName.text?.clear()
+            binding.etEmail.text?.clear()
+
+            binding.tvUserAdded.text = getString(R.string.user_added_successfully)
+            binding.tvUserAdded.visibility = View.VISIBLE
+        }else{
+            binding.tvUserAdded.text = getString(R.string.email_is_already_taken)
+            binding.tvUserAdded.visibility = View.VISIBLE
+        }
+
 
     }
 
