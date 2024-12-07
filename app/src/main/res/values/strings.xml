@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="enter_full_name">Enter Full Name</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="add_user">ADD USER</string>
+    <string name="invalid_fullName_format">Invalid FullName Format</string>
+    <string name="invalid_email_format">Invalid Email Format</string>
+    <string name="enter_user_email">Enter Email to Search</string>
+    <string name="users_0"><![CDATA[Users -> 0]]></string>
+    <string name="get_user_info">Get User Info</string>
+    <string name="user_not_found">User not found</string>
+    <string name="user_added_successfully">user added successfully</string>
+    <string name="invalid_format">invalid format</string>
+    <string name="fullName_of_searched_user">Full Name: %1$s</string>
+    <string name="email_of_searched_user">Email: %1$s</string>
 </resources>
