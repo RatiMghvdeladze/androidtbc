@@ -14,4 +14,5 @@
     <string name="fullName_of_searched_user">Full Name: %1$s</string>
     <string name="email_of_searched_user">Email: %1$s</string>
     <string name="email_is_already_taken">email is already taken</string>
+    <string name="users_counter"><![CDATA[Users -> %1$s]]></string>
 </resources>

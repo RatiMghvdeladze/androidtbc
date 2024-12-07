@@ -13,35 +13,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var inputValidator = InputValidator()
 
-    data class User(val fullName: String, val email: String)
     private val usersList = mutableListOf<User>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
 
         binding.btnAddUser.setOnClickListener {
             addUser()
-
         }
 
         binding.btnGetUserInfo.setOnClickListener{
             getUserInfo()
         }
-
-
-
     }
 
     private fun getUserInfo() {
@@ -99,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             val user = User(fullName,email)
             usersList.add(user)
 
-            binding.tvUsersCounter.text = "Users -> ${usersList.size}"
+            binding.tvUsersCounter.text = getString(R.string.users_counter, usersList.size.toString())
 
             binding.etFullName.text?.clear()
             binding.etEmail.text?.clear()
