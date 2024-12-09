@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="enter_anagram">Enter Anagram</string>
+    <string name="save">save</string>
+    <string name="output">output</string>
+    <string name="clear">Clear</string>
+    <string name="saved_words_are_">saved words are: %1$s</string>
+    <string name="what_should_i_display_there_is_nothing_stored">What should I display there is nothing stored</string>
 </resources>
