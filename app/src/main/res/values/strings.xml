@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="andes_mountain">Andes Mountain</string>
+    <string name="south_america">South, America</string>
+    <string name="price">Price</string>
+    <string name="_230">$230</string>
+    <string name="overview">Overview</string>
+    <string name="description">This vast mountain range is renowned for its remarkable diversity in terms of topography and climate. It features towering peaks, active volcanoes, deep canyons, expansive plateaus, asfasfasfj askfj kasjfasklf asjf lj lkasfj alkfjasjf alskjf laskjflkaj</string>
+    <string name="book_now">Book Now</string>
+    <string name="_16_c">16°C</string>
+    <string name="_8_hours">8 Hours</string>
+    <string name="details">Details</string>
 </resources>
