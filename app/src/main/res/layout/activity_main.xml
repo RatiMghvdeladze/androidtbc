@@ -13,6 +13,7 @@
         android:layout_width="374dp"
         android:layout_height="460dp"
         android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="28dp"
         android:src="@drawable/mask_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +75,6 @@
         android:src="@drawable/blur_rect"
         app:layout_constraintBottom_toBottomOf="@+id/imgMaskGroup"
         app:layout_constraintEnd_toEndOf="@+id/imgMaskGroup"
-        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="@+id/imgMaskGroup" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -93,12 +93,13 @@
         android:layout_height="22dp"
         android:layout_marginStart="26dp"
         android:layout_marginBottom="32dp"
+        android:layout_marginTop="4dp"
         android:src="@drawable/map_marker"
         app:layout_constraintBottom_toBottomOf="@+id/imgRectangleBlur"
         app:layout_constraintStart_toStartOf="@+id/imgRectangleBlur"
         app:layout_constraintTop_toBottomOf="@+id/tvAndesMountain"
 
-        app:layout_constraintVertical_bias="0.827" />
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvSouthAmerica"
@@ -106,7 +107,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="32dp"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/imgRectangleBlur"
         app:layout_constraintStart_toEndOf="@+id/imgMapMarker" />
 
@@ -127,10 +127,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
+        tools:text = 'okoko'
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/imgRectangleBlur"
         app:layout_constraintEnd_toEndOf="@+id/imgRectangleBlur"
-        app:layout_constraintTop_toBottomOf="@+id/tvPrice"
-        app:layout_constraintVertical_bias="0.285" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPrice" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvOverview"
@@ -151,6 +152,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnClock"
         android:layout_width="44dp"
+        android:clickable="false"
         android:layout_height="44dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/rectangle_gray"
@@ -182,6 +184,7 @@
         android:id="@+id/btnWeather"
         android:layout_width="44dp"
         android:layout_height="44dp"
+        android:clickable="false"
         android:layout_marginStart="120dp"
         android:background="@drawable/rectangle_gray"
         app:layout_constraintBottom_toBottomOf="@+id/btnClock"
@@ -213,6 +216,7 @@
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_marginStart="92dp"
+        android:clickable="false"
         android:background="@drawable/rectangle_gray"
         app:layout_constraintBottom_toBottomOf="@+id/btnWeather"
         app:layout_constraintStart_toEndOf="@+id/btnWeather" />
@@ -245,7 +249,6 @@
         android:layout_height="80dp"
         android:layout_marginTop="144dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgMaskGroup">
 
@@ -255,38 +258,29 @@
             android:layout_height="wrap_content" />
     </ScrollView>
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnBookNow"
-        android:layout_width="373dp"
+        android:layout_width="match_parent"
         android:layout_height="66dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="28dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/rectangle_book"
-        app:layout_constraintEnd_toEndOf="@+id/scrollViewDescription"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/scrollViewDescription"
-        app:layout_constraintTop_toBottomOf="@+id/scrollViewDescription" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvBookNow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/btnBookNow"
-        app:layout_constraintEnd_toEndOf="@+id/btnBookNow"
-        app:layout_constraintHorizontal_bias="0.442"
-        app:layout_constraintStart_toStartOf="@+id/btnBookNow"
-        app:layout_constraintTop_toTopOf="@+id/btnBookNow"
-        app:layout_constraintVertical_bias="0.404" />
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="book now" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="80dp"
+        android:elevation="6dp"
         android:src="@drawable/send_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/tvBookNow"
         app:layout_constraintEnd_toEndOf="@+id/btnBookNow"
-        app:layout_constraintHorizontal_bias="0.671"
-        app:layout_constraintStart_toStartOf="@+id/btnBookNow"
-        app:layout_constraintTop_toTopOf="@+id/tvBookNow"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/btnBookNow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
