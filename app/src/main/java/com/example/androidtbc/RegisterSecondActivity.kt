@@ -55,7 +55,11 @@ class RegisterSecondActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, "Registration failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Registration failed: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 

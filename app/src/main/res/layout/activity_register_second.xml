@@ -12,66 +12,65 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnBack"
-        android:layout_marginTop="16dp"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/backbutton"/>
+        android:layout_marginTop="16dp"
+        android:background="@drawable/back_button" />
 
     <Space
         android:layout_width="wrap_content"
-        android:layout_height="32dp"/>
+        android:layout_height="32dp" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:background="@drawable/register"
-        />
+        android:background="@drawable/register" />
 
     <Space
         android:layout_width="wrap_content"
-        android:layout_height="32dp"/>
+        android:layout_height="32dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etNickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:background="@drawable/fields_border"
+        android:hint="@string/the_jane"
+        android:inputType="text"
         android:paddingVertical="17dp"
         android:paddingStart="17dp"
-        android:hint="@string/the_jane"
-        android:background="@drawable/fields_border"
         android:textColor="@color/black"
-        android:inputType="text"
-        android:textColorHint="@color/black"
-        />
+        android:textColorHint="@color/black" />
+
     <Space
         android:layout_width="match_parent"
-        android:layout_height="16dp"/>
+        android:layout_height="16dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/button_rounded_black"
         android:paddingVertical="19dp"
         android:text="@string/sign_up"
-        android:layout_marginHorizontal="16dp"
-        android:textColor="@color/white"
-        android:background="@drawable/button_rounded_black"/>
+        android:textColor="@color/white" />
 
     <Space
         android:layout_width="wrap_content"
-        android:layout_height="32dp"/>
+        android:layout_height="32dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:layout_marginHorizontal="16dp"
         android:text="@string/terms_of_service"
+        android:textColor="@color/black"
         app:fontFamily="@font/roboto" />
-
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

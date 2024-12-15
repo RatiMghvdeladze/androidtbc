@@ -6,6 +6,7 @@ class InputValidator {
     fun isEmailValid(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
     fun isValidPassword(password: String): Boolean {
         val minLength = 8
         val hasUppercase = password.any { it.isUpperCase() }

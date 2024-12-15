@@ -21,23 +21,23 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding.btnLogin.setOnClickListener{
+        binding.btnLogin.setOnClickListener {
             login()
         }
 
-        binding.btnRegister.setOnClickListener{
-              register()
+        binding.btnRegister.setOnClickListener {
+            register()
         }
 
 
     }
 
-    private fun register(){
+    private fun register() {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 
-    private fun login(){
+    private fun login() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }
