@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="jane_example_com">jane@example.com</string>
+    <string name="password_example">••••••••••••</string>
+    <string name="next">next</string>
+    <string name="log_in">log in</string>
+    <string name="register">Register</string>
+    <string name="terms_of_service">By signing up, you agree to Photo’s Terms of Service and Privacy Policy.</string>
+    <string name="sign_up">sign up</string>
+    <string name="the_jane">the_jane</string>
 </resources>

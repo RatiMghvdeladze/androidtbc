@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "903045100088",
+    "project_id": "photo-cb77f",
+    "storage_bucket": "photo-cb77f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903045100088:android:5a6294e98c4c0c5ef2accd",
+        "android_client_info": {
+          "package_name": "com.example.androidtbc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLtpArwjBXdHijbtz5a6SJpIHtMsL2xRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
