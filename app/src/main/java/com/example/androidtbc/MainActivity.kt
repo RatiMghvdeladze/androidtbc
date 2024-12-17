@@ -9,6 +9,7 @@ import com.example.androidtbc.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var inputValidator: InputValidator
     private val usersList = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,81 +24,112 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        inputValidator = InputValidator()
 
-        binding.btnAddUser.setOnClickListener{
+        binding.btnAddUser.setOnClickListener {
             addUser()
         }
 
-        binding.btnRemoveUser.setOnClickListener{
+        binding.btnRemoveUser.setOnClickListener {
             removeUser()
         }
 
-        binding.btnUpdateUser.setOnClickListener{
+        binding.btnUpdateUser.setOnClickListener {
             updateUser()
         }
 
 
     }
-    private fun updateUser(){
+
+    private fun updateUser() {
         val firstName = binding.etFirstname.text.toString()
         val lastName = binding.etLastname.text.toString()
         val age = binding.etAge.text.toString()
         val email = binding.etEmail.text.toString()
 
-        if(firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()){
+        if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()) {
             showMessage("Please fill all fields to update", false)
             return
         }
-        val findUser = usersList.find{it.email == email}
-        if(findUser != null){
-            if(firstName.isNotEmpty()) findUser.firstName = firstName
-            if(lastName.isNotEmpty()) findUser.lastName = lastName
-            if(age.isNotEmpty()) findUser.age = age.toInt()
+        if (!inputValidator.isAgeValid(age.toInt())) {
+            binding.etAge.error = "Age must be positive"
+            return
+        }
+
+        if (!inputValidator.isEmailValid(email)) {
+            binding.etEmail.error = "Invalid email format"
+            return
+        }
+        val findUser = usersList.find { it.email == email }
+        if (findUser != null) {
+            if (firstName.isNotEmpty()) findUser.firstName = firstName
+            if (lastName.isNotEmpty()) findUser.lastName = lastName
+            if (age.isNotEmpty()) findUser.age = age.toInt()
 
             showMessage("User updated successfully", true)
-        }else{
+        } else {
             showMessage("User not found", false)
         }
 
     }
 
-    private fun removeUser(){
+    private fun removeUser() {
         val firstName = binding.etFirstname.text.toString()
         val lastName = binding.etLastname.text.toString()
         val age = binding.etAge.text.toString()
         val email = binding.etEmail.text.toString()
 
-        if(firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()){
+        if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()) {
             showMessage("Please fill all fields to remove", false)
             return
         }
+        if (!inputValidator.isAgeValid(age.toInt())) {
+            binding.etAge.error = "Age must be positive"
+            return
+        }
 
-        if(usersList.contains(
-                User(firstName, lastName, age.toInt(), email))
-            ){
+        if (!inputValidator.isEmailValid(email)) {
+            binding.etEmail.error = "Invalid email format"
+            return
+        }
+
+        if (usersList.contains(
+                User(firstName, lastName, age.toInt(), email)
+            )
+        ) {
             usersList.remove(User(firstName, lastName, age.toInt(), email))
             binding.tvUsersNumber.text = getString(R.string.users, usersList.size.toString())
             showMessage("User deleted successfully", true)
             clearEditTexts()
-        }else{
+        } else {
             showMessage("User does not exists", false)
         }
 
     }
 
-    private fun addUser(){
+    private fun addUser() {
         val firstName = binding.etFirstname.text.toString()
         val lastName = binding.etLastname.text.toString()
         val age = binding.etAge.text.toString()
         val email = binding.etEmail.text.toString()
 
-        if(firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()){
+        if (firstName.isEmpty() || lastName.isEmpty() || age.isEmpty() || email.isEmpty()) {
             showMessage("Please fill all fields", false)
             return
         }
 
-        val checkUserExist = usersList.any{ it.email == email}
-        if(checkUserExist){
+        if (!inputValidator.isAgeValid(age.toInt())) {
+            binding.etAge.error = "Age must be positive"
+            return
+        }
+
+        if (!inputValidator.isEmailValid(email)) {
+            binding.etEmail.error = "Invalid email format"
+            return
+        }
+
+        val checkUserExist = usersList.any { it.email == email }
+        if (checkUserExist) {
             showMessage("User already exists(email is already taken)", false)
             return
         }
@@ -109,20 +141,19 @@ class MainActivity : AppCompatActivity() {
         clearEditTexts()
 
 
-
-
     }
-    private fun showMessage(message: String, isSuccess: Boolean){
+
+    private fun showMessage(message: String, isSuccess: Boolean) {
         val color = if (isSuccess) {
             getColor(R.color.green)
-        }else{
+        } else {
             getColor(R.color.red)
         }
         binding.tvSuccessError.text = message
         binding.tvSuccessError.setTextColor(color)
     }
 
-    private fun clearEditTexts(){
+    private fun clearEditTexts() {
         binding.etFirstname.text?.clear()
         binding.etLastname.text?.clear()
         binding.etAge.text?.clear()
