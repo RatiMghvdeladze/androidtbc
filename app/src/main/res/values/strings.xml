@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="age">Age</string>
+    <string name="email">Email</string>
+    <string name="remove_user">Remove User</string>
+    <string name="add_user">Add User</string>
+    <string name="update_user">Update User</string>
+    <string name="users_0"><![CDATA[Users -> 0]]></string>
+    <string name="users"><![CDATA[Users -> %1$s]]></string>
 </resources>
