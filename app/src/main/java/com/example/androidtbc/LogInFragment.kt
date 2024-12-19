@@ -24,16 +24,15 @@ class LogInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       init()
+        init()
     }
 
-    private fun init(){
+    private fun init() {
         binding.btnSignInWithPassword.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, SignInFragment()).addToBackStack(null)
                 .commit()
         }
-
     }
 
 
@@ -41,5 +40,4 @@ class LogInFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
