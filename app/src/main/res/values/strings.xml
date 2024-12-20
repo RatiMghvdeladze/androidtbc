@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="birthday">Birthday</string>
+    <string name="address">Address</string>
+    <string name="email">Email</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="search_user">Search user</string>
+    <string name="id_name_birthday_address_email">"\n                        ID: %1$s\n                        Name: %2$s %3$s\n                        Birthday: %4$s\n                        Address: %5$s\n                        Email: %6$s\n                    "</string>
+    <string name="output_displayed_here">Output displayed here</string>
+    <string name="user_not_found">User not found</string>
+    <string name="add_new_user">Add New User</string>
 </resources>
