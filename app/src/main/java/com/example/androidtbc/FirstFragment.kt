@@ -126,6 +126,7 @@ class FirstFragment : Fragment() {
         return usersList.find { user ->
             user.firstName.contains(chars, ignoreCase = true) ||
                     user.lastName.contains(chars, ignoreCase = true) ||
+                    user.address.contains(chars, ignoreCase = true) ||
                     user.id.toString() == chars ||
                     user.birthday.contains(chars)
         }
