@@ -55,7 +55,7 @@ class SsecondFragment : Fragment() {
         val firstFragment = parentFragmentManager.findFragmentById(R.id.container) as? FirstFragment
         firstFragment?.usersList?.add(newUser)
 
-        Toast.makeText(requireContext(), "User added successfully (id = ${id})", Toast.LENGTH_SHORT)
+        Toast.makeText(requireContext(), "User added successfully", Toast.LENGTH_SHORT)
             .show()
         parentFragmentManager.popBackStack()
     }
