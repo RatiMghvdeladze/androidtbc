@@ -1,0 +1,52 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="20dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivItemImage"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_clothing"
+        android:scaleType="fitEnd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvItemTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="#96A7AF"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/ivItemImage"
+        app:layout_constraintTop_toBottomOf="@id/ivItemImage"
+       />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/tvItemTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvItemTitle" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/rounded_button"
+        android:src="@drawable/icon_heart"
+        app:layout_constraintBottom_toBottomOf="@id/ivItemImage"
+        app:layout_constraintStart_toStartOf="@id/ivItemImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
