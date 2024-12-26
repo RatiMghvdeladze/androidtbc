@@ -19,9 +19,7 @@ class AddressDiffCallback : DiffUtil.ItemCallback<Address>() {
 class AddressListAdapter : ListAdapter<Address, AddressListAdapter.AddressViewHolder>(AddressDiffCallback()) {
 
     private var onEditClickListener: ((Address) -> Unit)? = null
-    private var onItemSelectListener: ((Address) -> Unit)? = null
     private var onItemLongClickListener: ((Address) -> Unit)? = null
-
 
     fun setOnEditClickListener(listener: (Address) -> Unit) {
         onEditClickListener = listener
@@ -67,8 +65,6 @@ class AddressListAdapter : ListAdapter<Address, AddressListAdapter.AddressViewHo
         }
     }
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressViewHolder {
         return AddressViewHolder(
             ItemAddressBinding.inflate(
@@ -91,9 +87,7 @@ class AddressListAdapter : ListAdapter<Address, AddressListAdapter.AddressViewHo
             }
         }
         currentList[position] = currentList[position].copy(isSelected = true)
-        submitList(currentList) {
-            onItemSelectListener?.invoke(currentList[position])
-        }
+        submitList(currentList)
     }
 
     fun addAddress(address: Address) {
@@ -108,4 +102,3 @@ class AddressListAdapter : ListAdapter<Address, AddressListAdapter.AddressViewHo
         submitList(currentList)
     }
 }
-

@@ -33,7 +33,7 @@
         android:layout_width="203dp"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="200dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_add_new_user"
         android:text="@string/add_new_address"
