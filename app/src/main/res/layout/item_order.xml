@@ -78,7 +78,7 @@
         android:text="Details"
         android:textAllCaps="false"
         android:background="@drawable/button_details"/>
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>
