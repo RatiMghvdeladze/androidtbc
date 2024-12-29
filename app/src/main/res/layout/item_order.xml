@@ -1,84 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_item"
     android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_marginBottom="16dp"
     >
-
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvOrderID"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Order #1524"
-        android:layout_weight="1"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvOrderID"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Order #1524"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="13/05/2022"/>
-
-
+            android:text="13/05/2022"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="14sp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTrackingNumber"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:text="Tracking number: IK987362341"
-        android:layout_marginVertical="10dp"/>
-
-
+        android:textSize="14sp" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Quantity: 2"/>
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Quantity: 2"
+            android:textSize="14sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSubtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subtotal: $230"/>
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Subtotal: $230"
+            android:textSize="14sp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
-
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvStatusType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="16sp"
-        android:text="PENDING"/>
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnDetails"
-        android:layout_width="100dp"
-        android:layout_height="35dp"
-        android:text="Details"
-        android:textAllCaps="false"
-        android:background="@drawable/button_details"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStatusType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PENDING"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDetails"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:background="@drawable/button_details"
+            android:text="Details"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="14sp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,14 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailsFragment">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnBack"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/back_button" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvOrderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTrackingNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSubtotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnMarkDelivered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mark as Delivered"
+        android:textAllCaps="false"
+        android:background="@drawable/bg_cancel_delivered"
+        android:textColor="@color/white"
+        android:layout_marginBottom="20dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel Order"
+        android:background="@drawable/bg_cancel_delivered"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

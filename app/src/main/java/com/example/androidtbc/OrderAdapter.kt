@@ -7,47 +7,53 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtbc.databinding.ItemOrderBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class OrderAdapter : ListAdapter<Order, OrderAdapter.OrderViewHolder>(OrderDiffCallBack()){
+class OrderAdapter(private val onDetailsClick: (Order) -> Unit) :
+    ListAdapter<Order, OrderAdapter.OrderViewHolder>(OrderDiffCallback()) {
+
     inner class OrderViewHolder(private val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(order: Order){
-            binding.apply{
+        fun bind(order: Order) {
+            binding.apply {
                 tvOrderID.text = "Order #${order.orderId}"
                 tvTrackingNumber.text = "Tracking number: ${order.trackingNumber}"
-                tvDate.text = order.date
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(Date(order.dateInMillis))
+
+                tvDate.text = formattedDate
                 tvQuantity.text = "Quantity: ${order.quantity}"
                 tvSubtotal.text = "Subtotal: $${order.subtotal}"
                 tvStatusType.text = order.orderStatus.name
 
                 tvStatusType.setTextColor(
-                    when(order.orderStatus){
+                    when (order.orderStatus) {
                         StatusType.PENDING -> Color.parseColor("#CF6212")
                         StatusType.DELIVERED -> Color.parseColor("#009254")
                         StatusType.CANCELED -> Color.parseColor("#C50000")
                     }
                 )
 
-                btnDetails.setOnClickListener{
-
+                btnDetails.setOnClickListener {
+                    onDetailsClick(order)
                 }
-
             }
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        return OrderViewHolder(ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        val binding = ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return OrderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.bind(getItem(position))
     }
 }
 
-class OrderDiffCallBack: DiffUtil.ItemCallback<Order>() {
+class OrderDiffCallback : DiffUtil.ItemCallback<Order>() {
     override fun areItemsTheSame(oldItem: Order, newItem: Order): Boolean {
         return oldItem.orderId == newItem.orderId
     }
@@ -55,6 +61,4 @@ class OrderDiffCallBack: DiffUtil.ItemCallback<Order>() {
     override fun areContentsTheSame(oldItem: Order, newItem: Order): Boolean {
         return oldItem == newItem
     }
-
-
 }
