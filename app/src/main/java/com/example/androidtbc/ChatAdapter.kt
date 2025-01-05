@@ -52,11 +52,8 @@ class ChatListAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDif
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (currentList.size % 2 == 0) {
-            if (position % 2 == 0) LEFT_MSG else RIGHT_MSG
-        } else {
-            if (position % 2 == 0) LEFT_MSG else RIGHT_MSG
-        }
+        val messageIndex = currentList.size - position - 1
+        return if (messageIndex % 2 == 0) LEFT_MSG else RIGHT_MSG
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

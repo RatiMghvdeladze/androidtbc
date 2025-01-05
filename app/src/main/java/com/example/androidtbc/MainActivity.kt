@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun addMessage(msg: Message){
-        messageList.add(msg)
+        messageList.add(0, msg)
         chatListAdapter.submitList(messageList.toList())
+        binding.rvMessages.scrollToPosition(0)
     }
 }
