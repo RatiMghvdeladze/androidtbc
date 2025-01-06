@@ -8,4 +8,5 @@
     <string name="start_game">Start Game</string>
     <string name="player_turn">Player: %1$s</string>
     <string name="change_size">Change Size</string>
+    <string name="restart">Restart</string>
 </resources>

@@ -39,11 +39,21 @@ class GameFragment(private val boardSize: Int) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.tvPlayerTurn.text = "player: $currentPlayer"
         createBoard(boardSize)
+        setUpClickListeners()
+
+    }
+
+    private fun setUpClickListeners(){
         binding.btnChangeSize.setOnClickListener{
             currentSnackbar?.dismiss()
             parentFragmentManager.popBackStack()
+        }
+        binding.btnRestart.setOnClickListener{
+            currentSnackbar?.dismiss()
+            restartGame()
         }
     }
 
