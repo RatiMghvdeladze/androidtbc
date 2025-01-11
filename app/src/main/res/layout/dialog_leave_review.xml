@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottom_sheet_rounded"
@@ -18,13 +17,13 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvLeaveReview"
         android:layout_width="wrap_content"
-        android:textStyle="bold"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="Leave a Review"
+        android:text="@string/leave_a_review"
         android:textColor="@color/white"
-        android:textSize="24dp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
@@ -60,7 +59,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Modern Wingback"
+                android:text="@string/modern_wingback"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -75,15 +74,14 @@
                     android:id="@+id/ivCircleColor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    />
+                    android:layout_gravity="center" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvColorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="Black"
+                    android:text="@string/black"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -100,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="Qty = 2"
+                    android:text="@string/qty_2"
                     android:textStyle="bold" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -111,9 +109,9 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_photo"
                 android:padding="5dp"
-                android:text="Completed"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
+                android:text="@string/completed"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
 
@@ -122,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="$280.00"
+                android:text="@string/_280_00"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -142,7 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="How is your order?"
+        android:text="@string/how_is_your_order"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -153,7 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="Please give your rating &amp; also your review..."
+        android:text="@string/please_give_your_rating_amp_also_your_review"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
@@ -164,7 +162,8 @@
         android:layout_marginVertical="20dp"
         android:numStars="5"
         android:rating="4"
-        android:stepSize="1"></RatingBar>
+        android:stepSize="1">
+    </RatingBar>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -181,7 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="Very good product &amp; fast delivery!"
+            android:hint="@string/very_good_product_amp_fast_delivery"
             android:textColorHint="@color/white" />
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -211,7 +210,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_btn_cancel"
             android:paddingVertical="20dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp" />
@@ -228,10 +227,10 @@
             android:layout_weight="1"
             android:background="@drawable/bg_btn_submit"
             android:paddingVertical="20dp"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textAllCaps="false"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

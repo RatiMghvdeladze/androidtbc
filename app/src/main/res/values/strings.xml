@@ -2,4 +2,18 @@
     <string name="app_name">androidtbc</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="leave_a_review">Leave a Review</string>
+    <string name="modern_wingback">Modern Wingback</string>
+    <string name="black">Black</string>
+    <string name="qty_2">Qty = 2</string>
+    <string name="completed">Completed</string>
+    <string name="_280_00">$280.00</string>
+    <string name="how_is_your_order">How is your order?</string>
+    <string name="please_give_your_rating_amp_also_your_review"><![CDATA[Please give your rating & also your review...]]></string>
+    <string name="very_good_product_amp_fast_delivery"><![CDATA[Very good product & fast delivery!]]></string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="active">Active</string>
+    <string name="my_orders">My Orders</string>
+    <string name="leave_review">Leave Review</string>
 </resources>

@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtbc.Order
+import com.example.androidtbc.OrderType
 import com.example.androidtbc.databinding.DialogLeaveReviewBinding
 import com.example.androidtbc.databinding.ItemOrderBinding
 import com.example.androidtbc.updateColorCircle
@@ -29,11 +29,14 @@ class OrderDiffCallBack : DiffUtil.ItemCallback<Order>() {
 
 }
 
-class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(OrderDiffCallBack()){
+class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(OrderDiffCallBack()) {
 
-    inner class OrderViewHolder(private val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(order: Order){
+
+    inner class OrderViewHolder(private val binding: ItemOrderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(order: Order) {
             binding.apply {
                 tvPrice.text = "$${order.price}0"
                 tvTitle.text = order.title
@@ -44,16 +47,36 @@ class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(Or
 
                 val colorCircle = updateColorCircle(itemView.context, order.color)
                 ivCircleColor.background = colorCircle
-                btnLeaveReview.setOnClickListener {
-                    showReviewDialog(itemView.context, order)
+
+                when (order.status) {
+                    OrderType.ACTIVE -> {
+                        tvCompletedOrActive.text = "In Delivery"
+                        btnLeaveReview.text = "Track Order"
+                        btnLeaveReview.setOnClickListener {
+
+                        }
+                    }
+
+                    OrderType.COMPLETED -> {
+                        tvCompletedOrActive.text = "Completed"
+                        btnLeaveReview.text = "Leave Review"
+                        btnLeaveReview.setOnClickListener {
+                            showReviewDialog(itemView.context, order)
+                        }
+
+                    }
+
+
                 }
+
             }
-
-
-
         }
-
     }
+
+
+
+
+
     private fun showReviewDialog(context: Context, order: Order) {
         val bottomSheetDialog =
             BottomSheetDialog(context, com.example.androidtbc.R.style.BottomSheetDialogTheme)
@@ -82,22 +105,27 @@ class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(Or
             tvQty.text = "Qty = ${order.quantity}"
 
 
+
             btnCancel.setOnClickListener {
                 bottomSheetDialog.dismiss()
             }
 
             btnSubmit.setOnClickListener {
                 bottomSheetDialog.dismiss()
-                val rootView = (context as AppCompatActivity).window.decorView.findViewById<View>(android.R.id.content)
+                val rootView =
+                    (context as AppCompatActivity).window.decorView.findViewById<View>(android.R.id.content)
                 if (dialogBinding.etReview.text.toString().isNotEmpty()) {
-                    Snackbar.make(rootView, "Feedback sent successfully", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(rootView, "Thanks for your feedback!", Snackbar.LENGTH_SHORT)
+                        .show()
                 } else {
-                    Snackbar.make(rootView, "Feedback was empty didn't send", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        rootView,
+                        "Feedback was empty didn't send",
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .show()
                 }
             }
-
-
-
 
             bottomSheetDialog.show()
         }
@@ -105,13 +133,18 @@ class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(Or
 
 
 
+
+
+
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        val binding = ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return OrderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }

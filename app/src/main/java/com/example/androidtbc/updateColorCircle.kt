@@ -2,7 +2,6 @@ package com.example.androidtbc
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import androidx.core.content.ContextCompat
 
 

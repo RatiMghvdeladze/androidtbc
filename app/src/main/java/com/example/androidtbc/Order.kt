@@ -1,7 +1,4 @@
 package com.example.androidtbc
-
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 data class Order(
