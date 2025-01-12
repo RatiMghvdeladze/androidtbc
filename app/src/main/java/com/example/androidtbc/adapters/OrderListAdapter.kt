@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtbc.Order
 import com.example.androidtbc.OrderType
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.DialogLeaveReviewBinding
 import com.example.androidtbc.databinding.ItemOrderBinding
 import com.example.androidtbc.updateColorCircle
@@ -30,7 +31,6 @@ class OrderDiffCallBack : DiffUtil.ItemCallback<Order>() {
 }
 
 class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(OrderDiffCallBack()) {
-
 
 
     inner class OrderViewHolder(private val binding: ItemOrderBinding) :
@@ -74,12 +74,9 @@ class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(Or
     }
 
 
-
-
-
     private fun showReviewDialog(context: Context, order: Order) {
         val bottomSheetDialog =
-            BottomSheetDialog(context, com.example.androidtbc.R.style.BottomSheetDialogTheme)
+            BottomSheetDialog(context, R.style.BottomSheetDialogTheme)
         val dialogBinding = DialogLeaveReviewBinding.inflate(LayoutInflater.from(context))
 
         bottomSheetDialog.setContentView(dialogBinding.root)
@@ -114,28 +111,13 @@ class OrderListAdapter : ListAdapter<Order, OrderListAdapter.OrderViewHolder>(Or
                 bottomSheetDialog.dismiss()
                 val rootView =
                     (context as AppCompatActivity).window.decorView.findViewById<View>(android.R.id.content)
-                if (dialogBinding.etReview.text.toString().isNotEmpty()) {
-                    Snackbar.make(rootView, "Thanks for your feedback!", Snackbar.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Snackbar.make(
-                        rootView,
-                        "Feedback was empty didn't send",
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
+                Snackbar.make(rootView, "Thanks for your feedback!", Snackbar.LENGTH_SHORT)
+                    .show()
 
+            }
             bottomSheetDialog.show()
         }
     }
-
-
-
-
-
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
