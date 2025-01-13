@@ -1,0 +1,89 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    >  <!-- Removed android:background="@color/black" -->
+
+
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:id="@+id/ivNikoloza"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@drawable/bg_imageview"-->
+<!--        />-->
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivVisaOrMastercard"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/visa"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCardNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:letterSpacing="0.3"
+        android:text="4364 1345 8932 8378"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:fontFamily="@font/mulish"
+        app:layout_constraintTop_toBottomOf="@id/ivVisaOrMastercard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTextCardholderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/mulish_extrabold"
+        android:text="Cardholder Name"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCardNumber" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTextValidThru"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/mulish_extrabold"
+        android:text="Valid Thru"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCardNumber" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCardHolderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:text="Sunie Pham"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:fontFamily="@font/mulish_bold"
+        app:layout_constraintStart_toStartOf="@id/tvTextCardholderName"
+        app:layout_constraintTop_toBottomOf="@id/tvTextCardholderName" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvValidThru"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="05/24"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:fontFamily="@font/mulish_bold"
+        app:layout_constraintEnd_toEndOf="@id/tvTextValidThru"
+        app:layout_constraintTop_toBottomOf="@id/tvTextValidThru" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

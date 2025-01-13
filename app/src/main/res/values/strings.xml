@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="payment">Payment</string>
+    <string name="add_new">Add new+</string>
+    <string name="card_management">Card Management</string>
+    <string name="or_check_out_with">or check out with</string>
 </resources>
