@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="color_bg_visa">#42aae7</color>
+    <color name="color_bg_mastercard">#f2ae4b</color>
+    <color name="color_bg_yesNo_button">#3F51B5</color>
 </resources>

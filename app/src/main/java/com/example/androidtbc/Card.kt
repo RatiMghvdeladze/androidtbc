@@ -7,5 +7,6 @@ data class Card(
     val cardNumber: String,
     val name: String,
     val validThru: String,
-    val type: CardType
+    val type: CardType,
+    val cvv: String,
 )

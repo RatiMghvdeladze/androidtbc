@@ -19,12 +19,18 @@ class CardDiffUtilBack : DiffUtil.ItemCallback<Card>() {
 }
 
 class CardAdapter : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBack()) {
+    private var onLongClickListener: ((Card) -> Unit)? = null
+
+    fun longClickListener(listener: (Card) -> Unit) {
+        onLongClickListener = listener
+    }
 
     inner class CardViewHolder(private val binding: ItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(card: Card) {
+            val formattedNumber = card.cardNumber.chunked(4).joinToString(" ")
 
-            binding.tvCardNumber.text = card.cardNumber
+            binding.tvCardNumber.text = formattedNumber
             binding.tvCardHolderName.text = card.name
             binding.tvValidThru.text = card.validThru
 
@@ -33,19 +39,24 @@ class CardAdapter : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBa
             when (card.type) {
                 CardType.VISA -> {
                     binding.ivVisaOrMastercard.setImageResource(R.drawable.visa)
-//                    binding.ivNikoloza.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.black))
-//                    binding.ivNikoloza.setImageResource(R.drawable.bg_card_map)
+                    binding.root.setBackgroundResource(R.drawable.bg_card_visa)
+
 
                 }
 
                 CardType.MASTERCARD -> {
                     binding.ivVisaOrMastercard.setImageResource(R.drawable.mastercard)
-//                    binding.ivNikoloza.backgroundTintList = ColorStateList.valueOf(binding.root.context.getColor(R.color.white))
-//                    binding.ivNikoloza.setImageResource(R.drawable.bg_mastercard)
+                    binding.root.setBackgroundResource(R.drawable.bg_card_mastercard)
                 }
+            }
+            itemView.setOnLongClickListener {
+                onLongClickListener?.invoke(card)
+                true
             }
         }
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder(
