@@ -17,7 +17,7 @@ import kotlin.math.abs
 
 @Suppress("DEPRECATION")
 class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::inflate) {
-    private lateinit var cardAdapter: CardAdapter
+    private val cardAdapter = CardAdapter(::showDeleteDialog)
     private val viewModel: MainViewModel by viewModels()
 
     override fun start() {
@@ -26,22 +26,23 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
         setupListeners()
     }
 
-    private fun sfasf(card: Card)
-    {
-        val position = cardAdapter.currentList.indexOf(card)
-        if (position != -1) {
-            showDeleteDialog(position)
-        }
-    }
+
 
     private fun setupListeners() {
 
+        cardAdapter.onDataChangeListener = {
+            binding.vp2.post {
+                binding.vp2.setCurrentItem(0, true)
+            }
+        }
 
-        setFragmentResultListener(REQUEST_KEY){ _, bundle ->
+
+
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             addCard(bundle)
 
         }
-        binding.btnAddNew.setOnClickListener{
+        binding.btnAddNew.setOnClickListener {
             findNavController().navigate(R.id.action_firstFragment_to_addNewCardFragment)
         }
     }
@@ -49,21 +50,19 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
     private fun addCard(bundle: Bundle) {
         val card = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             bundle.getParcelable(CARD_KEY, Card::class.java)
-        }else{
+        } else {
             bundle.getParcelable(CARD_KEY) as? Card
         }
-        card?.let{
+        card?.let {
             viewModel.addCard(it)
             loadData()
         }
     }
 
 
-
-
-    private fun showDeleteDialog(position: Int) {
+    private fun showDeleteDialog(card: Card) {
         val bottomSheet = DeleteCardBottomSheet {
-            viewModel.deleteCard(position)
+            viewModel.deleteCard(card)
             Snackbar.make(binding.root, "Card deleted successfully!", Snackbar.LENGTH_SHORT).show()
             loadData()
         }
@@ -71,8 +70,6 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
     }
 
     private fun initVP() {
-        cardAdapter = CardAdapter(::sfasf)
-
         binding.vp2.apply {
             adapter = cardAdapter
             offscreenPageLimit = 1
@@ -101,6 +98,7 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
                             scaleX = scaleFactor
                             alpha = 1f
                         }
+
                         else -> {
                             scaleY = 0.85f
                             scaleX = 0.85f
@@ -110,6 +108,7 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
             }
         }
     }
+
     private fun loadData() {
         val cards = viewModel.getCards()
         cardAdapter.submitList(cards)

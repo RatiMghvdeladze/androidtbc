@@ -51,6 +51,8 @@ class AddNewCardFragment :
                 bundle.putParcelable(CARD_KEY, card)
                 setFragmentResult(REQUEST_KEY, bundle)
 
+
+
                 Snackbar.make(binding.root, "Card added successfully", Snackbar.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }

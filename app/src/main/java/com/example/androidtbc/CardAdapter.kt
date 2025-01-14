@@ -19,7 +19,7 @@ class CardDiffUtilBack : DiffUtil.ItemCallback<Card>() {
 }
 
 class CardAdapter(private val onLongClickListener: ((Card) -> Unit)?) : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBack()) {
-
+    var onDataChangeListener: (()-> Unit)? = null
 
     inner class CardViewHolder(private val binding: ItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,6 +47,13 @@ class CardAdapter(private val onLongClickListener: ((Card) -> Unit)?) : ListAdap
                 onLongClickListener?.invoke(card)
                 true
             }
+        }
+    }
+
+
+    override fun submitList(list: List<Card>?) {
+        super.submitList(list){
+            onDataChangeListener?.invoke()
         }
     }
 

@@ -56,8 +56,8 @@ class MainViewModel : ViewModel() {
 
     fun getCards(): List<Card> = cardsList.toList()
 
-    fun deleteCard(position: Int) {
-        cardsList.removeAt(position)
+    fun deleteCard(card: Card) {
+        cardsList.remove(card)
     }
 
     fun addCard(card: Card) {
