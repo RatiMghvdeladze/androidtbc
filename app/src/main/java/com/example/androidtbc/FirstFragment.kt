@@ -1,8 +1,12 @@
 package com.example.androidtbc
 
 
+import android.os.Build
+import android.os.Bundle
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -11,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlin.math.abs
 
 
+@Suppress("DEPRECATION")
 class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::inflate) {
     private lateinit var cardAdapter: CardAdapter
     private val viewModel: MainViewModel by viewModels()
@@ -21,17 +26,39 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
         setupListeners()
     }
 
+    private fun sfasf(card: Card)
+    {
+        val position = cardAdapter.currentList.indexOf(card)
+        if (position != -1) {
+            showDeleteDialog(position)
+        }
+    }
+
     private fun setupListeners() {
-        cardAdapter.longClickListener { card ->
-            val position = cardAdapter.currentList.indexOf(card)
-            if (position != -1) {
-                showDeleteDialog(position)
-            }
+
+
+        setFragmentResultListener(REQUEST_KEY){ _, bundle ->
+            addCard(bundle)
+
         }
         binding.btnAddNew.setOnClickListener{
             findNavController().navigate(R.id.action_firstFragment_to_addNewCardFragment)
         }
     }
+
+    private fun addCard(bundle: Bundle) {
+        val card = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle.getParcelable(CARD_KEY, Card::class.java)
+        }else{
+            bundle.getParcelable(CARD_KEY) as? Card
+        }
+        card?.let{
+            viewModel.addCard(it)
+            loadData()
+        }
+    }
+
+
 
 
     private fun showDeleteDialog(position: Int) {
@@ -44,7 +71,7 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
     }
 
     private fun initVP() {
-        cardAdapter = CardAdapter()
+        cardAdapter = CardAdapter(::sfasf)
 
         binding.vp2.apply {
             adapter = cardAdapter
@@ -82,11 +109,15 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::i
                 }
             }
         }
-
-        (binding.vp2.parent as? ViewGroup)?.clipChildren = false
     }
     private fun loadData() {
         val cards = viewModel.getCards()
         cardAdapter.submitList(cards)
+    }
+
+
+    companion object {
+        const val CARD_KEY = "CARD_KEY"
+        const val REQUEST_KEY = "Request_key"
     }
 }

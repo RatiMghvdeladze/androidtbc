@@ -1,16 +1,21 @@
 package com.example.androidtbc
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.example.androidtbc.FirstFragment.Companion.CARD_KEY
+import com.example.androidtbc.FirstFragment.Companion.REQUEST_KEY
 import com.example.androidtbc.databinding.FragmentAddNewCardBinding
 import com.google.android.material.snackbar.Snackbar
 
 
 class AddNewCardFragment :
     BaseFragment<FragmentAddNewCardBinding>(FragmentAddNewCardBinding::inflate) {
+
     override fun start() {
         setupRadioGroup()
         setupDefaultCard()
@@ -22,7 +27,7 @@ class AddNewCardFragment :
 
     private fun setupListeners() {
         binding.btnBackButton.setOnClickListener {
-            findNavController().navigate(R.id.action_addNewCardFragment_to_firstFragment)
+            findNavController().popBackStack()
 
         }
         binding.btnAddCard.setOnClickListener {
@@ -41,8 +46,13 @@ class AddNewCardFragment :
                     type = cardType
                 )
 
+
+                val bundle = Bundle()
+                bundle.putParcelable(CARD_KEY, card)
+                setFragmentResult(REQUEST_KEY, bundle)
+
                 Snackbar.make(binding.root, "Card added successfully", Snackbar.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_addNewCardFragment_to_firstFragment)
+                findNavController().popBackStack()
             }
         }
     }
@@ -50,6 +60,8 @@ class AddNewCardFragment :
 
     private fun setupDefaultCard() {
         updateCardType(CardType.MASTERCARD)
+        binding.ivCard.tvValidThru.text = getString(R.string.mm_yy)
+        binding.ivCard.tvCardHolderName.text = getString(R.string.full_name)
     }
 
     private fun setupRadioGroup() {

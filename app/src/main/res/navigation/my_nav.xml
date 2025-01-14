@@ -21,9 +21,5 @@
         android:id="@+id/addNewCardFragment"
         android:name="com.example.androidtbc.AddNewCardFragment"
         android:label="fragment_add_new_card"
-        tools:layout="@layout/fragment_add_new_card" >
-        <action
-            android:id="@+id/action_addNewCardFragment_to_firstFragment"
-            app:destination="@id/firstFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_add_new_card" />
 </navigation>

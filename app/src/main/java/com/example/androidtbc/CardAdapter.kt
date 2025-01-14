@@ -10,7 +10,7 @@ import com.example.androidtbc.databinding.ItemCardBinding
 
 class CardDiffUtilBack : DiffUtil.ItemCallback<Card>() {
     override fun areItemsTheSame(oldItem: Card, newItem: Card): Boolean {
-        return oldItem.cardNumber == newItem.id
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Card, newItem: Card): Boolean {
@@ -18,12 +18,8 @@ class CardDiffUtilBack : DiffUtil.ItemCallback<Card>() {
     }
 }
 
-class CardAdapter : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBack()) {
-    private var onLongClickListener: ((Card) -> Unit)? = null
+class CardAdapter(private val onLongClickListener: ((Card) -> Unit)?) : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBack()) {
 
-    fun longClickListener(listener: (Card) -> Unit) {
-        onLongClickListener = listener
-    }
 
     inner class CardViewHolder(private val binding: ItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -33,8 +29,6 @@ class CardAdapter : ListAdapter<Card, CardAdapter.CardViewHolder>(CardDiffUtilBa
             binding.tvCardNumber.text = formattedNumber
             binding.tvCardHolderName.text = card.name
             binding.tvValidThru.text = card.validThru
-
-            println(card)
 
             when (card.type) {
                 CardType.VISA -> {
