@@ -3,6 +3,7 @@ package com.example.androidtbc
 
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.androidtbc.databinding.FragmentFirstBinding
@@ -12,7 +13,7 @@ import kotlin.math.abs
 
 class FirstFragment : BaseFragment<FragmentFirstBinding>(FragmentFirstBinding::inflate) {
     private lateinit var cardAdapter: CardAdapter
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun start() {
         initVP()

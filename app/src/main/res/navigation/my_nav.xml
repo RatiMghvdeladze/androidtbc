@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_firstFragment_to_addNewCardFragment"
             app:destination="@id/addNewCardFragment" />
+        <argument
+            android:name="cardParc"
+            app:argType="com.example.androidtbc.Card" />
     </fragment>
     <fragment
         android:id="@+id/addNewCardFragment"

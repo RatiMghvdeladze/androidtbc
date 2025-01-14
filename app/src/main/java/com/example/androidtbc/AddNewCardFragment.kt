@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.databinding.FragmentAddNewCardBinding
 import com.google.android.material.snackbar.Snackbar
@@ -12,9 +11,6 @@ import com.google.android.material.snackbar.Snackbar
 
 class AddNewCardFragment :
     BaseFragment<FragmentAddNewCardBinding>(FragmentAddNewCardBinding::inflate) {
-    private val viewModel: MainViewModel by activityViewModels()
-    private lateinit var cardAdapter: CardAdapter
-
     override fun start() {
         setupRadioGroup()
         setupDefaultCard()
@@ -45,7 +41,6 @@ class AddNewCardFragment :
                     type = cardType
                 )
 
-                viewModel.addCard(card)
                 Snackbar.make(binding.root, "Card added successfully", Snackbar.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_addNewCardFragment_to_firstFragment)
             }
@@ -122,7 +117,7 @@ class AddNewCardFragment :
 
                 val userInput = s?.toString()?.replace("/", "") ?: ""
                 val formattedInput = when {
-                    userInput.length <= 2 -> userInput // Add MM
+                    userInput.length <= 2 -> userInput
                     userInput.length <= 4 -> "${
                         userInput.substring(
                             0,
