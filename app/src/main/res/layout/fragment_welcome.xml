@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    tools:context=".WelcomeFragment">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="45dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/welcome"
+        android:textSize="48sp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivWelcomeLogo"
+        android:layout_marginTop="63dp"
+        android:layout_marginBottom="59dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="30dp"
+        android:src="@drawable/logo_welcome" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_btn_register"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/register"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="23sp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_btn_login"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="23sp"
+        android:text="@string/login"
+        android:textAllCaps="false"
+        android:textColor="#700BEF"
+       />
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

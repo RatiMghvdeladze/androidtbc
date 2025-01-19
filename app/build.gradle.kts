@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    // retrofit
+    implementation (libs.squareup.retrofit)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -51,11 +53,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
-
+    implementation (libs.retrofit.serialization)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.serialization.json)
-
+    implementation(libs.okhttp)
 
 }
