@@ -13,14 +13,20 @@ class MainViewModel : ViewModel() {
     private val _messages = MutableStateFlow<List<FieldDTO>>(emptyList())
     val messages = _messages.asStateFlow()
 
-    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+    private val originalMessages = mutableListOf<FieldDTO>()
+
+
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).add(MessageTypeAdapter()).build()
     private val type: Type = Types.newParameterizedType(List::class.java, FieldDTO::class.java)
     private val jsonAdapter: JsonAdapter<List<FieldDTO>> = moshi.adapter(type)
 
     init {
-        _messages.value = parseJson(JEMALA)
+        parseJson(JEMALA).also {
+            originalMessages.addAll(it)
+            _messages.value = it
+        }
     }
-
     private fun parseJson(json: String): List<FieldDTO> {
         return try {
             jsonAdapter.fromJson(json) ?: emptyList()
@@ -29,6 +35,21 @@ class MainViewModel : ViewModel() {
             emptyList()
         }
     }
+
+    fun search(query: String) {
+        if (query.isEmpty()) {
+            _messages.value = originalMessages
+            return
+        }
+
+        val filteredList = originalMessages.filter {
+            it.owner.contains(query, ignoreCase = true)
+        }
+        _messages.value = filteredList
+    }
+
+
+
     companion object{
         const val JEMALA = """[ 
    { 

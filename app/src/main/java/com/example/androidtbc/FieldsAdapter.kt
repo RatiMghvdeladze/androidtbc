@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.androidtbc.databinding.ItemLayoutBinding
 
-class FieldDiffCallBack : DiffUtil.ItemCallback<FieldDTO>(){
+class FieldDiffCallBack : DiffUtil.ItemCallback<FieldDTO>() {
     override fun areItemsTheSame(oldItem: FieldDTO, newItem: FieldDTO): Boolean {
         return oldItem.id == newItem.id
     }
@@ -28,7 +28,6 @@ class FieldsAdapter : ListAdapter<FieldDTO, FieldsAdapter.FieldViewHolder>(Field
         fun bind(item: FieldDTO) {
             with(binding) {
                 tvName.text = item.owner
-                tvMessage.text = item.lastMessage
                 tvTime.text = item.lastActive
 
                 if (item.unreadMessages > 0) {
@@ -38,27 +37,38 @@ class FieldsAdapter : ListAdapter<FieldDTO, FieldsAdapter.FieldViewHolder>(Field
                     tvUnreadMessages.visibility = View.GONE
                 }
 
-                val messageIcon = when (item.lastMessageType.lowercase()) {
-                    "file" -> R.drawable.ic_attachment
-                    "voice" -> R.drawable.ic_voice
-                    "text" -> 0
-                    else -> 0
+                val messageIcon: Int
+                val messageText: String
+                when (item.lastMessageType) {
+                    MessageType.FILE -> {
+                        messageIcon = R.drawable.ic_attachment
+                        messageText = "Sent an attachment"
+                    }
+
+                    MessageType.VOICE -> {
+                        messageIcon = R.drawable.ic_voice
+                        messageText = "Sent a voice message"
+                    }
+
+                    MessageType.TEXT -> {
+                        messageIcon = 0
+                        messageText = item.lastMessage
+                    }
                 }
 
+                tvMessage.text = messageText
                 if (messageIcon != 0) {
                     tvMessage.setCompoundDrawablesWithIntrinsicBounds(messageIcon, 0, 0, 0)
                 } else {
                     tvMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                 }
 
-
                 Glide.with(itemView.context)
                     .load(item.image)
                     .placeholder(R.drawable.picture)
                     .error(R.drawable.picture)
                     .circleCrop()
-                    .into(binding.ivProfile)
-
+                    .into(ivProfile)
             }
         }
     }

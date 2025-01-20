@@ -11,16 +11,22 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     private val adapter = FieldsAdapter()
 
     override fun start() {
-        setupRecyclerView()
+        setUpRv()
         observeData()
+        setUpSearch()
     }
 
-    private fun setupRecyclerView() {
+    private fun setUpRv() {
         binding.rvItem.adapter = adapter
         binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
     }
 
-
+    private fun setUpSearch() {
+        binding.btnFilter.setOnClickListener {
+            val searchQuery = binding.etSearch.text?.toString() ?: ""
+            viewModel.search(searchQuery)
+        }
+    }
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {

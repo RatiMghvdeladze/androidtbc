@@ -25,5 +25,5 @@ data class FieldDTO(
     val isTyping: Boolean,
 
     @Json(name = "laste_message_type")
-    val lastMessageType: String
+    val lastMessageType: MessageType
 )
