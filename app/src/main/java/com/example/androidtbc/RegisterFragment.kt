@@ -24,7 +24,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         lifecycleScope.launch(Dispatchers.Main) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.flowData.collect{
-                    println(it?.isSuccessful)
                     if(it?.isSuccessful == true){
                         Snackbar.make(binding.root, "Register Successfully", Snackbar.LENGTH_SHORT).show()
                     }else if(it?.isSuccessful == false){
