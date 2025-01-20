@@ -6,7 +6,7 @@
     android:background="@drawable/background"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".LoginFragment">
+    tools:context=".fragments.LoginFragment">
 
 
     <androidx.appcompat.widget.AppCompatTextView

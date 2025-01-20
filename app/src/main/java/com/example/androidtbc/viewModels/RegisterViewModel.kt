@@ -1,7 +1,11 @@
-package com.example.androidtbc
+package com.example.androidtbc.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.androidtbc.rawDataClasses.RegisterRawData
+import com.example.androidtbc.responseDtoClasses.RegisterResponseDTO
+import com.example.androidtbc.RetrofitClient
+import com.example.androidtbc.Validatior
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

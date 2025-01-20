@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.fragments
 
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.databinding.FragmentWelcomeBinding

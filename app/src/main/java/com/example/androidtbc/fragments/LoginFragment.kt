@@ -1,17 +1,17 @@
-package com.example.androidtbc
+package com.example.androidtbc.fragments
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.androidtbc.databinding.FragmentRegisterBinding
+import com.example.androidtbc.viewModels.LoginViewModel
+import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
-
-    private val viewModel: RegisterViewModel by viewModels()
+class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun start() {
         setUpListeners()
@@ -25,7 +25,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.flowData.collect{
                     if(it?.isSuccessful == true){
-                        Snackbar.make(binding.root, "Register Successfully", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, "Login Successfully", Snackbar.LENGTH_SHORT).show()
                     }else if(it?.isSuccessful == false){
                         val errorText = it.errorBody()?.string()
                         Snackbar.make(binding.root, errorText ?: "UnknownError", Snackbar.LENGTH_SHORT).show()
@@ -36,13 +36,13 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
     }
     private fun setUpListeners() {
-        binding.btnRegister.setOnClickListener{
+        binding.btnLogin.setOnClickListener{
             with(binding) {
-                val email = etEmail.text.toString()
+                val email = etUsername.text.toString()
                 val password = etPassword.text.toString()
                 val isValid = viewModel.validateEmail(email) && viewModel.validatePassword(password)
                 if (isValid) {
-                    viewModel.register(email, password)
+                    viewModel.login(email, password)
                 }else{
                     Snackbar.make(binding.root, "Invalid inputs", Snackbar.LENGTH_SHORT).show()
                 }
@@ -51,6 +51,4 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
 
     }
-
-
 }

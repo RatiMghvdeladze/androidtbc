@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.rawDataClasses
 
 import kotlinx.serialization.Serializable
 
