@@ -24,7 +24,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     }
 
     private fun setupListeners() {
-        binding.apply {
+        with(binding) {
             btnRegister.setOnClickListener {
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()

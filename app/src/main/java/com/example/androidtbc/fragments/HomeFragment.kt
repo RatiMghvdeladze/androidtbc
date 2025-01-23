@@ -1,34 +1,52 @@
 package com.example.androidtbc.fragments
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.androidtbc.SessionManager
+import androidx.navigation.fragment.navArgs
+import com.example.androidtbc.LocalDataStore
+import com.example.androidtbc.ViewModelFactory
 import com.example.androidtbc.databinding.FragmentHomeBinding
+import com.example.androidtbc.viewModels.HomeViewModel
+import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
-    private lateinit var sessionManager: SessionManager
+    private val args: HomeFragmentArgs by navArgs()
+    private lateinit var homeViewModel: HomeViewModel
 
     override fun start() {
-        sessionManager = SessionManager(requireContext())
+        initViewModel()
         displayEmail()
 
         binding.btnLogOut.setOnClickListener {
-            sessionManager.clearSession()
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLoginFragment())
+            homeViewModel.clearUserData()
+            observer()
         }
     }
 
-    private fun displayEmail() {
-        // პირველად ვცდილობთ არგუმენტებიდან წამოღებას
-        val emailFromArgs = arguments?.getString("email")
-
-        // თუ არგუმენტებში არ არის, მაშინ ვიღებთ სესიიდან
-        val email = emailFromArgs ?: sessionManager.getEmail() ?: "No Email Found"
-
-        binding.tvYourEmail.text = email
-
-        // თუ email მოვიდა არგუმენტებიდან და "Remember me" ჩართული იყო, ვინახავთ სესიაშიც
-        if (emailFromArgs != null) {
-            sessionManager.saveEmail(emailFromArgs)
+    private fun observer(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                homeViewModel.getEmail().collect{
+                    if(it == null){
+                        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToLoginFragment())
+                    }
+                }
+            }
         }
+
+    }
+
+    private fun initViewModel() {
+        homeViewModel = ViewModelProvider(this, ViewModelFactory {
+            HomeViewModel(LocalDataStore(requireContext().applicationContext))
+        })[HomeViewModel::class.java]
+    }
+
+    private fun displayEmail() {
+        val email = args.email
+        binding.tvYourEmail.text = email
     }
 }

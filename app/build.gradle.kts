@@ -47,6 +47,7 @@ dependencies {
 
     //noinspection GradleDependency
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.datastore.preferences)
     implementation (libs.squareup.retrofit)
     implementation(libs.okhttp)
     implementation (libs.retrofit.serialization)
