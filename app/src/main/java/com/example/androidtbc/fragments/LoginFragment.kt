@@ -33,9 +33,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
     private fun setupFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener("registerResult", viewLifecycleOwner) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener("register_request", viewLifecycleOwner) { _, bundle ->
             val email = bundle.getString("email")
+            val password = bundle.getString("password")
             email?.let { binding.etEmail.setText(it) }
+            password?.let { binding.etPassword.setText(it)}
+
         }
     }
 
