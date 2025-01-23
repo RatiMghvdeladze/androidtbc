@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".fragments.RegisterFragment">
+
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_margin="16dp"
+        android:elevation="10dp"
+        android:background="@drawable/bg_ic_back"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/register"
+        android:textColor="@color/black"
+        android:textSize="48sp" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="43dp"
+        android:layout_marginBottom="56dp"
+        android:src="@drawable/logo_register" />
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_et"
+        android:drawableStart="@drawable/ic_email"
+        android:drawablePadding="43dp"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:hint="@string/email"
+        android:paddingHorizontal="33dp"
+        android:paddingVertical="8dp"
+        android:textColorHint="#b683f7"
+        android:textSize="24sp" />
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_et"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="43dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:paddingHorizontal="33dp"
+        android:paddingVertical="5dp"
+        android:textColorHint="#b683f7"
+        android:textSize="24sp" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etRepeatPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_et"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="43dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/repeat_password"
+        android:inputType="textPassword"
+        android:paddingHorizontal="33dp"
+        android:paddingVertical="5dp"
+        android:maxLines="1"
+        android:textColorHint="#b683f7"
+        android:textSize="24sp" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/bg_btn_register"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/register"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginTop="50dp"
+        android:textSize="23sp" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

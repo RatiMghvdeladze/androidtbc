@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     id(libs.plugins.safeArgs.get().pluginId)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -44,6 +45,12 @@ android {
 
 dependencies {
 
+    //noinspection GradleDependency
+    implementation(libs.androidx.fragment.ktx)
+    implementation (libs.squareup.retrofit)
+    implementation(libs.okhttp)
+    implementation (libs.retrofit.serialization)
+    implementation(libs.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
