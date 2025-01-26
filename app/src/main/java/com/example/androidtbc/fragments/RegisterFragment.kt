@@ -1,6 +1,7 @@
 package com.example.androidtbc.fragments
 
 import android.os.Bundle
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -11,33 +12,54 @@ import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.viewModels.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
-
     private val registerViewModel: RegisterViewModel by viewModels()
 
     override fun start() {
         setupListeners()
         observer()
+        observeErrors()
+    }
+
+    private fun observeErrors() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                registerViewModel.error.collect { errorMessage ->
+                    errorMessage?.let {
+                        showSnackbar(it)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupListeners() {
         with(binding) {
             btnRegister.setOnClickListener {
+                etEmail.doOnTextChanged { _, _, _, _ -> validateInputs() }
+                etPassword.doOnTextChanged { _, _, _, _ -> validateInputs() }
+                etRepeatPassword.doOnTextChanged { _, _, _, _ -> validateInputs() }
+
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val repeatPassword = etRepeatPassword.text.toString()
 
-                if (email.isNotEmpty() && password.isNotEmpty() && repeatPassword.isNotEmpty()) {
-                    if (password == repeatPassword) {
-                        registerViewModel.register(email, password)
-                    } else {
-                        showSnackbar(getString(R.string.the_passwords_don_t_match))
-                    }
+                if (registerViewModel.validateEmail(email) &&
+                    registerViewModel.validatePassword(password) &&
+                    password == repeatPassword) {
+                    registerViewModel.register(email, password)
                 } else {
-                    showSnackbar(getString(R.string.please_fill_all_fields))
+                    if (!registerViewModel.validateEmail(email)) {
+                        showSnackbar(getString(R.string.invalid_email))
+                    } else if (!registerViewModel.validatePassword(password)) {
+                        showSnackbar(getString(R.string.invalid_password))
+                    } else if (password != repeatPassword) {
+                        showSnackbar(getString(R.string.the_passwords_don_t_match))
+                    } else {
+                        showSnackbar(getString(R.string.please_fill_all_fields))
+                    }
                 }
             }
 
@@ -47,10 +69,17 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
     }
 
+    private fun validateInputs() {
+        with(binding) {
+            btnRegister.isEnabled = registerViewModel.validateEmail(etEmail.text.toString()) &&
+                    registerViewModel.validatePassword(etPassword.text.toString()) &&
+                    etPassword.text.toString() == etRepeatPassword.text.toString()
+        }
+    }
     private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                registerViewModel.flowData.collectLatest { response ->
+                registerViewModel.flowData.collect { response ->
                     if (response != null && response.isSuccessful) {
                         val email = binding.etEmail.text.toString()
                         val password = binding.etPassword.text.toString()
@@ -68,6 +97,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             }
         }
     }
+
+
 
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()

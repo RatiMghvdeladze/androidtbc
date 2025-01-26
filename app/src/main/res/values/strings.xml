@@ -16,4 +16,8 @@
     <string name="please_fill_all_fields">Please fill all fields</string>
     <string name="registration_failed_please_try_again">Registration failed! Please try again</string>
     <string name="login_failed_please_try_again">Login failed! Please try again</string>
+    <string name="profile">Profile</string>
+    <string name="go_to_profile">Go to Profile</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="invalid_email">Invalid Email</string>
 </resources>

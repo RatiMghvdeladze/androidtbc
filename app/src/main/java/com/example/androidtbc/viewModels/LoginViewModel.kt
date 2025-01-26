@@ -1,6 +1,5 @@
 package com.example.androidtbc.viewModels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.LocalDataStore
 import com.example.androidtbc.RetrofitClient
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class LoginViewModel(val dataStore: LocalDataStore) : ViewModel() {
+class LoginViewModel(val dataStore: LocalDataStore) : BaseViewModel(){
     private val _flowData: MutableStateFlow<Response<LoginResponseDTO>?> = MutableStateFlow(null)
     val flowData = _flowData.asStateFlow()
 
@@ -40,7 +39,7 @@ class LoginViewModel(val dataStore: LocalDataStore) : ViewModel() {
                     saveEmail(email)
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                handleException(e)
             }
 
         }

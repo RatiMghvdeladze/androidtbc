@@ -12,7 +12,6 @@ import com.example.androidtbc.ViewModelFactory
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.viewModels.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
@@ -24,6 +23,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         setupFragmentResultListener()
         setupListeners()
         observer()
+        observeErrors()
     }
 
     private fun initViewModel() {
@@ -31,6 +31,19 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             LoginViewModel(LocalDataStore(requireContext().applicationContext))
         })[LoginViewModel::class.java]
     }
+
+    private fun observeErrors() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                loginViewModel.error.collect { errorMessage ->
+                    errorMessage?.let {
+                        showSnackbar(it)
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun setupFragmentResultListener() {
         parentFragmentManager.setFragmentResultListener("register_request", viewLifecycleOwner) { _, bundle ->
@@ -46,7 +59,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         lifecycleScope.launch {
             loginViewModel.getEmail().collect { email ->
                 if (!email.isNullOrEmpty()) {
-                    navigateToHome(email)
+                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment(email))
                 }
             }
         }
@@ -83,10 +96,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loginViewModel.flowData.collectLatest { response ->
+                loginViewModel.flowData.collect { response ->
                     if (response != null && response.isSuccessful) {
                         val email = binding.etEmail.text.toString()
-                        navigateToHome(email)
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment(email))
                     } else if (response != null) {
                         showSnackbar(getString(R.string.login_failed_please_try_again))
                     }
@@ -95,9 +108,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun navigateToHome(email: String) {
-        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment4(email))
-    }
 
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()

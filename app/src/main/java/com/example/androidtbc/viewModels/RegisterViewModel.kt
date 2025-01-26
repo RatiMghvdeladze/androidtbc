@@ -1,6 +1,5 @@
 package com.example.androidtbc.viewModels
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.RetrofitClient
 import com.example.androidtbc.Validator
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class RegisterViewModel: ViewModel() {
+class RegisterViewModel: BaseViewModel() {
     private val _flowData: MutableStateFlow<Response<RegisterResponseDTO>?> = MutableStateFlow(null)
     val flowData = _flowData.asStateFlow()
 
@@ -28,7 +27,7 @@ class RegisterViewModel: ViewModel() {
                 val responseData = RetrofitClient.authService.registerUser(RegisterRawData(email, password))
                 _flowData.emit(responseData)
             } catch (e: Exception) {
-                e.printStackTrace()
+                handleException(e)
             }
         }
     }
