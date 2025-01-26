@@ -1,7 +1,6 @@
 package com.example.androidtbc.fragments
 
 import android.os.Bundle
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -38,28 +37,26 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private fun setupListeners() {
         with(binding) {
             btnRegister.setOnClickListener {
-                etEmail.doOnTextChanged { _, _, _, _ -> validateInputs() }
-                etPassword.doOnTextChanged { _, _, _, _ -> validateInputs() }
-                etRepeatPassword.doOnTextChanged { _, _, _, _ -> validateInputs() }
-
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val repeatPassword = etRepeatPassword.text.toString()
 
-                if (registerViewModel.validateEmail(email) &&
-                    registerViewModel.validatePassword(password) &&
-                    password == repeatPassword) {
-                    registerViewModel.register(email, password)
-                } else {
+                if (email.isNotEmpty() && password.isNotEmpty() && repeatPassword.isNotEmpty()) {
                     if (!registerViewModel.validateEmail(email)) {
                         showSnackbar(getString(R.string.invalid_email))
-                    } else if (!registerViewModel.validatePassword(password)) {
-                        showSnackbar(getString(R.string.invalid_password))
-                    } else if (password != repeatPassword) {
-                        showSnackbar(getString(R.string.the_passwords_don_t_match))
-                    } else {
-                        showSnackbar(getString(R.string.please_fill_all_fields))
+                        return@setOnClickListener
                     }
+                    if (!registerViewModel.validatePassword(password)) {
+                        showSnackbar(getString(R.string.invalid_password))
+                        return@setOnClickListener
+                    }
+                    if (password == repeatPassword) {
+                        registerViewModel.register(email, password)
+                    } else {
+                        showSnackbar(getString(R.string.the_passwords_don_t_match))
+                    }
+                } else {
+                    showSnackbar(getString(R.string.please_fill_all_fields))
                 }
             }
 
@@ -69,13 +66,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
     }
 
-    private fun validateInputs() {
-        with(binding) {
-            btnRegister.isEnabled = registerViewModel.validateEmail(etEmail.text.toString()) &&
-                    registerViewModel.validatePassword(etPassword.text.toString()) &&
-                    etPassword.text.toString() == etRepeatPassword.text.toString()
-        }
-    }
     private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
