@@ -24,10 +24,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     override fun start() {
         setUpRv()
         observer()
-        listener()
+        setupListener()
     }
 
-    private fun listener(){
+    private fun setupListener(){
         with(binding){
             btnGoToProfile.setOnClickListener{
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProfileFragment(args.email))
