@@ -44,8 +44,7 @@ android {
 }
 
 dependencies {
-
-    //noinspection GradleDependency
+    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation (libs.squareup.retrofit)

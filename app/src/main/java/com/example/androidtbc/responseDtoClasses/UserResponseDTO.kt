@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.responseDtoClasses
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

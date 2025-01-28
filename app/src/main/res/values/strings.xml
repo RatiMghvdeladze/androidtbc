@@ -20,4 +20,6 @@
     <string name="go_to_profile">Go to Profile</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="invalid_email">Invalid Email</string>
+    <string name="no_users_found">No users found</string>
+    <string name="retry">Retry</string>
 </resources>
