@@ -12,7 +12,7 @@ class HomeViewModel : ViewModel() {
 
     val users = Pager(
         config = PagingConfig(
-            pageSize = 20,
+            pageSize = 6,
             enablePlaceholders = false
         ),
         pagingSourceFactory = {

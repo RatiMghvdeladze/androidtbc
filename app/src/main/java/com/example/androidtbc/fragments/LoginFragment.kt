@@ -83,6 +83,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             btnRegister.setOnClickListener {
                 findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
             }
+            btnGoto.setOnClickListener{
+                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToUserFormFragment())
+            }
         }
     }
 

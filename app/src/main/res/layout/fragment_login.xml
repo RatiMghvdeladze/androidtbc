@@ -8,13 +8,20 @@
     android:orientation="vertical"
     tools:context=".fragments.LoginFragment">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="go to somewhere"/>
+
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="95dp"
+        android:layout_marginTop="45dp"
         android:fontFamily="@font/roboto_medium"
         android:text="@string/login"
         android:textColor="@color/black"

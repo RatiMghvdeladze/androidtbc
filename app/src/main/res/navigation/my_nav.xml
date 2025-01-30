@@ -18,6 +18,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_userFormFragment"
+            app:destination="@id/userFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -49,4 +52,8 @@
             android:name="email"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/userFormFragment"
+        android:name="com.example.androidtbc.protoDataStore.UserFormFragment"
+        android:label="UserFormFragment" />
 </navigation>

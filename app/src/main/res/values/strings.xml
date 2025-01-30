@@ -22,4 +22,8 @@
     <string name="invalid_email">Invalid Email</string>
     <string name="no_users_found">No users found</string>
     <string name="retry">Retry</string>
+    <string name="read">Read</string>
+    <string name="save">Save</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
 </resources>
