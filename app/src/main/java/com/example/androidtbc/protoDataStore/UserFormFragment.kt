@@ -1,7 +1,7 @@
 package com.example.androidtbc.protoDataStore
 
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.androidtbc.ViewModelFactory
@@ -10,14 +10,18 @@ import com.example.androidtbc.fragments.BaseFragment
 import kotlinx.coroutines.launch
 
 class UserFormFragment : BaseFragment<FragmentUserFormBinding>(FragmentUserFormBinding::inflate) {
-
-    private val viewModel: UserFormViewModel by viewModels {
-        ViewModelFactory { UserFormViewModel(UserProtoDataStore(requireContext())) }
-    }
+    private lateinit var userViewModel: UserFormViewModel
 
     override fun start() {
+        initViewModel()
         setupListeners()
         observeData()
+    }
+
+    private fun initViewModel() {
+        userViewModel = ViewModelProvider(this, ViewModelFactory {
+            UserFormViewModel(UserProtoDataStore(requireContext().applicationContext))
+        })[UserFormViewModel::class.java]
     }
 
     private fun setupListeners() {
@@ -28,13 +32,13 @@ class UserFormFragment : BaseFragment<FragmentUserFormBinding>(FragmentUserFormB
                 val email = etEmail.text.toString()
 
                 if (firstName.isNotBlank() && lastName.isNotBlank() && email.isNotBlank()) {
-                    viewModel.saveUserData(firstName, lastName, email)
+                    userViewModel.saveUserData(firstName, lastName, email)
                     clearInputs()
                 }
             }
 
             btnRead.setOnClickListener {
-                viewModel.readUserData()
+                userViewModel.readUserData()
             }
         }
     }
@@ -50,7 +54,7 @@ class UserFormFragment : BaseFragment<FragmentUserFormBinding>(FragmentUserFormB
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userData.collect { preferences ->
+                userViewModel.userData.collect { preferences ->
                     preferences?.let {
                         binding.tvUserInfo.text = """
                             First Name: ${it.firstName}
