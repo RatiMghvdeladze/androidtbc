@@ -5,6 +5,7 @@ plugins {
     id(libs.plugins.safeArgs.get().pluginId)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.protobuf") version "0.9.4"
 }
 
 android {
@@ -44,8 +45,10 @@ android {
 }
 
 dependencies {
-
     //noinspection GradleDependency
+    implementation (libs.androidx.datastore)
+    implementation( libs.protobuf.javalite)
+    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation (libs.squareup.retrofit)
@@ -66,4 +69,26 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.24.0"
+    }
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
+
+buildscript {
+    repositories {
+        google()
+    }
 }
