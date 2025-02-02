@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.protobuf") version "0.9.4"
+    id("kotlin-kapt")
 }
 
 android {
@@ -45,6 +46,11 @@ android {
 }
 
 dependencies {
+    val room_version = "2.6.1"
+    implementation(libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    ksp(libs.androidx.room.compiler)
     //noinspection GradleDependency
     implementation (libs.androidx.datastore)
     implementation( libs.protobuf.javalite)
