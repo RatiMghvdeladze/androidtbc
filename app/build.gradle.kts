@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.protobuf") version "0.9.4"
-    id("kotlin-kapt")
 }
 
 android {
