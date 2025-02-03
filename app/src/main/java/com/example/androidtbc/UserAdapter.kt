@@ -2,17 +2,12 @@ package com.example.androidtbc
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtbc.databinding.UserItemBinding
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
-
-    private var users: List<UserEntity> = emptyList()
-
-    fun setUsers(newUsers: List<UserEntity>) {
-        users = newUsers
-        notifyDataSetChanged()
-    }
+class UserAdapter : ListAdapter<UserEntity, UserAdapter.UserViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,19 +15,20 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        val user = users[position]
+        val user = getItem(position)
         holder.bind(user)
     }
-
-    override fun getItemCount(): Int = users.size
 
     class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: UserEntity) {
             binding.tvUsername.text = user.name
             binding.tvUserStatus.text = getStatusText(user.activationStatus)
 
-            val imageUrl = user.imageUrl ?: R.drawable.placeholder
-//            binding.ivUserImage.load(imageUrl)
+//            val imageUrl = user.imageUrl
+//            binding.ivUserImage.load(imageUrl ?: R.drawable.placeholder) {
+//                placeholder(R.drawable.placeholder)
+//                error(R.drawable.placeholder)
+//            }
         }
 
         private fun getStatusText(status: Int): String {
@@ -46,3 +42,14 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
         }
     }
 }
+
+class UserDiffCallback : DiffUtil.ItemCallback<UserEntity>() {
+    override fun areItemsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
+        return oldItem == newItem
+    }
+}
+
