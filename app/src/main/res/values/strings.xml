@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="refresh_users">Refresh Users</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.data
 
 import androidx.room.Dao
 import androidx.room.Insert

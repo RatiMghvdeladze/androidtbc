@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,12 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class UserListViewModel(
-    private val repository: UserRepository
-) : ViewModel() {
-    val users = repository.getUsers().stateIn(
+class UserViewModel(private val repository: UserRepository) : ViewModel() {
+    val users = repository.usersFlow.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(3000),
         initialValue = emptyList()
     )
 
@@ -23,6 +21,9 @@ class UserListViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
     init {
         refreshUsers()
     }
@@ -30,8 +31,14 @@ class UserListViewModel(
     fun refreshUsers() {
         viewModelScope.launch {
             _isLoading.value = true
-            repository.refreshUsers()
-            _isLoading.value = false
+            _error.value = null
+            try {
+                repository.refreshUsers()
+            } catch (e: Exception) {
+                _error.value = e.message ?: "unknown error :/"
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }

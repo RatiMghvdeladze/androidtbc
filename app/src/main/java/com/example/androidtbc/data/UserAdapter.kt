@@ -1,13 +1,39 @@
-package com.example.androidtbc
+package com.example.androidtbc.data
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.UserItemBinding
 
 class UserAdapter : ListAdapter<UserEntity, UserAdapter.UserViewHolder>(UserDiffCallback()) {
+
+    inner class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(user: UserEntity) {
+            binding.tvUsername.text = user.name
+            binding.tvUserStatus.text = getStatusText(user.activationStatus)
+
+            Glide.with(binding.root)
+                .load(user.imageUrl)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .fallback(R.drawable.ic_person)
+                .into(binding.ivUserImage)
+        }
+    }
+    private fun getStatusText(status: Int): String {
+        return when {
+            status <= 0 -> "Not Active"
+            status == 1 -> "Online"
+            status == 2 -> "Active a few minutes ago"
+            status in 3..22 -> "Active hours ago"
+            else -> "Inactive"
+        }
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,28 +45,6 @@ class UserAdapter : ListAdapter<UserEntity, UserAdapter.UserViewHolder>(UserDiff
         holder.bind(user)
     }
 
-    class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(user: UserEntity) {
-            binding.tvUsername.text = user.name
-            binding.tvUserStatus.text = getStatusText(user.activationStatus)
-
-//            val imageUrl = user.imageUrl
-//            binding.ivUserImage.load(imageUrl ?: R.drawable.placeholder) {
-//                placeholder(R.drawable.placeholder)
-//                error(R.drawable.placeholder)
-//            }
-        }
-
-        private fun getStatusText(status: Int): String {
-            return when {
-                status <= 0 -> "Not Active"
-                status == 1 -> "Online"
-                status == 2 -> "Active a few minutes ago"
-                status in 3..22 -> "Active hours ago"
-                else -> "Inactive"
-            }
-        }
-    }
 }
 
 class UserDiffCallback : DiffUtil.ItemCallback<UserEntity>() {
@@ -52,4 +56,3 @@ class UserDiffCallback : DiffUtil.ItemCallback<UserEntity>() {
         return oldItem == newItem
     }
 }
-

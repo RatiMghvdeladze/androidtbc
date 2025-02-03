@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.retrofitApi
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
