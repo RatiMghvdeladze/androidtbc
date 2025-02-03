@@ -2,50 +2,47 @@ package com.example.androidtbc
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.androidtbc.databinding.UserItemBinding
 
-class UserAdapter : ListAdapter<User, UserViewHolder>(UserDiffCallback()) {
+class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+
+    private var users: List<UserEntity> = emptyList()
+
+    fun setUsers(newUsers: List<UserEntity>) {
+        users = newUsers
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val binding = ItemUserBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
+        val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val user = users[position]
+        holder.bind(user)
     }
-}
 
-class UserViewHolder(
-    private val binding: ItemUserBinding
-) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(user: User) {
-        binding.apply {
-            userName.text = user.name
+    override fun getItemCount(): Int = users.size
 
-            // Load avatar with placeholder and error handling
-            Glide.with(itemView)
-                .load(user.avatar)
-                .placeholder(R.drawable.placeholder_avatar)
-                .error(R.drawable.error_avatar)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(userAvatar)
+    class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(user: UserEntity) {
+            binding.tvUsername.text = user.name
+            binding.tvUserStatus.text = getStatusText(user.activationStatus)
 
-            val (statusText, statusColor) = when {
-                user.activationStatus <= 0 -> "Inactive" to R.color.status_inactive
-                user.activationStatus == 1 -> "Online" to R.color.status_online
-                user.activationStatus == 2 -> "Recently active" to R.color.status_recently
-                user.activationStatus in 3..22 -> "Hours ago" to R.color.status_hours
-                else -> "Long time ago" to R.color.status_longtime
+            val imageUrl = user.imageUrl ?: R.drawable.placeholder
+//            binding.ivUserImage.load(imageUrl)
+        }
+
+        private fun getStatusText(status: Int): String {
+            return when {
+                status <= 0 -> "Not Active"
+                status == 1 -> "Online"
+                status == 2 -> "Active a few minutes ago"
+                status in 3..22 -> "Active hours ago"
+                else -> "Inactive"
             }
-
-            statusIndicator.text = statusText
-            statusIndicator.setTextColor(ContextCompat.getColor(itemView.context, statusColor))
         }
     }
 }
