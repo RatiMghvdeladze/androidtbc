@@ -55,4 +55,10 @@ class PasscodeViewModel : ViewModel() {
         _isSuccess.value = null
     }
 
+    fun authenticateWithFingerprint() {
+        _isSuccess.value = true
+        _enteredPasscode.value = ""
+    }
+
+
 }

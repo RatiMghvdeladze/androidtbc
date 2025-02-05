@@ -15,4 +15,12 @@
     <string name="_9">9</string>
     <string name="_0">0</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="success">Success!</string>
+    <string name="incorrect_passcode">Incorrect Passcode!</string>
+    <string name="fingerprint_recognized">Fingerprint recognized!</string>
+    <string name="authentication_error">Authentication error: %1$s</string>
+    <string name="fingerprint_not_recognized">Fingerprint not recognized</string>
+    <string name="fingerprint_authentication">Fingerprint Authentication</string>
+    <string name="use_your_fingerprint_to_authenticate">Use your fingerprint to authenticate</string>
+    <string name="cancel">Cancel</string>
 </resources>

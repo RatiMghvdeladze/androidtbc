@@ -46,6 +46,7 @@ android {
 
 dependencies {
     val room_version = "2.6.1"
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.room.runtime)
     implementation (libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)

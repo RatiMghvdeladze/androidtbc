@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".PasscodeFragment">
 
 
@@ -11,37 +12,38 @@
         android:id="@+id/tvSecurityScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/security_screen"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:fontFamily="@font/poppins_semibold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"
-        app:fontFamily="@font/poppins_semibold" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvEnterYourPasscode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:text="@string/enter_your_passcode"
-        app:layout_constraintStart_toStartOf="@id/tvSecurityScreen"
-        app:layout_constraintEnd_toEndOf="@id/tvSecurityScreen"
-        app:layout_constraintTop_toBottomOf="@id/tvSecurityScreen"
         android:layout_marginTop="48dp"
-        app:fontFamily="@font/poppins" />
+        android:text="@string/enter_your_passcode"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:fontFamily="@font/poppins"
+        app:layout_constraintEnd_toEndOf="@id/tvSecurityScreen"
+        app:layout_constraintStart_toStartOf="@id/tvSecurityScreen"
+        app:layout_constraintTop_toBottomOf="@id/tvSecurityScreen" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivCircle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/iv_circle"
         android:layout_marginTop="26dp"
+        android:background="@drawable/iv_circle"
+        app:layout_constraintEnd_toStartOf="@id/ivCircle2"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@id/tvEnterYourPasscode"
-        app:layout_constraintEnd_toStartOf="@id/ivCircle2"
         app:layout_constraintTop_toBottomOf="@id/tvEnterYourPasscode" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -49,8 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/iv_circle"
-        app:layout_constraintStart_toEndOf="@id/ivCircle1"
         app:layout_constraintEnd_toStartOf="@id/ivCircle3"
+        app:layout_constraintStart_toEndOf="@id/ivCircle1"
         app:layout_constraintTop_toTopOf="@id/ivCircle1" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -58,8 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/iv_circle"
-        app:layout_constraintStart_toEndOf="@id/ivCircle2"
         app:layout_constraintEnd_toStartOf="@id/ivCircle4"
+        app:layout_constraintStart_toEndOf="@id/ivCircle2"
         app:layout_constraintTop_toTopOf="@id/ivCircle1" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -67,8 +69,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/iv_circle"
-        app:layout_constraintStart_toEndOf="@id/ivCircle3"
         app:layout_constraintEnd_toEndOf="@id/tvEnterYourPasscode"
+        app:layout_constraintStart_toEndOf="@id/ivCircle3"
         app:layout_constraintTop_toTopOf="@id/ivCircle1" />
 
 
@@ -80,7 +82,9 @@
         android:layout_marginTop="48dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_1"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +96,9 @@
         android:layout_height="75dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_2"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toStartOf="@+id/btnThree3"
@@ -106,7 +112,9 @@
         android:layout_marginEnd="32sp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_3"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +129,9 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_4"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +143,9 @@
         android:layout_height="75dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_5"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toStartOf="@id/btnSix6"
@@ -147,13 +159,15 @@
         android:layout_marginEnd="32sp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_6"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnFive5" />
 
-<androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSeven7"
         android:layout_width="75dp"
         android:layout_height="75dp"
@@ -161,7 +175,9 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_7"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -173,7 +189,9 @@
         android:layout_height="75dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_8"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toStartOf="@id/btnSix6"
@@ -187,7 +205,9 @@
         android:layout_marginEnd="32sp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_9"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -201,9 +221,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
-        android:text="@string/_7"
-        android:textColor="@color/black"
+        android:gravity="center"
         android:src="@drawable/ic_fingerprint"
+        android:text="@string/_7"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnSeven7" />
@@ -214,7 +236,9 @@
         android:layout_height="75dp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
+        android:gravity="center"
         android:text="@string/_0"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toStartOf="@id/btnDelete"
@@ -228,26 +252,31 @@
         android:layout_marginEnd="32sp"
         android:background="@drawable/bg_numbers"
         android:fontFamily="@font/poppins_light"
-        android:text="@string/_9"
-        android:textColor="@color/black"
+        android:gravity="center"
         android:src="@drawable/ic_backspace"
+        android:text="@string/_9"
+        android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnZero0" />
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:background="@android:color/transparent"
         android:fontFamily="@font/poppins"
         android:text="@string/forgot_password"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="56dp"
         android:textAllCaps="false"
+        android:textColor="#8E8E93"
         android:textSize="16sp"
-        android:background="@android:color/transparent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
