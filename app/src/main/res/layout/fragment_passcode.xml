@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PasscodeFragment">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSecurityScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/security_screen"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        app:fontFamily="@font/poppins_semibold" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvEnterYourPasscode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:text="@string/enter_your_passcode"
+        app:layout_constraintStart_toStartOf="@id/tvSecurityScreen"
+        app:layout_constraintEnd_toEndOf="@id/tvSecurityScreen"
+        app:layout_constraintTop_toBottomOf="@id/tvSecurityScreen"
+        android:layout_marginTop="48dp"
+        app:fontFamily="@font/poppins" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCircle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/iv_circle"
+        android:layout_marginTop="26dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/tvEnterYourPasscode"
+        app:layout_constraintEnd_toStartOf="@id/ivCircle2"
+        app:layout_constraintTop_toBottomOf="@id/tvEnterYourPasscode" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCircle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/iv_circle"
+        app:layout_constraintStart_toEndOf="@id/ivCircle1"
+        app:layout_constraintEnd_toStartOf="@id/ivCircle3"
+        app:layout_constraintTop_toTopOf="@id/ivCircle1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCircle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/iv_circle"
+        app:layout_constraintStart_toEndOf="@id/ivCircle2"
+        app:layout_constraintEnd_toStartOf="@id/ivCircle4"
+        app:layout_constraintTop_toTopOf="@id/ivCircle1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCircle4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/iv_circle"
+        app:layout_constraintStart_toEndOf="@id/ivCircle3"
+        app:layout_constraintEnd_toEndOf="@id/tvEnterYourPasscode"
+        app:layout_constraintTop_toTopOf="@id/ivCircle1" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnOne1"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_1"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivCircle1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnTwo2"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_2"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnThree3"
+        app:layout_constraintStart_toEndOf="@+id/btnOne1"
+        app:layout_constraintTop_toTopOf="@id/btnOne1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnThree3"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="32sp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_3"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnTwo2" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnFour4"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_4"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnOne1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnFive5"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_5"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toStartOf="@id/btnSix6"
+        app:layout_constraintStart_toEndOf="@+id/btnFour4"
+        app:layout_constraintTop_toTopOf="@id/btnFour4" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSix6"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="32sp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_6"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnFive5" />
+
+<androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSeven7"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_7"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnFour4" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnEight8"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_8"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toStartOf="@id/btnSix6"
+        app:layout_constraintStart_toEndOf="@+id/btnSeven7"
+        app:layout_constraintTop_toTopOf="@id/btnSeven7" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNine9"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="32sp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_9"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnEight8" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnFingerprint"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_7"
+        android:textColor="@color/black"
+        android:src="@drawable/ic_fingerprint"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSeven7" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnZero0"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_0"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toStartOf="@id/btnDelete"
+        app:layout_constraintStart_toEndOf="@+id/btnFingerprint"
+        app:layout_constraintTop_toTopOf="@id/btnFingerprint" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="32sp"
+        android:background="@drawable/bg_numbers"
+        android:fontFamily="@font/poppins_light"
+        android:text="@string/_9"
+        android:textColor="@color/black"
+        android:src="@drawable/ic_backspace"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnZero0" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:text="@string/forgot_password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="56dp"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:background="@android:color/transparent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
