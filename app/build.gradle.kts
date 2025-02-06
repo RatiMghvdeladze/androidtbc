@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.gridlayout)
     val room_version = "2.6.1"
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.room.runtime)
