@@ -9,6 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.androidtbc.R
 import com.example.androidtbc.base.BaseFragment
 import com.example.androidtbc.databinding.FragmentPasscodeBinding
+import com.example.androidtbc.ui.passcode.adapter.PasscodeCircleAdapter
 import com.example.androidtbc.viewmodel.PasscodeViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest

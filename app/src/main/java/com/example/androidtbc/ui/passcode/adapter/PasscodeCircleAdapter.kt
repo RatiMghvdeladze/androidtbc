@@ -1,4 +1,4 @@
-package com.example.androidtbc.ui.passcode
+package com.example.androidtbc.ui.passcode.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtbc.databinding.ItemPasscodeCircleBinding
 
-class PasscodeCircleAdapter : ListAdapter<Boolean, PasscodeCircleAdapter.CircleViewHolder>(CircleDiffCallback()){
+class PasscodeCircleAdapter : ListAdapter<Boolean, PasscodeCircleAdapter.CircleViewHolder>(
+    CircleDiffCallback()
+){
 
     inner class CircleViewHolder(private val binding: ItemPasscodeCircleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
