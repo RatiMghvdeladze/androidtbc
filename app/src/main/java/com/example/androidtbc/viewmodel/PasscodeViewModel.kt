@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.viewmodel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

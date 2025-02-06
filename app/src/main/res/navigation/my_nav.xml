@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/passcodeFragment"
-        android:name="com.example.androidtbc.PasscodeFragment"
+        android:name="com.example.androidtbc.ui.passcode.PasscodeFragment"
         android:label="fragment_passcode"
         tools:layout="@layout/fragment_passcode" />
 </navigation>

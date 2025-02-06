@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.ui.passcode
 
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -6,7 +6,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.androidtbc.R
+import com.example.androidtbc.base.BaseFragment
 import com.example.androidtbc.databinding.FragmentPasscodeBinding
+import com.example.androidtbc.viewmodel.PasscodeViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
