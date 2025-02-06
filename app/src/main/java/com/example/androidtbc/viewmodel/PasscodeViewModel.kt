@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class PasscodeViewModel : ViewModel() {
     companion object {
+        const val LENGTH_PASSCODE = 4
         private const val CORRECT_PASSCODE = "0934"
     }
 
@@ -17,10 +18,10 @@ class PasscodeViewModel : ViewModel() {
 
 
     fun insertDigit(digit: String) {
-        if (_enteredPasscode.value.length < 4) {
+        if (_enteredPasscode.value.length < LENGTH_PASSCODE) {
             _enteredPasscode.value += digit
         }
-        if (_enteredPasscode.value.length == 4) {
+        if (_enteredPasscode.value.length == LENGTH_PASSCODE) {
             checkPasscode()
         }
 
@@ -59,6 +60,7 @@ class PasscodeViewModel : ViewModel() {
         _isSuccess.value = true
         _enteredPasscode.value = ""
     }
+
 
 
 }

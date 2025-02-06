@@ -39,43 +39,16 @@
             app:layout_constraintStart_toStartOf="@id/tvSecurityScreen"
             app:layout_constraintTop_toBottomOf="@id/tvSecurityScreen" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivCircle1"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPasscodeCircles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
-            android:background="@drawable/iv_circle"
-            app:layout_constraintEnd_toStartOf="@id/ivCircle2"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@id/tvEnterYourPasscode"
             app:layout_constraintStart_toStartOf="@id/tvEnterYourPasscode"
             app:layout_constraintTop_toBottomOf="@id/tvEnterYourPasscode" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivCircle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/iv_circle"
-            app:layout_constraintEnd_toStartOf="@id/ivCircle3"
-            app:layout_constraintStart_toEndOf="@id/ivCircle1"
-            app:layout_constraintTop_toTopOf="@id/ivCircle1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivCircle3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/iv_circle"
-            app:layout_constraintEnd_toStartOf="@id/ivCircle4"
-            app:layout_constraintStart_toEndOf="@id/ivCircle2"
-            app:layout_constraintTop_toTopOf="@id/ivCircle1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivCircle4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/iv_circle"
-            app:layout_constraintEnd_toEndOf="@id/tvEnterYourPasscode"
-            app:layout_constraintStart_toEndOf="@id/ivCircle3"
-            app:layout_constraintTop_toTopOf="@id/ivCircle1" />
 
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/gridNumbers"
@@ -86,7 +59,7 @@
             app:columnCount="3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivCircle1"
+            app:layout_constraintTop_toBottomOf="@id/rvPasscodeCircles"
             app:rowCount="4">
 
 

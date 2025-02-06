@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeBinding::inflate) {
     private val viewModel: PasscodeViewModel by viewModels()
+    private lateinit var circleAdapter : PasscodeCircleAdapter
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
@@ -23,6 +24,20 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
         setUpListeners()
         observers()
         setUpBiometricAuth()
+        setUpRv()
+    }
+
+    private fun setUpRv() {
+        circleAdapter = PasscodeCircleAdapter()
+        with(binding) {
+            rvPasscodeCircles.adapter = circleAdapter
+            rvPasscodeCircles.itemAnimator = null
+            circleAdapter.submitList(List(LENGTH_PASSCODE) { false })
+        }
+    }
+
+    private fun updateCircles(count: Int) {
+        circleAdapter.submitList(List(LENGTH_PASSCODE) { index -> index < count})
     }
 
     private fun observers() {
@@ -38,16 +53,12 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSuccess.collectLatest { isSuccess ->
                     when (isSuccess) {
-                        true -> Snackbar.make(
-                            binding.root,
-                            getString(R.string.success), Snackbar.LENGTH_SHORT
-                        ).show()
+                        true -> showMessage(
+                            getString(R.string.success))
 
-                        false -> Snackbar.make(
-                            binding.root,
-                            getString(R.string.incorrect_passcode), Snackbar.LENGTH_SHORT
+                        false -> showMessage(
+                            getString(R.string.incorrect_passcode)
                         )
-                            .show()
 
                         else -> {}
 
@@ -58,15 +69,6 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
         }
     }
 
-    private fun updateCircles(count: Int) {
-        with(binding) {
-            val circlesList = listOf(ivCircle1, ivCircle2, ivCircle3, ivCircle4)
-            circlesList.forEachIndexed { index, circle ->
-                circle.isSelected = count > index
-            }
-        }
-
-    }
 
     private fun setUpListeners() {
         with(binding) {
@@ -84,6 +86,8 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
         }
     }
 
+
+
     private fun setUpBiometricAuth() {
         val executor = ContextCompat.getMainExecutor(requireContext())
 
@@ -93,30 +97,22 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.fingerprint_recognized), Snackbar.LENGTH_SHORT
+                    showMessage(
+                        getString(R.string.fingerprint_recognized)
                     )
-                        .show()
                     viewModel.authenticateWithFingerprint()
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Snackbar.make(
-                        binding.root,
+                    showMessage(
                         getString(R.string.authentication_error, errString),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    )
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.fingerprint_not_recognized), Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    showMessage(getString(R.string.fingerprint_not_recognized))
                 }
             })
 
@@ -130,6 +126,12 @@ class PasscodeFragment : BaseFragment<FragmentPasscodeBinding>(FragmentPasscodeB
             biometricPrompt.authenticate(promptInfo)
         }
     }
+    private fun showMessage(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+        Snackbar.make(binding.root, message, duration).show()
+    }
 
+    companion object{
+        private const val LENGTH_PASSCODE = PasscodeViewModel.LENGTH_PASSCODE
+    }
 
 }
