@@ -1,49 +1,40 @@
 package com.example.androidtbc.viewmodel
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class PasscodeViewModel : ViewModel() {
     companion object {
-        const val LENGTH_PASSCODE = 4
         private const val CORRECT_PASSCODE = "0934"
     }
+
+    fun getPasscodeLength() : Int = CORRECT_PASSCODE.length
 
     private val _enteredPasscode = MutableStateFlow("")
     val enteredPasscode = _enteredPasscode.asStateFlow()
 
-    private val _isSuccess = MutableStateFlow<Boolean?>(null)
-    val isSuccess = _isSuccess.asStateFlow()
-
+    private val _uiEvent = Channel<String>(Channel.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun insertDigit(digit: String) {
-        if (_enteredPasscode.value.length < LENGTH_PASSCODE) {
+        if (_enteredPasscode.value.length < getPasscodeLength()) {
             _enteredPasscode.value += digit
         }
-        if (_enteredPasscode.value.length == LENGTH_PASSCODE) {
+        if (_enteredPasscode.value.length == getPasscodeLength()) {
             checkPasscode()
         }
-
     }
 
     private fun checkPasscode() {
         if (_enteredPasscode.value == CORRECT_PASSCODE) {
-            resetAllWhenCorrect()
+            _uiEvent.trySend("Success")
         } else {
-            resetAllWhenIncorrect()
+            _uiEvent.trySend("Incorrect passcode")
+            _enteredPasscode.value = ""
         }
-    }
-
-    private fun resetAllWhenCorrect() {
-        _isSuccess.value = true
-        _enteredPasscode.value = ""
-    }
-
-
-    private fun resetAllWhenIncorrect() {
-        _enteredPasscode.value = ""
-        _isSuccess.value = false
     }
 
     fun deleteLastDigit() {
@@ -52,15 +43,8 @@ class PasscodeViewModel : ViewModel() {
         }
     }
 
-    fun setNull() {
-        _isSuccess.value = null
-    }
-
     fun authenticateWithFingerprint() {
-        _isSuccess.value = true
-        _enteredPasscode.value = ""
+        _uiEvent.trySend("Fingerprint recognized!")
+        _enteredPasscode.value = CORRECT_PASSCODE
     }
-
-
-
 }
