@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:orientation="vertical"
-    tools:context=".fragments.RegisterFragment">
+    tools:context=".presentation.register.RegisterFragment">
 
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -91,18 +91,31 @@
         android:textSize="24sp" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnRegister"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:background="@drawable/bg_btn_register"
-        android:fontFamily="@font/roboto_medium"
-        android:text="@string/register"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:layout_marginTop="50dp"
-        android:textSize="23sp" />
+        android:layout_marginTop="50dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_register"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/register"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="23sp" />
+
+        <ProgressBar
+            android:id="@+id/btnRegisterProgress"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone" />
+    </FrameLayout>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>
