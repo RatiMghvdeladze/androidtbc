@@ -63,7 +63,7 @@ class RegisterViewModel : ViewModel() {
             }
             !validator.validatePassword(password) -> {
                 _authState.value = AuthState.Error(
-                    "Password must contain at least 8 characters, including letters and numbers"
+                    "Password must contain at least 6 characters"
                 )
                 false
             }
@@ -81,7 +81,7 @@ class RegisterViewModel : ViewModel() {
         _authState.value = AuthState.Success(
             token = response.token,
             email = email,
-            message = "Registration successful! Welcome aboard!"
+            message = "Registration successful!"
         )
     }
 

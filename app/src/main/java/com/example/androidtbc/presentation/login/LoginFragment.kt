@@ -100,9 +100,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     state.message?.let { showSnackbar(it) }
 
                     state.email?.let { email ->
-                        findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
-                        )
+                        val currentDestination = findNavController().currentDestination?.id
+                        if (currentDestination != R.id.homeFragment) {
+                            findNavController().navigate(
+                                LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
+                            )
+                        }
                     }
                 }
                 is AuthState.Error -> {
@@ -119,7 +122,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             }
         }
     }
-
 
 
     private fun showSnackbar(message: String) {

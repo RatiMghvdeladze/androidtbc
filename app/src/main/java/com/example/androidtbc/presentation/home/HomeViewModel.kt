@@ -1,22 +1,18 @@
 package com.example.androidtbc.presentation.home
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.example.androidtbc.data.paging.UserPagingSource
+import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.remote.api.RetrofitClient
+import com.example.androidtbc.data.repository.UserRepository
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = UserRepository(
+        RetrofitClient.authService,
+        AppDatabase.getInstance(application)
+    )
 
-    val users = Pager(
-        config = PagingConfig(
-            pageSize = 6,
-            enablePlaceholders = false
-        ),
-        pagingSourceFactory = {
-            UserPagingSource(RetrofitClient.authService)
-        }
-    ).flow.cachedIn(viewModelScope)
+    val users = repository.getUsers().cachedIn(viewModelScope)
 }
