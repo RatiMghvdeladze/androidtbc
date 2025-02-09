@@ -21,9 +21,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     override fun start() {
         initViewModel()
+        checkSession()
         setupListeners()
         observeAuthState()
-        checkSession()
         setupFragmentResultListener()
     }
 
@@ -33,6 +33,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             LoginViewModel(LocalDataStore(requireContext().applicationContext))
         })[LoginViewModel::class.java]
     }
+    private fun checkSession() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            loginViewModel.getEmail().collect { email ->
+                if (!email.isNullOrEmpty()) {
+                    findNavController().navigate(
+                        LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
+                    )
+                }
+            }
+        }
+    }
+
 
     private fun setupFragmentResultListener() {
         setFragmentResultListener("register_request") { _, bundle ->
@@ -109,17 +121,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
 
-    private fun checkSession() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            loginViewModel.getEmail().collect { email ->
-                if (!email.isNullOrEmpty()) {
-                    findNavController().navigate(
-                        LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
-                    )
-                }
-            }
-        }
-    }
 
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()

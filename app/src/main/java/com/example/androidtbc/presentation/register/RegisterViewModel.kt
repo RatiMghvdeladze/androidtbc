@@ -71,7 +71,7 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
-    private suspend fun handleRegistrationSuccess(response: RegisterResponseDTO, email: String) {
+    private fun handleRegistrationSuccess(response: RegisterResponseDTO, email: String) {
         if (response.token.isEmpty()) {
             _authState.value = AuthState.Error(
                 "Registration failed. This email might already be registered."
