@@ -17,4 +17,11 @@ interface UserDao {
 
     @Query("DELETE FROM users_table")
     suspend fun clearAllUsers()
+
+    @Query("SELECT COUNT(*) FROM users_table")
+    suspend fun getUserCount(): Int
+
+    @Query("SELECT MAX(lastUpdated) FROM users_table")
+    suspend fun getLastUpdate(): Long?
 }
+

@@ -1,5 +1,6 @@
 package com.example.androidtbc.data.repository
 
+import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,6 +11,7 @@ import com.example.androidtbc.data.remote.api.AuthService
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository(
+    private val context: Context, // Added context
     private val authService: AuthService,
     private val appDatabase: AppDatabase
 ) {
@@ -18,12 +20,11 @@ class UserRepository(
         return Pager(
             config = PagingConfig(
                 pageSize = 6,
-                enablePlaceholders = false
+                enablePlaceholders = false,
+                prefetchDistance = 2
             ),
-            remoteMediator = UserRemoteMediator(authService, appDatabase),
-            pagingSourceFactory = {
-                appDatabase.userDao().getAllUsers()
-            }
+            remoteMediator = UserRemoteMediator(context, authService, appDatabase), // Pass context
+            pagingSourceFactory = { appDatabase.userDao().getAllUsers() }
         ).flow
     }
 }

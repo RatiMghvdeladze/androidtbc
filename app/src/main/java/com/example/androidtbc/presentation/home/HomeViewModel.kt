@@ -10,6 +10,7 @@ import com.example.androidtbc.data.repository.UserRepository
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = UserRepository(
+        application,
         RetrofitClient.authService,
         AppDatabase.getInstance(application)
     )

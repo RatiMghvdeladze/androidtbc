@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.utils.AuthState
+import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -20,7 +20,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
     override fun start() {
         setupListeners()
-        observeAuthState()
+        observeRegistrationState()
     }
 
     private fun setupListeners() {
@@ -39,49 +39,47 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
     }
 
-    private fun observeAuthState() {
+    private fun observeRegistrationState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                registerViewModel.authState.collect { state ->
-                    handleAuthState(state)
+                registerViewModel.registrationState.collect { state ->
+                    handleRegistrationState(state)
                 }
             }
         }
     }
 
-    private fun handleAuthState(state: AuthState) {
+    private fun handleRegistrationState(state: Resource<String>) {
         with(binding) {
             when (state) {
-                is AuthState.Loading -> {
+                is Resource.Idle -> {
+                    btnRegister.isEnabled = true
+                    btnRegister.text = getString(R.string.register)
+                    btnRegisterProgress.visibility = View.GONE
+                }
+                is Resource.Loading -> {
                     btnRegister.isEnabled = false
                     btnRegister.text = ""
                     btnRegisterProgress.visibility = View.VISIBLE
                 }
-                is AuthState.Success -> {
+                is Resource.Success -> {
                     btnRegister.isEnabled = true
                     btnRegister.text = getString(R.string.register)
                     btnRegisterProgress.visibility = View.GONE
 
-                    state.message?.let { showSnackbar(it) }
+                    showSnackbar("Registration successful!")
 
-                    state.email?.let { email ->
-                        setFragmentResult("register_request", Bundle().apply {
-                            putString("email", email)
-                            putString("password", binding.etPassword.text.toString())
-                        })
-                        findNavController().popBackStack()
-                    }
+                    setFragmentResult("register_request", Bundle().apply {
+                        putString("email", state.data)
+                        putString("password", binding.etPassword.text.toString())
+                    })
+                    findNavController().popBackStack()
                 }
-                is AuthState.Error -> {
+                is Resource.Error -> {
                     btnRegister.isEnabled = true
                     btnRegister.text = getString(R.string.register)
                     btnRegisterProgress.visibility = View.GONE
-                    showSnackbar(state.message)
-                }
-                AuthState.Idle -> {
-                    btnRegister.isEnabled = true
-                    btnRegister.text = getString(R.string.register)
-                    btnRegisterProgress.visibility = View.GONE
+                    showSnackbar(state.errorMessage)
                 }
             }
         }

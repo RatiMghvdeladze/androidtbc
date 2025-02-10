@@ -11,7 +11,7 @@ import com.example.androidtbc.R
 import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.utils.AuthState
+import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -23,16 +23,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         initViewModel()
         checkSession()
         setupListeners()
-        observeAuthState()
+        observeLoginState()
         setupFragmentResultListener()
     }
-
 
     private fun initViewModel() {
         loginViewModel = ViewModelProvider(this, ViewModelFactory {
             LoginViewModel(LocalDataStore(requireContext().applicationContext))
         })[LoginViewModel::class.java]
     }
+
     private fun checkSession() {
         viewLifecycleOwner.lifecycleScope.launch {
             loginViewModel.getEmail().collect { email ->
@@ -45,13 +45,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-
     private fun setupFragmentResultListener() {
         setFragmentResultListener("register_request") { _, bundle ->
             val email = bundle.getString("email")
             val password = bundle.getString("password")
 
-            binding.apply {
+            with(binding) {
                 etEmail.setText(email)
                 etPassword.setText(password)
             }
@@ -74,55 +73,52 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun observeAuthState() {
+    private fun observeLoginState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loginViewModel.authState.collect { state ->
-                    handleAuthState(state)
+                loginViewModel.loginState.collect { state ->
+                    handleLoginState(state)
                 }
             }
         }
     }
 
-    private fun handleAuthState(state: AuthState) {
+    private fun handleLoginState(state: Resource<String>) {
         with(binding) {
             when (state) {
-                is AuthState.Loading -> {
+                is Resource.Idle -> {
+                    btnLogin.isEnabled = true
+                    btnLogin.text = getString(R.string.login)
+                    btnLoginProgress.visibility = View.GONE
+                }
+                is Resource.Loading -> {
                     btnLogin.isEnabled = false
                     btnLogin.text = ""
                     btnLoginProgress.visibility = View.VISIBLE
                 }
-                is AuthState.Success -> {
+                is Resource.Success -> {
                     btnLogin.isEnabled = true
                     btnLogin.text = getString(R.string.login)
                     btnLoginProgress.visibility = View.GONE
 
-                    state.message?.let { showSnackbar(it) }
+                    showSnackbar("Successfully Logged In!")
 
-                    state.email?.let { email ->
-                        val currentDestination = findNavController().currentDestination?.id
-                        if (currentDestination != R.id.homeFragment) {
-                            findNavController().navigate(
-                                LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
-                            )
-                        }
+                    val currentDestination = findNavController().currentDestination?.id
+                    if (currentDestination != R.id.homeFragment) {
+                        findNavController().navigate(
+                            LoginFragmentDirections.actionLoginFragmentToHomeFragment(state.data)
+                        )
                     }
                 }
-                is AuthState.Error -> {
+                is Resource.Error -> {
                     btnLogin.isEnabled = true
                     btnLogin.text = getString(R.string.login)
                     btnLoginProgress.visibility = View.GONE
-                    showSnackbar(state.message)
-                }
-                AuthState.Idle -> {
-                    btnLogin.isEnabled = true
-                    btnLogin.text = getString(R.string.login)
-                    btnLoginProgress.visibility = View.GONE
+                    showSnackbar(state.errorMessage)
                 }
             }
         }
     }
-
 
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
