@@ -10,6 +10,7 @@ import com.example.androidtbc.data.local.entity.UserEntity
 import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.handleHttpRequest
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class UserRemoteMediator(
@@ -18,6 +19,24 @@ class UserRemoteMediator(
 ) : RemoteMediator<Int, UserEntity>() {
 
     private var currentPage = 1
+
+    companion object {
+        private const val REFRESH_INTERVAL_MINUTES = 1L
+    }
+
+    override suspend fun initialize(): InitializeAction {
+        val lastUpdate = appDatabase.userDao().getLastUpdate() ?: 0L
+        return if (shouldRefresh(lastUpdate)) {
+            InitializeAction.LAUNCH_INITIAL_REFRESH
+        } else {
+            InitializeAction.SKIP_INITIAL_REFRESH
+        }
+    }
+
+    private fun shouldRefresh(lastUpdate: Long): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return (currentTime - lastUpdate) >= TimeUnit.MINUTES.toMillis(REFRESH_INTERVAL_MINUTES)
+    }
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, UserEntity>): MediatorResult {
         try {
@@ -52,15 +71,11 @@ class UserRemoteMediator(
                     appDatabase.userDao().insertAll(users)
                 }
 
-                //if the request was successful update currentPage
                 if (loadType == LoadType.APPEND) {
                     currentPage = page
                 }
 
-                //if we received less items than requested, end pagination
-                val endOfPaginationReached = users.size < state.config.pageSize
-
-                return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                return MediatorResult.Success(endOfPaginationReached = users.size < state.config.pageSize)
             }
 
             return MediatorResult.Error(Exception("Network request failed"))
