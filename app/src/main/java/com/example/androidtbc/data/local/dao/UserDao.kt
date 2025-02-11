@@ -12,7 +12,7 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<UserEntity>)
 
-    @Query("SELECT * FROM users_table")
+    @Query("SELECT * FROM users_table ORDER BY id ASC")
     fun getAllUsers(): PagingSource<Int, UserEntity>
 
     @Query("DELETE FROM users_table")
@@ -23,5 +23,7 @@ interface UserDao {
 
     @Query("SELECT MAX(lastUpdated) FROM users_table")
     suspend fun getLastUpdate(): Long?
-}
 
+    @Query("SELECT MAX(id) FROM users_table")
+    suspend fun getLastUserId(): Int?
+}

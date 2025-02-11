@@ -5,15 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.androidtbc.data.local.dao.UserDao
-import com.example.androidtbc.data.local.dao.UserRemoteKeysDao
 import com.example.androidtbc.data.local.entity.UserEntity
-import com.example.androidtbc.data.local.entity.UserRemoteKeys
 
-@Database(entities = [UserEntity::class, UserRemoteKeys::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun userRemoteKeysDao(): UserRemoteKeysDao
-
 
     companion object {
         @Volatile
@@ -25,7 +21,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }
