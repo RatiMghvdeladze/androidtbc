@@ -11,7 +11,6 @@ import com.example.androidtbc.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val args: ProfileFragmentArgs by navArgs()
@@ -19,29 +18,30 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     override fun start() {
         displayEmail()
-        btnLogOut()
+        setupLogoutButton()
+        observeEmail()
     }
 
-    private fun btnLogOut(){
+    private fun setupLogoutButton() {
         binding.btnLogOut.setOnClickListener {
             profileViewModel.clearUserData()
-            observer()
         }
-
     }
 
-    private fun observer(){
+    private fun observeEmail() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                profileViewModel.getEmail().collect{
-                    if(it == null){
-                        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLoginFragment())
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                profileViewModel.getEmail().collect { email ->
+                    if (email.isEmpty()) {
+                        findNavController().navigate(
+                            ProfileFragmentDirections.actionProfileFragmentToLoginFragment()
+                        )
                     }
                 }
             }
         }
-
     }
+
     private fun displayEmail() {
         val email = args.email
         binding.tvYourEmail.text = email

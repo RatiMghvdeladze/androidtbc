@@ -23,6 +23,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+
     @Provides
     @Singleton
     fun provideJson() : Json = Json {
@@ -41,6 +43,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
+
+
+
 
 
 
@@ -67,11 +72,19 @@ object AppModule {
     }
 
 
+
+
+
     @Provides
     @Singleton
     fun provideLocalDataStore(@ApplicationContext context: Context): LocalDataStore {
         return LocalDataStore(context)
     }
+
+
+
+
+
 
     @Provides
     @Singleton
