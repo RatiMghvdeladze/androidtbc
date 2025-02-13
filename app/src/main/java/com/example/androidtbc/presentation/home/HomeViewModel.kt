@@ -10,7 +10,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: UserRepository
-) : ViewModel(){
+) : ViewModel() {
 
-    val users = repository.getUsers().cachedIn(viewModelScope)
+    private val _users = repository.getUsers().cachedIn(viewModelScope)
+    val users get() = _users
 }
