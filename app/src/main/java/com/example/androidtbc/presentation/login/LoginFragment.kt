@@ -2,36 +2,30 @@ package com.example.androidtbc.presentation.login
 
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
-import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.utils.Resource
-import com.example.androidtbc.utils.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun start() {
-        initViewModel()
         checkSession()
         setupListeners()
         observeLoginState()
         setupFragmentResultListener()
     }
 
-    private fun initViewModel() {
-        loginViewModel = ViewModelProvider(this, ViewModelFactory {
-            LoginViewModel(LocalDataStore(requireContext().applicationContext))
-        })[LoginViewModel::class.java]
-    }
 
     private fun checkSession() {
         viewLifecycleOwner.lifecycleScope.launch {

@@ -13,8 +13,10 @@ import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
     private val registerViewModel: RegisterViewModel by viewModels()
 

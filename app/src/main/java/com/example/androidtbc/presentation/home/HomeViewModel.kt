@@ -1,18 +1,16 @@
 package com.example.androidtbc.presentation.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.androidtbc.data.local.AppDatabase
-import com.example.androidtbc.data.remote.api.RetrofitClient
 import com.example.androidtbc.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = UserRepository(
-        RetrofitClient.authService,
-        AppDatabase.getInstance(application)
-    )
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel(){
 
     val users = repository.getUsers().cachedIn(viewModelScope)
 }

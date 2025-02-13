@@ -1,29 +1,33 @@
 package com.example.androidtbc.presentation.profile
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.androidtbc.data.local.LocalDataStore
-import com.example.androidtbc.utils.ViewModelFactory
 import com.example.androidtbc.databinding.FragmentProfileBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val args: ProfileFragmentArgs by navArgs()
-    private lateinit var profileViewModel: ProfileViewModel
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun start() {
-        initViewModel()
         displayEmail()
+        btnLogOut()
+    }
 
+    private fun btnLogOut(){
         binding.btnLogOut.setOnClickListener {
             profileViewModel.clearUserData()
             observer()
         }
+
     }
 
     private fun observer(){
@@ -38,13 +42,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
 
     }
-
-    private fun initViewModel() {
-        profileViewModel = ViewModelProvider(this, ViewModelFactory {
-            ProfileViewModel(LocalDataStore(requireContext().applicationContext))
-        })[ProfileViewModel::class.java]
-    }
-
     private fun displayEmail() {
         val email = args.email
         binding.tvYourEmail.text = email

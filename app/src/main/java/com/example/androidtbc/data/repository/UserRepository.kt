@@ -8,8 +8,9 @@ import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.local.entity.UserEntity
 import com.example.androidtbc.data.remote.api.AuthService
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class UserRepository(
+class UserRepository @Inject constructor(
     private val authService: AuthService,
     private val appDatabase: AppDatabase
 ) {

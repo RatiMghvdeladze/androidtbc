@@ -11,9 +11,10 @@ import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.handleHttpRequest
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class UserRemoteMediator(
+class UserRemoteMediator @Inject constructor(
     private val authService: AuthService,
     private val appDatabase: AppDatabase
 ) : RemoteMediator<Int, UserEntity>() {

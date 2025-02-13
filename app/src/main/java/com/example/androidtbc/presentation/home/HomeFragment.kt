@@ -9,16 +9,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.androidtbc.databinding.FragmentHomeBinding
-import com.example.androidtbc.data.repository.UsersAdapter
 import com.example.androidtbc.data.paging.UsersLoadStateAdapter
+import com.example.androidtbc.data.repository.UsersAdapter
+import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private val homeViewModel: HomeViewModel by viewModels()
-    private val usersAdapter = UsersAdapter()
+    @Inject
+    lateinit var usersAdapter: UsersAdapter
     private val args: HomeFragmentArgs by navArgs()
 
     override fun start() {

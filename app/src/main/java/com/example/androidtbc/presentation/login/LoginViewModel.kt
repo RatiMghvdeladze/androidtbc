@@ -3,12 +3,13 @@ package com.example.androidtbc.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.data.local.LocalDataStore
-import com.example.androidtbc.data.remote.api.RetrofitClient
+import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.data.remote.dto.LoginResponseDTO
 import com.example.androidtbc.domain.model.LoginRawData
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.Validator
 import com.example.androidtbc.utils.handleHttpRequest
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,12 +18,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-
-class LoginViewModel(private val dataStore: LocalDataStore) : ViewModel() {
+import javax.inject.Inject
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val dataStore: LocalDataStore,
+    private val authService: AuthService,
+    private val validator: Validator
+) : ViewModel() {
     private val _loginState = MutableStateFlow<Resource<String>>(Resource.Idle)
     val loginState: StateFlow<Resource<String>> = _loginState.asStateFlow()
 
-    private val validator = Validator()
 
     fun login(email: String, password: String, rememberMe: Boolean) {
         if (!validateInputs(email, password)) return
@@ -39,7 +44,7 @@ class LoginViewModel(private val dataStore: LocalDataStore) : ViewModel() {
         emit(Resource.Loading)
 
         val response = handleHttpRequest {
-            RetrofitClient.authService.loginUser(LoginRawData(email, password))
+            authService.loginUser(LoginRawData(email, password))
         }
 
         when (response) {

@@ -2,12 +2,13 @@ package com.example.androidtbc.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidtbc.data.remote.api.RetrofitClient
+import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.data.remote.dto.RegisterResponseDTO
 import com.example.androidtbc.domain.model.RegisterRawData
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.Validator
 import com.example.androidtbc.utils.handleHttpRequest
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +17,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val authService: AuthService,
+    private val validator: Validator
+) : ViewModel() {
     private val _registrationState = MutableStateFlow<Resource<String>>(Resource.Idle)
     val registrationState: StateFlow<Resource<String>> = _registrationState.asStateFlow()
 
-    private val validator = Validator()
 
     fun register(email: String, password: String, repeatPassword: String) {
         if (!validateInputs(email, password, repeatPassword)) return
@@ -38,7 +43,7 @@ class RegisterViewModel : ViewModel() {
         emit(Resource.Loading)
 
         val response = handleHttpRequest {
-            RetrofitClient.authService.registerUser(RegisterRawData(email, password))
+            authService.registerUser(RegisterRawData(email, password))
         }
 
         when (response) {
