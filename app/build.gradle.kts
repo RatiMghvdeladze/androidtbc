@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.protobuf") version "0.9.4"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -45,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)
     implementation (libs.androidx.room.ktx)
@@ -96,4 +100,8 @@ buildscript {
     repositories {
         google()
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
