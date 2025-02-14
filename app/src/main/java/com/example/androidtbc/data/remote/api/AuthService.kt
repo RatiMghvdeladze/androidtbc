@@ -1,6 +1,6 @@
 package com.example.androidtbc.data.remote.api
 
-import com.example.androidtbc.ItemDTO
+import com.example.androidtbc.data.remote.dto.ItemDTO
 import retrofit2.Response
 import retrofit2.http.GET
 

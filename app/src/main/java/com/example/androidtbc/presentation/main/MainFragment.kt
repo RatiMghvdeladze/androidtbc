@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
-import com.example.androidtbc.ItemDTO
+import com.example.androidtbc.data.remote.dto.ItemDTO
 import com.example.androidtbc.TravelAdapter
 import com.example.androidtbc.databinding.FragmentMainBinding
 import com.example.androidtbc.presentation.base.BaseFragment
