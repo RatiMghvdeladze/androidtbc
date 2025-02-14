@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginStart="14dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
             android:padding="12dp"
             app:layout_constraintStart_toStartOf="parent"
