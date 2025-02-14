@@ -14,7 +14,6 @@ class TravelAdapter @Inject constructor(
 ) : ListAdapter<ItemDTO, TravelAdapter.TravelViewHolder>(TravelDiffCallback()) {
 
 
-
     class TravelViewHolder(
         private val binding: ItemTravelBinding,
         private val glide: RequestManager
@@ -28,7 +27,17 @@ class TravelAdapter @Inject constructor(
                 tvLocation.text = item.location
                 tvPrice.text = item.price
                 tvReactionCount.text = item.reactionCount.toString()
-                item.rate?.let { ratingBar.rating = it.toFloat() }
+
+                val stars = listOf(star1, star2, star3, star4, star5)
+                item.rate?.let { rating ->
+                    stars.forEachIndexed { index, starView ->
+                        val isFilled = index < rating
+                        starView.setImageResource(
+                            if (isFilled) R.drawable.ic_star
+                            else R.drawable.ic_star_outline
+                        )
+                    }
+                }
             }
         }
     }
@@ -41,7 +50,11 @@ class TravelAdapter @Inject constructor(
     }
 
     private class TravelDiffCallback : DiffUtil.ItemCallback<ItemDTO>() {
-        override fun areItemsTheSame(oldItem: ItemDTO, newItem: ItemDTO) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: ItemDTO, newItem: ItemDTO) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: ItemDTO, newItem: ItemDTO) : Boolean {
+            return oldItem.id == newItem.id
+        }
+        override fun areContentsTheSame(oldItem: ItemDTO, newItem: ItemDTO) : Boolean {
+            return oldItem == newItem
+        }
     }
 }
