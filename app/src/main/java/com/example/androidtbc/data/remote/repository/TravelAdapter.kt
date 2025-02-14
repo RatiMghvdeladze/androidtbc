@@ -1,29 +1,29 @@
-package com.example.androidtbc
+package com.example.androidtbc.data.remote.repository
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.Glide
+import com.example.androidtbc.R
 import com.example.androidtbc.data.remote.dto.ItemDTO
 import com.example.androidtbc.databinding.ItemTravelBinding
 import javax.inject.Inject
 
-class TravelAdapter @Inject constructor(
-    private val glide: RequestManager
-) : ListAdapter<ItemDTO, TravelAdapter.TravelViewHolder>(TravelDiffCallback()) {
-
+class TravelAdapter @Inject constructor(): ListAdapter<ItemDTO, TravelAdapter.TravelViewHolder>(TravelDiffCallback()) {
 
     class TravelViewHolder(
-        private val binding: ItemTravelBinding,
-        private val glide: RequestManager
+        private val binding: ItemTravelBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: ItemDTO) {
             with(binding) {
-                glide.load(item.cover)
+                Glide.with(itemView.context)
+                    .load(item.cover)
                     .centerCrop()
                     .into(ivImage)
+
                 tvTitle.text = item.title
                 tvLocation.text = item.location
                 tvPrice.text = item.price
@@ -42,8 +42,9 @@ class TravelAdapter @Inject constructor(
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TravelViewHolder(
-        ItemTravelBinding.inflate(LayoutInflater.from(parent.context), parent, false), glide
+        ItemTravelBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: TravelViewHolder, position: Int) {
@@ -51,10 +52,11 @@ class TravelAdapter @Inject constructor(
     }
 
     private class TravelDiffCallback : DiffUtil.ItemCallback<ItemDTO>() {
-        override fun areItemsTheSame(oldItem: ItemDTO, newItem: ItemDTO) : Boolean {
+        override fun areItemsTheSame(oldItem: ItemDTO, newItem: ItemDTO): Boolean {
             return oldItem.id == newItem.id
         }
-        override fun areContentsTheSame(oldItem: ItemDTO, newItem: ItemDTO) : Boolean {
+
+        override fun areContentsTheSame(oldItem: ItemDTO, newItem: ItemDTO): Boolean {
             return oldItem == newItem
         }
     }

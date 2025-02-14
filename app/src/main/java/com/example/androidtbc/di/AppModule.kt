@@ -1,14 +1,10 @@
 package com.example.androidtbc.di
 
-import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.example.androidtbc.data.remote.api.AuthService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -38,12 +34,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
-
-
-
-    @Provides
-    @Singleton
-    fun provideGlide(@ApplicationContext context: Context): RequestManager = Glide.with(context)
 
 
 }
