@@ -2,7 +2,7 @@ package com.example.androidtbc.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidtbc.AuthService
+import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.ItemDTO
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.handleHttpRequest

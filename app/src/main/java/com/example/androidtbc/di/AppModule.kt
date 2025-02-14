@@ -3,7 +3,7 @@ package com.example.androidtbc.di
 import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.example.androidtbc.AuthService
+import com.example.androidtbc.data.remote.api.AuthService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
