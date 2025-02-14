@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     val room_version = "2.6.1"
