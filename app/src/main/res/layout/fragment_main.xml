@@ -10,14 +10,14 @@
         android:id="@+id/tvStatistics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Statistics"
+        android:text="@string/statistics"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginStart="51dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="78dp"
+        android:layout_marginTop="34dp"
         android:layout_marginBottom="20dp"/>
 
 
