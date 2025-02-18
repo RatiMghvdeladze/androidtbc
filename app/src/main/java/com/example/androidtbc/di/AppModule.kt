@@ -1,9 +1,12 @@
 package com.example.androidtbc.di
 
 import android.content.Context
+import com.example.androidtbc.BuildConfig
 import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.data.remote.api.AuthService
+import com.example.androidtbc.data.repository.AuthRepository
+import com.example.androidtbc.data.repository.AuthRepositoryImpl
 import com.example.androidtbc.data.repository.UserRepository
 import com.example.androidtbc.data.repository.UsersAdapter
 import com.example.androidtbc.utils.Validator
@@ -15,6 +18,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -22,6 +27,23 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideHttpLoggingInterceptor() : HttpLoggingInterceptor {
+        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return httpLoggingInterceptor
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(logging : HttpLoggingInterceptor) : OkHttpClient{
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+    }
 
 
 
@@ -35,9 +57,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(json: Json) : Retrofit {
-        return Retrofit.Builder().baseUrl("https://reqres.in/api/")
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType())).build()
+    fun provideRetrofit(json: Json, okHttpClient: OkHttpClient) : Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
     }
 
     @Provides
@@ -93,6 +118,18 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserAdapter() : UsersAdapter = UsersAdapter()
+
+
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        authService: AuthService,
+        dataStore: LocalDataStore,
+        validator: Validator
+    ): AuthRepository {
+        return AuthRepositoryImpl(authService, dataStore, validator)
+    }
 
 }
 

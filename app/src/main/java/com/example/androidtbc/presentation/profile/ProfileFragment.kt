@@ -32,7 +32,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 profileViewModel.getEmail().collect { email ->
-                    if (email.isEmpty()) {
+                    if (email.isNullOrEmpty()) {
                         findNavController().navigate(
                             ProfileFragmentDirections.actionProfileFragmentToLoginFragment()
                         )

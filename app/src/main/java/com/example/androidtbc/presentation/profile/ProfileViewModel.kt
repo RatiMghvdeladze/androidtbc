@@ -2,19 +2,21 @@ package com.example.androidtbc.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidtbc.data.local.LocalDataStore
+import com.example.androidtbc.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val dataStore: LocalDataStore): ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     fun clearUserData() {
         viewModelScope.launch {
-            dataStore.clearUserData()
+            authRepository.clearUserSession()
         }
     }
 
-    fun getEmail() = dataStore.getEmail()
+    fun getEmail() = authRepository.getUserSession()
 }
