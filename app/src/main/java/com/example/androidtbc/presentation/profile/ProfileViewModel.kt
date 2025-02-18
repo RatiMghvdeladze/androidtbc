@@ -18,12 +18,6 @@ class ProfileViewModel @Inject constructor(
     private val _isLoggingOut = MutableStateFlow(false)
     val isLoggingOut: StateFlow<Boolean> = _isLoggingOut.asStateFlow()
 
-    fun logout() {
-        viewModelScope.launch {
-            authRepository.clearToken()
-            _isLoggingOut.value = true
-        }
-    }
 
     fun logoutCompletely() {
         viewModelScope.launch {
@@ -31,8 +25,6 @@ class ProfileViewModel @Inject constructor(
             _isLoggingOut.value = true
         }
     }
-
-    fun getEmail() = authRepository.getUserEmail()
 
     fun isSessionActive() = authRepository.isSessionActive()
 }

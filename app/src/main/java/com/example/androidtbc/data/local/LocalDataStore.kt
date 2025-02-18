@@ -46,11 +46,11 @@ class LocalDataStore @Inject constructor(@ApplicationContext private val context
         }
     }
 
-    fun getRememberMeState(): Flow<Boolean> {
-        return context.dataStore.data.map { preferences ->
-            preferences[REMEMBER_ME] ?: false
-        }
-    }
+//    fun getRememberMeState(): Flow<Boolean> {
+//        return context.dataStore.data.map { preferences ->
+//            preferences[REMEMBER_ME] ?: false
+//        }
+//    }
 
     suspend fun clearUserToken() {
         context.dataStore.edit {
@@ -58,12 +58,12 @@ class LocalDataStore @Inject constructor(@ApplicationContext private val context
         }
     }
 
-    suspend fun clearRememberedSession() {
-        context.dataStore.edit {
-            it.remove(EMAIL)
-            it.remove(REMEMBER_ME)
-        }
-    }
+//    suspend fun clearRememberedSession() {
+//        context.dataStore.edit {
+//            it.remove(EMAIL)
+//            it.remove(REMEMBER_ME)
+//        }
+//    }
 
     suspend fun clearAllUserData() {
         context.dataStore.edit {

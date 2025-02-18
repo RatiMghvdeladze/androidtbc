@@ -21,18 +21,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     override fun start() {
         displayEmail()
-        setupLogoutButton()
-        observeLogoutState()
+        setUpBtnLogOut()
+        observerLogout()
         checkSessionStatus()
     }
 
-    private fun setupLogoutButton() {
+    private fun setUpBtnLogOut() {
         binding.btnLogOut.setOnClickListener {
             profileViewModel.logoutCompletely()
         }
     }
 
-    private fun observeLogoutState() {
+    private fun observerLogout() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 profileViewModel.isLoggingOut.collect {
@@ -48,8 +48,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     private fun checkSessionStatus() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                profileViewModel.isSessionActive().collect { isActive ->
-                    if (!isActive && !isNavigating) {
+                profileViewModel.isSessionActive().collect { existToken ->
+                    if (!existToken && !isNavigating) {
                         isNavigating = true
                         navigateToLogin()
                     }
