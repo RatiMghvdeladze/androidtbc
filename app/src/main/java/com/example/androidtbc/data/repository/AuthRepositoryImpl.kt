@@ -11,14 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface AuthRepository {
     suspend fun login(email: String, password: String, rememberMe: Boolean): Flow<Resource<String>>
     suspend fun register(email: String, password: String): Flow<Resource<String>>
-    suspend fun saveUserSession(email: String)
-    suspend fun clearUserSession()
-    fun getUserSession(): Flow<String?>
+    suspend fun saveUserSession(email: String, token: String, rememberMe: Boolean)
+    suspend fun clearToken()
+    suspend fun logoutCompletely()
+    fun getUserEmail(): Flow<String?>
+    fun isSessionActive(): Flow<Boolean>
 }
 
 class AuthRepositoryImpl @Inject constructor(
@@ -28,7 +31,6 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(email: String, password: String, rememberMe: Boolean): Flow<Resource<String>> = flow {
-        // Input validation
         when {
             !validator.validateEmail(email) -> {
                 emit(Resource.Error("Please enter a valid email address"))
@@ -51,9 +53,7 @@ class AuthRepositoryImpl @Inject constructor(
                 if (response.data.token.isEmpty()) {
                     emit(Resource.Error("Invalid credentials"))
                 } else {
-                    if (rememberMe) {
-                        saveUserSession(email)
-                    }
+                    saveUserSession(email, response.data.token, rememberMe)
                     emit(Resource.Success(email))
                 }
             }
@@ -68,7 +68,6 @@ class AuthRepositoryImpl @Inject constructor(
 
 
     override suspend fun register(email: String, password: String): Flow<Resource<String>> = flow {
-        // Input validation
         when {
             !validator.validateEmail(email) -> {
                 emit(Resource.Error("Please enter a valid email address"))
@@ -91,6 +90,7 @@ class AuthRepositoryImpl @Inject constructor(
                 if (response.data.token.isEmpty()) {
                     emit(Resource.Error("Registration failed. This email might already be registered."))
                 } else {
+                    dataStore.saveToken(response.data.token)
                     emit(Resource.Success(email))
                 }
             }
@@ -103,13 +103,26 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun saveUserSession(email: String) {
-        dataStore.saveEmail(email)
+    override suspend fun saveUserSession(email: String, token: String, rememberMe: Boolean) {
+        dataStore.saveToken(token)
+        dataStore.saveRememberMeState(rememberMe)
+
+        if (rememberMe) {
+            dataStore.saveEmail(email)
+        }
     }
 
-    override suspend fun clearUserSession() {
-        dataStore.clearUserData()
+    override suspend fun clearToken() {
+        dataStore.clearUserToken()
     }
 
-    override fun getUserSession(): Flow<String?> = dataStore.getEmail()
+    override suspend fun logoutCompletely() {
+        dataStore.clearAllUserData()
+    }
+
+    override fun getUserEmail(): Flow<String?> = dataStore.getEmail()
+
+    override fun isSessionActive(): Flow<Boolean> = dataStore.getToken().map { token ->
+        token.isNotEmpty()
+    }
 }

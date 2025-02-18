@@ -32,5 +32,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun getEmail() = authRepository.getUserSession()
+    fun getEmail() = authRepository.getUserEmail()
+
+    fun isSessionActive() = authRepository.isSessionActive()
 }
