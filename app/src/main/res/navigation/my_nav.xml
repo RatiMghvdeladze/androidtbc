@@ -18,5 +18,19 @@
         android:id="@+id/registerFragment"
         android:name="com.example.androidtbc.presentation.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_secondRegisterFragment"
+            app:destination="@id/secondRegisterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.androidtbc.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/secondRegisterFragment"
+        android:name="com.example.androidtbc.presentation.secondregister.SecondRegisterFragment"
+        android:label="fragment_second_register"
+        tools:layout="@layout/fragment_second_register" />
 </navigation>
