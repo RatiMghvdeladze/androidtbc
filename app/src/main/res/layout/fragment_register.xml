@@ -92,6 +92,37 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutRepeatPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="14dp"
+        android:hint="@string/repeat_password"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/black"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutPassword"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etRepeatPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_et"
+            android:fontFamily="@font/poppins"
+            android:inputType="textPassword"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="14dp"
+            android:textColorHint="@color/hint_color"
+            android:textSize="14sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSignUp"
@@ -102,12 +133,12 @@
         android:background="@drawable/bg_btn_sign_in"
         android:fontFamily="@font/poppins_semibold"
         android:paddingVertical="13dp"
-        android:text="@string/sign_in"
+        android:text="@string/sign_up"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayoutPassword" />
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutRepeatPassword" />
 
 
     <androidx.appcompat.widget.AppCompatTextView

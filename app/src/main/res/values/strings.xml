@@ -8,4 +8,5 @@
     <string name="don_t_you_have_an_account">Don’t you have an account?</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="repeat_password">Repeat Password</string>
 </resources>
