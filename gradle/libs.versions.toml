@@ -18,6 +18,7 @@ constraintlayout = "2.1.4"
 moshi = "1.15.2"
 moshiKotlin = "1.15.0"
 pagingRuntimeKtx = "3.3.5"
+playServicesAuth = "21.3.0"
 protobufJavalite = "3.18.0"
 roomRuntime = "2.6.1"
 safeArgs = "2.8.5"
@@ -47,6 +48,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 retrofit-serialization = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofitSerialization" }
 squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareupRetrofit" }

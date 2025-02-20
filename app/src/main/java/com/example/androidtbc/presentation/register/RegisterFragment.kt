@@ -1,8 +1,10 @@
 package com.example.androidtbc.presentation.register
 
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.utils.Resource
@@ -25,21 +27,30 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 when (state) {
                     is Resource.Loading -> {
                         binding.btnSignUp.isEnabled = false
+                        binding.progressBarSignUp.visibility = View.VISIBLE
+                        binding.btnSignUp.text = ""
                     }
                     is Resource.Success -> {
                         binding.btnSignUp.isEnabled = true
-                        // Navigate to main screen or home
+                        binding.progressBarSignUp.visibility = View.GONE
+                        binding.btnSignUp.text = getString(R.string.sign_up)
+
                         val action = RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment()
                         findNavController().navigate(action)
+
                         Snackbar.make(binding.root, "Successfully Registered!", Snackbar.LENGTH_SHORT).show()
                         viewModel.resetState()
                     }
                     is Resource.Error -> {
                         binding.btnSignUp.isEnabled = true
+                        binding.progressBarSignUp.visibility = View.GONE
+                        binding.btnSignUp.text = getString(R.string.sign_up)
                         Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_SHORT).show()
                     }
                     is Resource.Idle -> {
                         binding.btnSignUp.isEnabled = true
+                        binding.progressBarSignUp.visibility = View.GONE
+                        binding.btnSignUp.text = getString(R.string.sign_up)
                     }
                 }
             }

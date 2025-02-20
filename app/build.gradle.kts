@@ -48,6 +48,10 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    // Google Auth
+
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.viewpager2)
