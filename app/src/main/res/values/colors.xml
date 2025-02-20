@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="splash">#242A32</color>
+    <color name="hint_color">#575757</color>
+    <color name="btn_sign_in">#EB2F3D</color>
 </resources>

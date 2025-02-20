@@ -8,6 +8,7 @@ plugins {
     id("com.google.protobuf") version "0.9.4"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -47,8 +48,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
+    implementation(libs.firebase.auth)
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
