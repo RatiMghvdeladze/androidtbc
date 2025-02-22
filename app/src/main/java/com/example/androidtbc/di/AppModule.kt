@@ -34,4 +34,5 @@ object AppModule {
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : ApiService = retrofit.create(ApiService::class.java)
 
+
 }

@@ -49,6 +49,7 @@ android {
 dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.swiperefreshlayout)
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
