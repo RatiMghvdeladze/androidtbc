@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.presentation.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

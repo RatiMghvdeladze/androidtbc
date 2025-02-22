@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="32dp">
+
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="25dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#30444E">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivUserProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="24dp"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircularShape"
+            app:strokeColor="@android:color/transparent"
+            app:strokeWidth="0dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvUserFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="19dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/ivUserProfile"
+            app:layout_constraintTop_toTopOf="@id/ivUserProfile"
+            tools:text="Alice Smith" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#96A7AF"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
+            app:layout_constraintStart_toStartOf="@id/tvUserFullName"
+            tools:text="20 April at 4:20 PM" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="19dp"
+            android:layout_marginTop="9dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ivUserProfile"
+            app:layout_constraintTop_toBottomOf="@id/ivUserProfile"
+            tools:text="We're interested in your ideas and would be glad to build something bigger out of it." />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/imageGridContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="19dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivLeftImage"
+                android:layout_width="133dp"
+                android:layout_height="187dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@id/rightImagesColumn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <LinearLayout
+                android:id="@+id/rightImagesColumn"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="13dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/ivLeftImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivLeftImage"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivTopRightImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivBottomRightImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="19dp"
+            android:layout_marginTop="16dp"
+            app:dividerColor="#B8C2C0"
+            app:layout_constraintTop_toBottomOf="@id/imageGridContainer" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/commentLikesShares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="19dp"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:textColor="#96A7AF"
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_chat"
+                tools:text="7 Comments" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:drawablePadding="8dp"
+                android:textColor="#96A7AF"
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_heart"
+                tools:text="49 Likes" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:drawablePadding="8dp"
+                android:textColor="#96A7AF"
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_share"
+                tools:text="Share" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="21dp"
+            app:layout_constraintTop_toBottomOf="@id/commentLikesShares" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivOurProfile"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="15dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider2"
+            app:shapeAppearanceOverlay="@style/CircularShape" />
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="19dp"
+            android:background="@drawable/bg_et"
+            android:drawableEnd="@drawable/ic_link"
+            android:hint="Write comment..."
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="13dp"
+            android:textColorHint="#96A7AF"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivOurProfile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivOurProfile"
+            app:layout_constraintTop_toTopOf="@id/ivOurProfile" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
+</FrameLayout>
