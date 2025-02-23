@@ -36,7 +36,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         observer()
         loadInitialData()
     }
-
     private fun setUpAdapters() {
         with(binding) {
             rvStories.apply {
@@ -47,6 +46,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
             rvPosts.apply {
                 adapter = postAdapter
+                setHasFixedSize(true)
+                isNestedScrollingEnabled = false
             }
         }
     }
