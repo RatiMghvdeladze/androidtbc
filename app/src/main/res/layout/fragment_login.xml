@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/bg_screen"
     tools:context=".presentation.login.LoginFragment">
 
 
@@ -177,6 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/poppins"
+            android:textColor="#979797"
 
             android:text="@string/don_t_you_have_an_account"
 

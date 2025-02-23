@@ -26,6 +26,9 @@ android {
     }
 
     buildTypes {
+        debug{
+            buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -44,10 +47,13 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation(libs.logging.interceptor)
+
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     // Google Auth
