@@ -37,7 +37,6 @@ class PostAdapter : ListAdapter<PostDTO, PostAdapter.PostViewHolder>(PostDiffUti
                         .into(ivUserProfile)
                 }
 
-                // Handle post images
                 when {
                     item.images.isNullOrEmpty() -> {
                         imageGridContainer.visibility = View.GONE
@@ -98,7 +97,7 @@ class PostAdapter : ListAdapter<PostDTO, PostAdapter.PostViewHolder>(PostDiffUti
 
     private fun formatEpochToDate(epoch: Long): String {
         return try {
-            val date = Date(epoch * 1000) // Convert seconds to milliseconds
+            val date = Date(epoch * 1000)
             val sdf = SimpleDateFormat("d MMMM 'at' h:mm a", Locale.getDefault())
             sdf.format(date)
         } catch (e: Exception) {

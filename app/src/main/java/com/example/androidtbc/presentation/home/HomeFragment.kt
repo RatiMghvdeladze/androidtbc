@@ -1,8 +1,6 @@
 package com.example.androidtbc.presentation.home
 
-import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,6 +13,7 @@ import com.example.androidtbc.data.remote.repository.StoryAdapter
 import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.utils.Resource
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,69 +21,57 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     private val storyAdapter: StoryAdapter by lazy {
-        StoryAdapter { story ->
-            handleStoryClick(story)
-        }
+        StoryAdapter()
     }
-
     private val postAdapter: PostAdapter by lazy {
         PostAdapter()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        start()
-    }
-
     override fun start() {
-        setupAdapters()
+        setUpAdapters()
         setupSwipeRefresh()
-        observeData()
+        observer()
         loadInitialData()
     }
 
-    private fun setupAdapters() {
-        binding.apply {
-            // Stories setup
+    private fun setUpAdapters() {
+        with(binding) {
             rvStories.apply {
                 adapter = storyAdapter
                 setHasFixedSize(true)
                 overScrollMode = View.OVER_SCROLL_NEVER
             }
 
-            // Posts setup
             rvPosts.apply {
                 adapter = postAdapter
-                setHasFixedSize(true)
-                overScrollMode = View.OVER_SCROLL_NEVER
             }
         }
     }
 
     private fun setupSwipeRefresh() {
-        binding.swipeRefresh.apply {
+        with(binding.swipeRefresh) {
+            isEnabled = true
             setOnRefreshListener {
-                viewModel.refresh()
+                isRefreshing = true
+                homeViewModel.refresh()
             }
         }
     }
 
-    private fun observeData() {
+    private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Observe stories
                 launch {
-                    viewModel.stories.collectLatest { resource ->
+                    homeViewModel.stories.collectLatest { resource ->
                         handleStoriesResource(resource)
                     }
                 }
 
-                // Observe posts
                 launch {
-                    viewModel.posts.collectLatest { resource ->
+                    homeViewModel.posts.collectLatest { resource ->
                         handlePostsResource(resource)
                     }
                 }
@@ -93,40 +80,37 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun loadInitialData() {
-        viewModel.loadStories()
-        viewModel.loadPosts()
+        homeViewModel.loadStories()
+        homeViewModel.loadPosts()
     }
 
     private fun handleStoriesResource(resource: Resource<List<StoryDTO>>) {
         when (resource) {
             is Resource.Loading -> {
-                binding.apply {
+                with(binding){
+                    swipeRefresh.isRefreshing = true
                     if (storyAdapter.currentList.isEmpty()) {
                         rvStories.isVisible = false
-                        // TODO: Show stories shimmer loading
                     }
                 }
             }
             is Resource.Success -> {
-                binding.apply {
+                with(binding) {
                     swipeRefresh.isRefreshing = false
                     rvStories.isVisible = true
-                    // TODO: Hide stories shimmer loading
                     storyAdapter.submitList(resource.data)
                 }
             }
             is Resource.Error -> {
-                binding.apply {
+                with(binding) {
                     swipeRefresh.isRefreshing = false
                     if (storyAdapter.currentList.isEmpty()) {
                         rvStories.isVisible = false
-                        // TODO: Show error view
                     }
                     showError(resource.errorMessage)
                 }
             }
             is Resource.Idle -> {
-                // Initial state, do nothing
             }
         }
     }
@@ -134,43 +118,36 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun handlePostsResource(resource: Resource<List<PostDTO>>) {
         when (resource) {
             is Resource.Loading -> {
-                binding.apply {
+                with(binding) {
+                    swipeRefresh.isRefreshing = true
                     if (postAdapter.currentList.isEmpty()) {
                         rvPosts.isVisible = false
-                        // TODO: Show posts shimmer loading
                     }
                 }
             }
             is Resource.Success -> {
-                binding.apply {
+                with(binding){
                     swipeRefresh.isRefreshing = false
                     rvPosts.isVisible = true
-                    // TODO: Hide posts shimmer loading
                     postAdapter.submitList(resource.data)
                 }
             }
             is Resource.Error -> {
-                binding.apply {
+                with(binding) {
                     swipeRefresh.isRefreshing = false
                     if (postAdapter.currentList.isEmpty()) {
                         rvPosts.isVisible = false
-                        // TODO: Show error view
                     }
                     showError(resource.errorMessage)
                 }
             }
             is Resource.Idle -> {
-                // Initial state, do nothing
             }
         }
     }
 
-    private fun handleStoryClick(story: StoryDTO) {
-        // TODO: Implement story click handling (navigation or dialog)
-        Toast.makeText(requireContext(), "Story clicked: ${story.title}", Toast.LENGTH_SHORT).show()
-    }
 
     private fun showError(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
 }
