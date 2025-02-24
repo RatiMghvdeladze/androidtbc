@@ -17,4 +17,9 @@
     <string name="your_name">Your name</string>
     <string name="phone_number">Phone number</string>
     <string name="current_city">Current city</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="popular">Popular</string>
+    <string name="search">Search</string>
 </resources>

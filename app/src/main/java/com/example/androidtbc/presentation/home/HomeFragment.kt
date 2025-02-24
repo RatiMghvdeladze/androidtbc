@@ -1,127 +1,115 @@
 package com.example.androidtbc.presentation.home
 
-import android.animation.ValueAnimator
-import android.content.Context
-import android.graphics.drawable.GradientDrawable
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.home.adapter.PopularMoviesAdapter
+import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
+import com.example.androidtbc.presentation.home.innerfragments.nowplaying.NowPlayingFragment
+import com.example.androidtbc.presentation.home.innerfragments.popular.PopularFragment
+import com.example.androidtbc.presentation.home.innerfragments.toprated.TopRatedFragment
+import com.example.androidtbc.presentation.home.innerfragments.upcoming.UpcomingFragment
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
-    private var isSearchExpanded = false
+    private val viewModel: HomeViewModel by viewModels()
+    private lateinit var popularMoviesAdapter: PopularMoviesAdapter
+
 
     override fun start() {
-        setupSearchBar()
-        setupSearchBackground()
+        setupRecyclerView()
+        observeMovies()
+        initVP()
     }
 
-    private fun setupSearchBackground() {
-        val drawable = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            cornerRadius = resources.displayMetrics.density * 24
-            setColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-        }
-        binding.searchBackground.background = drawable
-    }
-
-    private fun setupSearchBar() {
-        binding.btnSearch.setOnClickListener {
-            if (!isSearchExpanded) {
-                expandSearchBar()
-            }
-        }
-
-        binding.root.setOnClickListener {
-            if (isSearchExpanded && it != binding.searchExpandContainer) {
-                collapseSearchBar()
-            }
-        }
-
-        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
-                collapseSearchBar()
-                true
-            } else {
-                false
-            }
-        }
-    }
-
-    private fun expandSearchBar() {
-        val searchContainer = binding.searchExpandContainer
-        val searchEditText = binding.searchEditText
-        val searchBackground = binding.searchBackground
-
-        searchBackground.visibility = View.VISIBLE
-
-        val targetWidth = (resources.displayMetrics.widthPixels * 0.7).toInt()
-
-        val widthAnimator = ValueAnimator.ofInt(
-            searchContainer.width,
-            targetWidth
+    private fun initVP() {
+        val fragments = listOf(
+            NowPlayingFragment(),
+            TopRatedFragment(),
+            UpcomingFragment(),
+            PopularFragment()
         )
 
-        widthAnimator.addUpdateListener { animator ->
-            val params = searchContainer.layoutParams
-            params.width = animator.animatedValue as Int
-            searchContainer.layoutParams = params
-        }
-
-        searchEditText.visibility = View.VISIBLE
-        searchEditText.alpha = 0f
-        searchEditText.animate()
-            .alpha(1f)
-            .setDuration(300)
-            .start()
-
-        widthAnimator.duration = 300
-        widthAnimator.start()
-
-        isSearchExpanded = true
-
-        searchEditText.requestFocus()
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun collapseSearchBar() {
-        val searchContainer = binding.searchExpandContainer
-        val searchEditText = binding.searchEditText
-        val searchBackground = binding.searchBackground
-
-        val widthAnimator = ValueAnimator.ofInt(
-            searchContainer.width,
-            48
+        val tabTitles = listOf(
+            getString(R.string.now_playing),
+            getString(R.string.top_rated),
+            getString(R.string.upcoming),
+            getString(R.string.popular)
         )
 
-        widthAnimator.addUpdateListener { animator ->
-            val params = searchContainer.layoutParams
-            params.width = animator.animatedValue as Int
-            searchContainer.layoutParams = params
-        }
+        with(binding) {
+            if (isAdded) {
+                vp2.apply {
+                    adapter = ViewPagerAdapter(requireActivity(), fragments)
+                    offscreenPageLimit = fragments.size
+                    reduceDragSensitivity()
+                }
 
-        widthAnimator.duration = 300
-        widthAnimator.start()
+                // Connect TabLayout with ViewPager2
+                TabLayoutMediator(tabLayout, vp2) { tab, position ->
+                    tab.text = tabTitles[position]
+                }.attach()
 
-        searchEditText.animate()
-            .alpha(0f)
-            .setDuration(300)
-            .withEndAction {
-                searchEditText.visibility = View.GONE
-                searchEditText.setText("")
-                searchBackground.visibility = View.GONE
             }
-            .start()
-
-        isSearchExpanded = false
-
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+        }
     }
+
+    private fun ViewPager2.reduceDragSensitivity() {
+        val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+        recyclerViewField.isAccessible = true
+        val recyclerView = recyclerViewField.get(this) as RecyclerView
+
+        val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+        touchSlopField.isAccessible = true
+        val touchSlop = touchSlopField.get(recyclerView) as Int
+        touchSlopField.set(recyclerView, touchSlop * 4) // Multiply by 4 to make it less sensitive
+    }
+
+    private fun setupRecyclerView() {
+        popularMoviesAdapter = PopularMoviesAdapter()
+        binding.rvPopular.apply {
+            adapter = popularMoviesAdapter
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun observeMovies() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Observe loading state
+                launch {
+                    popularMoviesAdapter.loadStateFlow.collectLatest { loadState ->
+                        binding.progressBar.isVisible = loadState.refresh is LoadState.Loading
+                    }
+                }
+
+                // Observe movies
+                launch {
+                    viewModel.popularMovies.collectLatest { pagingData ->
+                        popularMoviesAdapter.submitData(pagingData)
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 }
