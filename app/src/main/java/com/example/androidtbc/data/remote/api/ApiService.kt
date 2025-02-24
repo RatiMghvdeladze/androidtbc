@@ -35,4 +35,13 @@ interface ApiService {
     ) : Response<UpcomingMovieDto>
 
 
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("query") query: String,
+        @Query("language") language: String = "en-US",
+        @Query("page") page: Int = 1
+    ) : Response<PopularMovieDto>
+
+
+
 }

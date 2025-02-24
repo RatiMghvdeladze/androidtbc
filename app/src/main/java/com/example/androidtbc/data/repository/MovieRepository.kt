@@ -17,6 +17,10 @@ interface MovieRepository {
     suspend fun getTopRatedMovies(language: String = "en-US", page: Int = 1): Resource<TopRatedMovieDto>
 
     suspend fun getUpcomingMovies(language: String = "en-US", page: Int = 1): Resource<UpcomingMovieDto>
+
+    suspend fun searchMovies(query: String, language: String = "en-US", page: Int = 1): Resource<PopularMovieDto>
+
+
 }
 
 class MovieRepositoryImpl @Inject constructor(
@@ -45,6 +49,14 @@ class MovieRepositoryImpl @Inject constructor(
             apiService.getUpcomingMovies(language = language, page = page)
         }
     }
+
+    override suspend fun searchMovies(query: String, language: String, page: Int): Resource<PopularMovieDto> {
+        return handleHttpRequest {
+            apiService.searchMovies(query = query, language = language, page = page)
+        }
+    }
+
+
 
 
 }

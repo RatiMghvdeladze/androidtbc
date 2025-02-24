@@ -108,6 +108,20 @@
             app:layout_scrollFlags="noScroll" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Modified search results RecyclerView with less margin -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="3"
+        tools:listitem="@layout/item_movie_poster"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2"
         android:layout_width="match_parent"
