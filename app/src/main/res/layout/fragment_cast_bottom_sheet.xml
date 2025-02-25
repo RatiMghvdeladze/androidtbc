@@ -6,13 +6,14 @@
     android:layout_height="wrap_content"
     android:padding="16dp"
     app:behavior_peekHeight="160dp"
+    android:background="@drawable/bg_bottom_sheet"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <View
         android:id="@+id/handleView"
         android:layout_width="40dp"
         android:layout_height="4dp"
-        android:background="@android:color/darker_gray"
+        android:background="#A0B0C5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,6 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/handleView"
         app:layout_constraintWidth_percent="0.33"
+        android:background="@drawable/cast_image_border"
         tools:src="@drawable/img" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -39,6 +41,7 @@
         android:fontFamily="@font/montserrat_medium"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivCastImage" />
@@ -50,7 +53,7 @@
         android:layout_marginTop="4dp"
         android:text="Character: John Doe"
         android:fontFamily="@font/montserrat_medium"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="#A0B0C5"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Gender: Male"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="#A0B0C5"
         android:textSize="14sp"
         android:fontFamily="@font/montserrat_medium"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Popularity: 32.5"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="#38B6FF"
         android:textSize="14sp"
         android:fontFamily="@font/montserrat_medium"
         app:layout_constraintEnd_toEndOf="parent"

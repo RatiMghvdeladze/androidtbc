@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.10.0")
 //    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
 //    implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     implementation(libs.logging.interceptor)

@@ -17,8 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTFiMTI5Y2I3OTljY2I3ZjVkZmY5MTk0MjAzZWU3NCIsIm5iZiI6MTc0MDA0Njk5OS4yNzMsInN1YiI6IjY3YjcwMjk3MTFmZjAzNDA5ZWMzZjM3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rJ6BbpIyApLRXaCv39QmorzhO9uK-2FF58kug9d6bw"
-    private const val API_KEY = "fa1b129cb799ccb7f5dff9194203ee74"  // This is the key from your Bearer token
+    private const val API_KEY = "fa1b129cb799ccb7f5dff9194203ee74"
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {

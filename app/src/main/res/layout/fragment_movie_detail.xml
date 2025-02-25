@@ -41,6 +41,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvDetail" />
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bannerContainer"
         android:layout_width="match_parent"
@@ -69,6 +71,17 @@
                 app:shapeAppearanceOverlay="@style/BottomRoundedCard"
                 tools:src="@drawable/img" />
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivAgeRestriction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_18"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,6 +135,8 @@
                 app:layout_constraintStart_toEndOf="@id/tvRating"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView

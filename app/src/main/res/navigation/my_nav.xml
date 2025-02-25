@@ -58,4 +58,9 @@
             android:name="movie_id"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/savedMoviesFragment"
+        android:name="com.example.androidtbc.presentation.savedmovies.SavedMoviesFragment"
+        android:label="fragment_saved_movies"
+        tools:layout="@layout/fragment_saved_movies" />
 </navigation>

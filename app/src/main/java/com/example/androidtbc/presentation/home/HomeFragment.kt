@@ -43,6 +43,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         setupSearchListener()
         observeMovies()
         initVP()
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        binding.bottomNavView.apply {
+            // Set the home item as selected initially
+            selectedItemId = R.id.homeFragment
+
+            // Set up item selection listener
+            setOnItemSelectedListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.homeFragment -> {
+                        // We're already on the home fragment, so just return true
+                        true
+                    }
+                    R.id.savedMoviesFragment -> {
+                        // Navigate to saved movies fragment
+                        findNavController().navigate(R.id.savedMoviesFragment)
+                        false // Return false to not select this item yet (it will be selected in the SavedMoviesFragment)
+                    }
+                    else -> false
+                }
+            }
+        }
     }
 
     private fun setupSearchListener() {

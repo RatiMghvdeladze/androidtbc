@@ -86,18 +86,19 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
         with(binding) {
             tvMovieTitle.text = movie.title
 
-            movie.backdropPath?.let {
-                ivBanner.loadTmdbImage(movie.backdropPath)
+            movie.backdropPath?.let { path ->
+                ivBanner.loadTmdbImage(path)
             }
 
-            movie.posterPath?.let {
-                ivPoster.loadTmdbImage(movie.posterPath)
+            movie.posterPath?.let { path ->
+                ivPoster.loadTmdbImage(path)
             }
+
+            if(movie.adult) ivAgeRestriction.visibility = View.VISIBLE
 
             // Format the rating to display only one decimal place
             tvRating.text = String.format("%.1f", movie.voteAverage)
 
-            // Format vote count properly with Locale.US
             tvVoteCount.text = "(${NumberFormat.getNumberInstance(Locale.US).format(movie.voteCount)})"
 
             val year = movie.releaseDate.split("-").firstOrNull() ?: ""
