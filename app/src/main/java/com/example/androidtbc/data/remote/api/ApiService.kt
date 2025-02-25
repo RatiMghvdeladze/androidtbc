@@ -1,11 +1,14 @@
 package com.example.androidtbc.data.remote.api
 
+import com.example.androidtbc.data.remote.dto.CastDto
+import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.data.remote.dto.NowPlayingMovieDto
 import com.example.androidtbc.data.remote.dto.PopularMovieDto
 import com.example.androidtbc.data.remote.dto.TopRatedMovieDto
 import com.example.androidtbc.data.remote.dto.UpcomingMovieDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -41,6 +44,20 @@ interface ApiService {
         @Query("language") language: String = "en-US",
         @Query("page") page: Int = 1
     ) : Response<PopularMovieDto>
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetails(
+        @Path("movie_id") movieId: Int,
+        @Query("language") language: String = "en-US"
+    ): Response<MovieDetailDto>
+
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCredits(
+        @Path("movie_id") movieId: Int,
+        @Query("language") language: String = "en-US"
+    ): Response<CastDto>
+
 
 
 

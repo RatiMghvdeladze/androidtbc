@@ -6,7 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.androidtbc.data.remote.dto.Result
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.data.remote.paging.PopularMoviesPagingSource
 import com.example.androidtbc.data.remote.paging.SearchMoviesPagingSource
 import com.example.androidtbc.data.repository.MovieRepository
@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    val popularMovies: Flow<PagingData<Result>> = Pager(
+    val popularMovies: Flow<PagingData<MovieResult>> = Pager(
         config = PagingConfig(
             pageSize = 6,
             enablePlaceholders = false,
@@ -45,7 +45,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val searchResults: Flow<PagingData<Result>> = _searchQuery
+    val searchResults: Flow<PagingData<MovieResult>> = _searchQuery
         .debounce(300)
         .distinctUntilChanged()
         .flatMapLatest { query ->

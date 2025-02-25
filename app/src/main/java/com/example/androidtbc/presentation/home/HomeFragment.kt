@@ -7,10 +7,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.androidtbc.R
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.PopularMoviesAdapter
@@ -31,6 +33,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var popularMoviesAdapter: PopularMoviesAdapter
     private lateinit var searchResultsAdapter: PopularMoviesSearchAdapter
+
+
+
     private var isSearchActive = false
 
     override fun start() {
@@ -151,17 +156,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun setupRecyclerView() {
-        popularMoviesAdapter = PopularMoviesAdapter()
+        popularMoviesAdapter = PopularMoviesAdapter{ movie: MovieResult ->
+            navigateToDetailScreen(movie)
+        }
         binding.rvPopular.apply {
             adapter = popularMoviesAdapter
             setHasFixedSize(true)
         }
 
-        searchResultsAdapter = PopularMoviesSearchAdapter()
+        searchResultsAdapter = PopularMoviesSearchAdapter{movie: MovieResult ->
+            navigateToDetailScreen(movie)
+
+        }
         binding.rvSearchResults.apply {
             adapter = searchResultsAdapter
             setHasFixedSize(true)
         }
+    }
+    private fun navigateToDetailScreen(movie: MovieResult) {
+        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
+        findNavController().navigate(action)
     }
 
 

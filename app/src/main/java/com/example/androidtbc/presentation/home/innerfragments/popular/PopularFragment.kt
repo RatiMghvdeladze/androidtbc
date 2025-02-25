@@ -5,9 +5,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentPopularBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.home.HomeFragmentDirections
 import com.example.androidtbc.presentation.home.innerfragments.popular.adapter.PopularAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -17,7 +20,16 @@ import kotlinx.coroutines.launch
 class PopularFragment : BaseFragment<FragmentPopularBinding>(FragmentPopularBinding::inflate) {
     private val viewModel: PopularViewModel by viewModels()
     private val adapter: PopularAdapter by lazy {
-        PopularAdapter()
+        PopularAdapter { movie: MovieResult ->
+            navigateToDetailScreen(movie)
+        }
+    }
+
+    private fun navigateToDetailScreen(movie: MovieResult) {
+        // Navigate using the parent fragment's action
+        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
+        // Get the parent NavController
+        findNavController().navigate(action)
     }
 
 

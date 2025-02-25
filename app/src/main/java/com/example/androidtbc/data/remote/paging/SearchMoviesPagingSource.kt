@@ -3,7 +3,7 @@ package com.example.androidtbc.data.remote.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.androidtbc.data.remote.dto.Result
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.data.repository.MovieRepository
 import com.example.androidtbc.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -12,23 +12,23 @@ import kotlinx.coroutines.withContext
 class SearchMoviesPagingSource(
     private val movieRepository: MovieRepository,
     private val query: String
-) : PagingSource<Int, Result>() {
+) : PagingSource<Int, MovieResult>() {
 
     // Cache for movies that can be filtered locally
     companion object {
-        private var cachedMovies: MutableList<Result> = mutableListOf()
+        private var cachedMovies: MutableList<MovieResult> = mutableListOf()
         private var hasLoadedInitialData = false
         private const val MIN_QUERY_LENGTH = 2
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, MovieResult>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult> {
         val page = params.key ?: 1
         val normalizedQuery = query.lowercase().trim()
 
@@ -78,7 +78,7 @@ class SearchMoviesPagingSource(
         }
     }
 
-    private suspend fun performLocalSearch(query: String, page: Int): LoadResult<Int, Result> {
+    private suspend fun performLocalSearch(query: String, page: Int): LoadResult<Int, MovieResult> {
         // If we haven't loaded initial data, fetch popular movies first
         if (!hasLoadedInitialData || cachedMovies.isEmpty()) {
             // Load a larger set of popular movies to search through
@@ -146,7 +146,7 @@ class SearchMoviesPagingSource(
         )
     }
 
-    private fun updateCache(newMovies: List<Result>) {
+    private fun updateCache(newMovies: List<MovieResult>) {
         // Add movies that aren't already in the cache
         for (movie in newMovies) {
             if (cachedMovies.none { it.id == movie.id }) {

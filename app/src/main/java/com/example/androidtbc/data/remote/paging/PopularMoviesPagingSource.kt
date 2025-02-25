@@ -2,22 +2,22 @@ package com.example.androidtbc.data.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.androidtbc.data.remote.dto.Result
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.data.repository.MovieRepository
 import com.example.androidtbc.utils.Resource
 
 class PopularMoviesPagingSource(
     private val repository: MovieRepository
-) : PagingSource<Int, Result>() {
+) : PagingSource<Int, MovieResult>() {
 
-    override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, MovieResult>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult> {
         return try {
             val page = params.key ?: 1
             when (val response = repository.getPopularMovies(page = page)) {

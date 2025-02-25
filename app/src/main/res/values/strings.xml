@@ -22,4 +22,8 @@
     <string name="upcoming">Upcoming</string>
     <string name="popular">Popular</string>
     <string name="search">Search</string>
+    <string name="detail">Detail</string>
+    <string name="about_movie">About Movie</string>
+    <string name="cast">Cast</string>
+    <string name="minutes_format">%d Minutes</string>
 </resources>

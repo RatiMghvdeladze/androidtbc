@@ -1,59 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="180dp"
-    android:layout_height="270dp"
-    android:layout_margin="8dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="20dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="180dp"
+        android:layout_height="270dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="8dp">
 
         <ImageView
-            android:id="@+id/imageViewPoster"
+            android:id="@+id/ivPoster"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="movie poster"
             android:scaleType="centerCrop" />
 
+
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewNumber"
+    <!-- The number that overlaps the card -->
+    <com.example.androidtbc.utils.StrokeTextView
+        android:id="@+id/tvNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#4D2196F3"
-    android:textSize="150sp"
-    android:textStyle="bold"
-    android:alpha="0.7"
-    android:elevation="30dp"
-    android:fontFamily="sans-serif-black"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    android:layout_marginStart="-40dp"
-    android:layout_marginBottom="-30dp"
-    tools:text="5" />
-
-
-    <!-- Movie Title -->
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:layout_gravity="bottom|start"
+        android:fontFamily="@font/montserrat_semibold"
+        android:textSize="96sp"
+        android:elevation="10dp"
         android:textStyle="bold"
-        android:maxLines="2"
-        android:ellipsize="end"
+        android:layout_marginStart="-20dp"
+        android:layout_marginBottom="-40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Movie Title" />
+        tools:text="5" />
 
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

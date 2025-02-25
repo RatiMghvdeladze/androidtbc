@@ -32,7 +32,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.androidtbc.presentation.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/secondRegisterFragment"
         android:name="com.example.androidtbc.presentation.secondregister.SecondRegisterFragment"
@@ -44,5 +48,14 @@
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
 
+    </fragment>
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="com.example.androidtbc.presentation.moviedetail.MovieDetailFragment"
+        android:label="fragment_movie_detail"
+        tools:layout="@layout/fragment_movie_detail" >
+        <argument
+            android:name="movie_id"
+            app:argType="integer" />
     </fragment>
 </navigation>

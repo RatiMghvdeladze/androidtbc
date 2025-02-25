@@ -1,19 +1,21 @@
 package com.example.androidtbc.presentation.home.adapter
 
-import com.bumptech.glide.Glide
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.ItemMoviePosterBinding
 import com.example.androidtbc.presentation.base.BaseMovieAdapter
+import com.example.androidtbc.utils.loadTmdbImage
 
-class PopularMoviesSearchAdapter : BaseMovieAdapter<ItemMoviePosterBinding>(
+class PopularMoviesSearchAdapter(
+    private val onMovieClick: (MovieResult) -> Unit
+) : BaseMovieAdapter<ItemMoviePosterBinding>(
     bindingInflater = { inflater, parent, attachToParent ->
         ItemMoviePosterBinding.inflate(inflater, parent, attachToParent)
     },
     bindData = { binding, movie, _ ->
-        Glide.with(binding.root.context)
-            .load("https://image.tmdb.org/t/p/w500${movie.posterPath}")
-            .into(binding.imageViewPoster)
+        binding.ivPoster.loadTmdbImage(movie.posterPath)
 
         binding.root.setOnClickListener {
         }
-    }
+    },
+    itemClickListener = onMovieClick
 )

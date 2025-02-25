@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class NowPlayingMovieDto(
     val dates: Dates,
     val page: Int,
-    val results: List<Result>,
+    val results: List<MovieResult>,
     @SerialName("total_pages")
     val totalPages: Int,
     @SerialName("total_results")

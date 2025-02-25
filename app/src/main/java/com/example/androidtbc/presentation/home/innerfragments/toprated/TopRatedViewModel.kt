@@ -6,7 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.androidtbc.data.remote.dto.Result
+import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.data.remote.paging.TopRatedMoviesPagingSource
 import com.example.androidtbc.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ class TopRatedViewModel @Inject constructor(
     private val repository: MovieRepository
 ) : ViewModel() {
 
-    val topRatedMovies: Flow<PagingData<Result>> = Pager(
+    val topRatedMovies: Flow<PagingData<MovieResult>> = Pager(
         config = PagingConfig(
             pageSize = 20,
             prefetchDistance = 10,
