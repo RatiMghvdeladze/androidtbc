@@ -6,11 +6,20 @@ import androidx.paging.PagingState
 import com.example.androidtbc.data.remote.dto.Result
 import com.example.androidtbc.data.repository.MovieRepository
 import com.example.androidtbc.utils.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class SearchMoviesPagingSource(
     private val movieRepository: MovieRepository,
     private val query: String
 ) : PagingSource<Int, Result>() {
+
+    // Cache for movies that can be filtered locally
+    companion object {
+        private var cachedMovies: MutableList<Result> = mutableListOf()
+        private var hasLoadedInitialData = false
+        private const val MIN_QUERY_LENGTH = 2
+    }
 
     override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -21,8 +30,10 @@ class SearchMoviesPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
         val page = params.key ?: 1
+        val normalizedQuery = query.lowercase().trim()
 
-        if (query.isBlank()) {
+        // Return empty results for very short queries
+        if (normalizedQuery.length < MIN_QUERY_LENGTH) {
             return LoadResult.Page(
                 data = emptyList(),
                 prevKey = null,
@@ -30,46 +41,117 @@ class SearchMoviesPagingSource(
             )
         }
 
-        return try {
-            when (val response = movieRepository.searchMovies(query = query, page = page)) {
-                is Resource.Success -> {
-                    val data = response.data
-                    val normalizedQuery = query.lowercase()
+        try {
+            // If we have a complete query like "mufasa", try the direct API search first
+            if (normalizedQuery.length >= 5) {
+                when (val response = movieRepository.searchMovies(query = normalizedQuery, page = page)) {
+                    is Resource.Success -> {
+                        val results = response.data.results
+                        Log.d("SearchPaging", "Success with complete query: $normalizedQuery, Results: ${results.size}")
 
-                    val filteredResults = data.results.filter { movie ->
-                        val normalizedTitle = movie.title?.lowercase() ?: ""
-                        val normalizedOriginalTitle = movie.originalTitle?.lowercase() ?: ""
+                        // Add any new movies to our cache
+                        updateCache(results)
 
-                        // Ensure it includes search term anywhere, not just starts with
-                        normalizedTitle.contains(normalizedQuery) || normalizedOriginalTitle.contains(normalizedQuery)
+                        return LoadResult.Page(
+                            data = results,
+                            prevKey = if (page == 1) null else page - 1,
+                            nextKey = if (page >= response.data.totalPages) null else page + 1
+                        )
                     }
-
-                    Log.d(
-                        "SearchPaging",
-                        "Query: $query, API Results: ${data.results.size}, Filtered Results: ${filteredResults.size}"
-                    )
-
-                    val nextKey = if (page >= data.totalPages) null else page + 1
-                    val prevKey = if (page == 1) null else page - 1
-
-                    LoadResult.Page(
-                        data = filteredResults,
-                        prevKey = prevKey,
-                        nextKey = nextKey
-                    )
-                }
-                is Resource.Error -> {
-                    Log.e("SearchPaging", "Error in API response: ${response.errorMessage}")
-                    LoadResult.Error(Exception(response.errorMessage))
-                }
-                else -> {
-                    Log.e("SearchPaging", "Unexpected error occurred")
-                    LoadResult.Error(Exception("Unknown error occurred"))
+                    is Resource.Error -> {
+                        Log.e("SearchPaging", "Error with query: $normalizedQuery - ${response.errorMessage}")
+                        // Fall through to local search
+                    }
+                    else -> {
+                        Log.e("SearchPaging", "Unexpected result for query: $normalizedQuery")
+                        // Fall through to local search
+                    }
                 }
             }
+
+            // For partial queries or if API search failed, use local filtering on cached data
+            return performLocalSearch(normalizedQuery, page)
+
         } catch (e: Exception) {
-            Log.e("SearchPaging", "Exception: ${e.message}", e)
-            LoadResult.Error(e)
+            Log.e("SearchPaging", "Exception during search: ${e.message}", e)
+            return LoadResult.Error(e)
+        }
+    }
+
+    private suspend fun performLocalSearch(query: String, page: Int): LoadResult<Int, Result> {
+        // If we haven't loaded initial data, fetch popular movies first
+        if (!hasLoadedInitialData || cachedMovies.isEmpty()) {
+            // Load a larger set of popular movies to search through
+            val popularPages = 3 // Load multiple pages to have a good base for search
+
+            try {
+                for (p in 1..popularPages) {
+                    when (val response = movieRepository.getPopularMovies(page = p)) {
+                        is Resource.Success -> {
+                            updateCache(response.data.results)
+                        }
+                        else -> {
+                            Log.e("SearchPaging", "Failed to load popular movies for local search")
+                        }
+                    }
+                }
+
+                // Also try loading top rated as an alternative source
+                when (val response = movieRepository.getTopRatedMovies(page = 1)) {
+                    is Resource.Success -> {
+                        updateCache(response.data.results)
+                    }
+                    else -> {
+                        Log.e("SearchPaging", "Failed to load top rated movies for local search")
+                    }
+                }
+
+                hasLoadedInitialData = true
+
+            } catch (e: Exception) {
+                Log.e("SearchPaging", "Error loading initial data: ${e.message}")
+                return LoadResult.Error(e)
+            }
+        }
+
+        // Filter the cached movies based on the query
+        val filteredResults = withContext(Dispatchers.Default) {
+            cachedMovies.filter { movie ->
+                val title = movie.title?.lowercase() ?: ""
+                val originalTitle = movie.originalTitle?.lowercase() ?: ""
+
+                title.contains(query) || originalTitle.contains(query)
+            }
+        }
+
+        Log.d("SearchPaging", "Local search for '$query' found ${filteredResults.size} results out of ${cachedMovies.size} cached movies")
+
+        // Split into pages for the PagingSource
+        val pageSize = 20
+        val totalPages = (filteredResults.size + pageSize - 1) / pageSize
+
+        val start = (page - 1) * pageSize
+        val end = minOf(start + pageSize, filteredResults.size)
+
+        val pageData = if (start < filteredResults.size) {
+            filteredResults.subList(start, end)
+        } else {
+            emptyList()
+        }
+
+        return LoadResult.Page(
+            data = pageData,
+            prevKey = if (page > 1) page - 1 else null,
+            nextKey = if (page < totalPages) page + 1 else null
+        )
+    }
+
+    private fun updateCache(newMovies: List<Result>) {
+        // Add movies that aren't already in the cache
+        for (movie in newMovies) {
+            if (cachedMovies.none { it.id == movie.id }) {
+                cachedMovies.add(movie)
+            }
         }
     }
 }
