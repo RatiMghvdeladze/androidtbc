@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.moviedetail.innerfragments.cast
+package com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

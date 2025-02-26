@@ -59,13 +59,11 @@ class MovieDetailViewModel @Inject constructor(
                         val currentSaveStatus = _isSaved.value
 
                         if (currentSaveStatus) {
-                          val success = firestoreRepository.removeMovie(movie.id)
-                            if (success) {
+                            if (firestoreRepository.removeMovie(movie.id)) {
                                 _isSaved.value = false
                             }
                         } else {
-                            val success = firestoreRepository.saveMovie(movie)
-                            if (success) {
+                            if (firestoreRepository.saveMovie(movie)) {
                                 _isSaved.value = true
                             }
                         }

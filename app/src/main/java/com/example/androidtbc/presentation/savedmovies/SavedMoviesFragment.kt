@@ -44,12 +44,12 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
 
     private fun showClearAllConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Clear Watchlist")
-            .setMessage("Are you sure you want to clear all saved movies?")
-            .setPositiveButton("Clear All") { _, _ ->
+            .setTitle(getString(R.string.clear_watchlist))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_clear_all_saved_movies))
+            .setPositiveButton(getString(R.string.clear_all)) { _, _ ->
                 viewModel.clearAllSavedMovies()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 

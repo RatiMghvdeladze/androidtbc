@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.moviedetail.innerfragments.cast
+package com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -7,7 +7,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.androidtbc.databinding.FragmentCastBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.presentation.moviedetail.innerfragments.cast.adapter.CastAdapter
+import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.adapter.CastAdapter
 import com.example.androidtbc.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

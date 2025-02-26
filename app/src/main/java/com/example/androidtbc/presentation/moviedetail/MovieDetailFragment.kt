@@ -19,8 +19,8 @@ import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.databinding.FragmentMovieDetailBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
-import com.example.androidtbc.presentation.moviedetail.innerfragments.aboutmovie.AboutMovieFragment
-import com.example.androidtbc.presentation.moviedetail.innerfragments.cast.CastFragment
+import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragment
+import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragment
 import com.example.androidtbc.presentation.savedmovies.SavedMoviesViewModel
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.loadTmdbImage
@@ -78,7 +78,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
     private fun updateFavoriteButton(isSaved: Boolean) {
        if (isSaved) {
-            binding.btnFavorite.setImageResource(R.drawable.ic_favorite_filled)
+            binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite_filled)
             binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.RED)
         } else {
             binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite)
@@ -131,7 +131,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
             if(movie.adult) ivAgeRestriction.visibility = View.VISIBLE
 
-           tvRating.text = String.format("%.1f", movie.voteAverage)
+            tvRating.text = String.format("%.1f", movie.voteAverage)
 
             tvVoteCount.text = "(${NumberFormat.getNumberInstance(Locale.US).format(movie.voteCount)})"
 

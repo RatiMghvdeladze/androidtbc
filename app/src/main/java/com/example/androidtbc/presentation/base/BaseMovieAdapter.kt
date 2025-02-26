@@ -31,7 +31,6 @@ abstract class BaseMovieAdapter<VB : ViewBinding>(
         getItem(position)?.let { movie ->
             bindData(holder.binding, movie, position)
 
-            // Set click listener on the item view
             holder.binding.root.setOnClickListener {
                 itemClickListener?.invoke(movie)
             }

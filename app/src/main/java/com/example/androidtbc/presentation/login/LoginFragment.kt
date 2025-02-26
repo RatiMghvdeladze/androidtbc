@@ -58,13 +58,27 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
+// Only showing the parts that need to be updated in LoginFragment.kt
+
     override fun start() {
-        Log.d(TAG, "LoginFragment started")
+        Log.d(TAG, "LoginFragment started, fromRegistration: ${args.fromRegistration}, email: ${args.email}")
         googleSignInClient = loginViewModel.getGoogleSignInClient()
+
+        // Ensure the binding is initialized before accessing views
+        binding.etEmail.setText(args.email)
+        binding.etPassword.setText(args.password)
+
+        // Check if we're coming from registration
+        if (args.fromRegistration) {
+            // Show success message
+            Snackbar.make(binding.root, "Registration complete! You can now log in.", Snackbar.LENGTH_LONG).show()
+        }
+
         setUpListeners()
         observeLoginState()
         checkIfAlreadyLoggedIn()
     }
+
 
     // Check if user is already logged in with Remember Me
 // In LoginFragment.kt's checkIfAlreadyLoggedIn() function
@@ -137,13 +151,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
 
+                // Add validation here
+                if (email.isEmpty() || password.isEmpty()) {
+                    val errorMessage = when {
+                        email.isEmpty() && password.isEmpty() -> "Email and password must be filled"
+                        email.isEmpty() -> "Email must be filled"
+                        else -> "Password must be filled"
+                    }
+                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 loginViewModel.signIn(email, password, cbRememberMe.isChecked)
             }
 
+            // Rest of the code remains the same
             btnSignUp.setOnClickListener {
-                    val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-                    findNavController().navigate(action)
-
+                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+                findNavController().navigate(action)
             }
 
             btnGoogle.setOnClickListener {

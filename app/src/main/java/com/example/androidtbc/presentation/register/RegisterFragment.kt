@@ -64,10 +64,17 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         binding.progressBarSignUp.visibility = View.GONE
                         binding.btnSignUp.text = getString(R.string.sign_up)
 
-                        val action = RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment()
+                        val email = binding.etEmail.text.toString()
+                        val password = binding.etPassword.text.toString()
+
+                        registerViewModel.setUserCredentials(email, password)
+
+                        val action = RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment(
+                            email = email,
+                            password = password
+                        )
                         findNavController().navigate(action)
 
-                        Snackbar.make(binding.root, "Successfully Registered!", Snackbar.LENGTH_SHORT).show()
                         registerViewModel.resetState()
                     }
                     is Resource.Error -> {
@@ -93,6 +100,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val repeatPassword = etRepeatPassword.text.toString()
+
                 registerViewModel.signUp(email, password, repeatPassword)
             }
 

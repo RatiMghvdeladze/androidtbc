@@ -28,4 +28,14 @@
     <string name="minutes_format">%d Minutes</string>
     <string name="no_saved_movies_yet">No saved movies yet</string>
     <string name="movies_you_save_will_appear_here">Movies you save will appear here</string>
+    <string name="please_enter_your_name">Please enter your name</string>
+    <string name="please_enter_your_phone_number">Please enter your phone number</string>
+    <string name="please_enter_your_city">Please enter your city</string>
+    <string name="profile_information_saved_successfully">Profile information saved successfully</string>
+    <string name="continuee">Continue</string>
+    <string name="loading_and_three_dot">Loading...</string>
+    <string name="clear_watchlist">Clear Watchlist</string>
+    <string name="are_you_sure_you_want_to_clear_all_saved_movies">Are you sure you want to clear all saved movies?</string>
+    <string name="clear_all">Clear All</string>
+    <string name="cancel">Cancel</string>
 </resources>

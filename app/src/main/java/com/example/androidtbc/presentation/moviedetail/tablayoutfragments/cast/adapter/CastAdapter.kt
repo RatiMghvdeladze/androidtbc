@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.moviedetail.innerfragments.cast.adapter
+package com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

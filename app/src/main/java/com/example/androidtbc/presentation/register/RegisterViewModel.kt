@@ -25,7 +25,17 @@ class RegisterViewModel @Inject constructor(
     private val _registerState = MutableStateFlow<Resource<Unit>>(Resource.Idle)
     val registerState: StateFlow<Resource<Unit>> = _registerState
 
+    private var userEmail: String = ""
+    private var userPassword: String = ""
+
+    fun setUserCredentials(email: String, password: String) {
+        userEmail = email
+        userPassword = password
+    }
+
     fun signUp(email: String, password: String, repeatPassword: String) {
+        setUserCredentials(email, password)
+
         if (email.isEmpty() || password.isEmpty() || repeatPassword.isEmpty()) {
             _registerState.value = Resource.Error("All fields must be filled")
             return

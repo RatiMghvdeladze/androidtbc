@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.moviedetail.innerfragments.aboutmovie
+package com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
