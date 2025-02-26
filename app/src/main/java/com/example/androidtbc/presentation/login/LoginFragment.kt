@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
@@ -18,32 +19,34 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val args: LoginFragmentArgs by navArgs()
+    private val TAG = "LoginFragment"
 
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        Log.d("GoogleSignIn", "Result received with code: ${result.resultCode}")
+        Log.d(TAG, "Google sign-in result received with code: ${result.resultCode}")
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
-                Log.d("GoogleSignIn", "Attempting to get Google account")
                 val account = task.getResult(ApiException::class.java)
-                Log.d("GoogleSignIn", "Got account: ${account?.email}")
+                Log.d(TAG, "Got Google account: ${account?.email}")
                 account?.idToken?.let { token ->
-                    Log.d("GoogleSignIn", "Got ID token, attempting sign in")
-                    loginViewModel.signInWithGoogle(token)
+                    // Pass the remember me state to the ViewModel
+                    loginViewModel.signInWithGoogle(token, binding.cbRememberMe.isChecked)
                 } ?: run {
-                    Log.e("GoogleSignIn", "ID token was null")
+                    Log.e(TAG, "ID token was null")
                     Snackbar.make(binding.root, "Failed to get Google credentials", Snackbar.LENGTH_LONG).show()
                 }
             } catch (e: ApiException) {
-                Log.e("GoogleSignIn", "Sign-In Failed. Status code: ${e.statusCode}", e)
+                Log.e(TAG, "Sign-In Failed. Status code: ${e.statusCode}", e)
                 Snackbar.make(
                     binding.root,
                     "Google sign in failed: ${e.statusMessage ?: e.localizedMessage}",
@@ -51,20 +54,49 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 ).show()
             }
         } else {
-            Log.e("GoogleSignIn", "Sign-in result was not OK: ${result.resultCode}")
+            Log.e(TAG, "Google sign-in result was not OK: ${result.resultCode}")
         }
     }
 
     override fun start() {
+        Log.d(TAG, "LoginFragment started")
         googleSignInClient = loginViewModel.getGoogleSignInClient()
         setUpListeners()
         observeLoginState()
+        checkIfAlreadyLoggedIn()
+    }
+
+    // Check if user is already logged in with Remember Me
+// In LoginFragment.kt's checkIfAlreadyLoggedIn() function
+    private fun checkIfAlreadyLoggedIn() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // In checkIfAlreadyLoggedIn() in LoginFragment.kt
+                loginViewModel.isUserLoggedIn.collectLatest { isLoggedIn ->
+                    Log.d(TAG, "User logged in status: $isLoggedIn")
+                    // Only navigate if we came here directly, not from logout
+                    if (isLoggedIn && !args.fromLogout) {
+                        safeNavigateToHome("Auto login")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun safeNavigateToHome(source: String) {
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.loginFragment) {
+                Log.d(TAG, "Navigating to home from: $source")
+                val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                navController.navigate(action)
+            }
+
     }
 
     private fun observeLoginState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loginViewModel.loginState.collect { state ->
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                loginViewModel.loginState.collectLatest { state ->
                     when (state) {
                         is Resource.Loading -> {
                             binding.btnSignIn.isEnabled = false
@@ -76,9 +108,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                             binding.btnSignIn.isEnabled = true
                             binding.progressBarSignIn.visibility = View.GONE
                             binding.btnSignIn.text = getString(R.string.sign_in)
-                            // Navigate to main screen or home
-                            val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-                            findNavController().navigate(action)
+                            safeNavigateToHome("Login success")
                             Snackbar.make(binding.root, "Successfully logged in", Snackbar.LENGTH_SHORT).show()
                             loginViewModel.resetState()
                         }
@@ -106,12 +136,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             btnSignIn.setOnClickListener {
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
-                loginViewModel.signIn(email, password)
+
+                loginViewModel.signIn(email, password, cbRememberMe.isChecked)
             }
 
             btnSignUp.setOnClickListener {
-                val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-                findNavController().navigate(action)
+                    val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+                    findNavController().navigate(action)
+
             }
 
             btnGoogle.setOnClickListener {
@@ -119,4 +151,5 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             }
         }
     }
+
 }

@@ -22,46 +22,58 @@ import com.example.androidtbc.presentation.home.innerfragments.nowplaying.NowPla
 import com.example.androidtbc.presentation.home.innerfragments.popular.PopularFragment
 import com.example.androidtbc.presentation.home.innerfragments.toprated.TopRatedFragment
 import com.example.androidtbc.presentation.home.innerfragments.upcoming.UpcomingFragment
+import com.example.androidtbc.presentation.login.LoginViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private val viewModel: HomeViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var popularMoviesAdapter: PopularMoviesAdapter
     private lateinit var searchResultsAdapter: PopularMoviesSearchAdapter
-
-
 
     private var isSearchActive = false
 
     override fun start() {
         setupRecyclerView()
-        setupSearchListener()
+        setUpListeners()
         observeMovies()
         initVP()
         setupBottomNavigation()
     }
 
+    private fun logout() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                loginViewModel.logout()
+
+                kotlinx.coroutines.delay(300)
+
+                val action = HomeFragmentDirections.actionHomeFragmentToLoginFragment(fromLogout = true)
+                findNavController().navigate(action)
+                Snackbar.make(binding.root, "Logged out successfully", Snackbar.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Snackbar.make(binding.root, "Logout error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun setupBottomNavigation() {
         binding.bottomNavView.apply {
-            // Set the home item as selected initially
             selectedItemId = R.id.homeFragment
 
-            // Set up item selection listener
             setOnItemSelectedListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.homeFragment -> {
-                        // We're already on the home fragment, so just return true
                         true
                     }
                     R.id.savedMoviesFragment -> {
-                        // Navigate to saved movies fragment
                         findNavController().navigate(R.id.savedMoviesFragment)
-                        false // Return false to not select this item yet (it will be selected in the SavedMoviesFragment)
+                        false
                     }
                     else -> false
                 }
@@ -69,25 +81,37 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    private fun setupSearchListener() {
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString().trim()
-                isSearchActive = query.isNotEmpty()
-
-                if (isSearchActive) {
-                    viewModel.setSearchQuery(query)
-                } else {
-                    viewModel.setSearchQuery("")
+    private fun setUpListeners() {
+        with(binding) {
+            etSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
 
-                updateUIForSearchState()
-            }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val query = s.toString().trim()
+                    isSearchActive = query.isNotEmpty()
 
-            override fun afterTextChanged(s: Editable?) {}
-        })
+                    if (isSearchActive) {
+                        viewModel.setSearchQuery(query)
+                    } else {
+                        viewModel.setSearchQuery("")
+                    }
+
+                    updateUIForSearchState()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            btnLogOut.setOnClickListener{
+                logout()
+            }
+        }
     }
 
     private fun updateUIForSearchState() {
@@ -136,7 +160,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             }
         }
-}
+    }
+
     private fun initVP() {
         val fragments = listOf(
             NowPlayingFragment(),
@@ -163,7 +188,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 TabLayoutMediator(tabLayout, vp2) { tab, position ->
                     tab.text = tabTitles[position]
                 }.attach()
-
             }
         }
     }
@@ -180,7 +204,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun setupRecyclerView() {
-        popularMoviesAdapter = PopularMoviesAdapter{ movie: MovieResult ->
+        popularMoviesAdapter = PopularMoviesAdapter { movie: MovieResult ->
             navigateToDetailScreen(movie)
         }
         binding.rvPopular.apply {
@@ -188,23 +212,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             setHasFixedSize(true)
         }
 
-        searchResultsAdapter = PopularMoviesSearchAdapter{movie: MovieResult ->
+        searchResultsAdapter = PopularMoviesSearchAdapter { movie: MovieResult ->
             navigateToDetailScreen(movie)
-
         }
         binding.rvSearchResults.apply {
             adapter = searchResultsAdapter
             setHasFixedSize(true)
         }
     }
+
     private fun navigateToDetailScreen(movie: MovieResult) {
         val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
         findNavController().navigate(action)
     }
-
-
-
-
-
-
 }
