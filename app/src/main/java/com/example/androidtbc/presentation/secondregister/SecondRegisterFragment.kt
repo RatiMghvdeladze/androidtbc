@@ -13,7 +13,7 @@ class SecondRegisterFragment : BaseFragment<FragmentSecondRegisterBinding>(Fragm
     private fun setUpListeners() {
         with(binding){
             btnContinue.setOnClickListener {
-                val action = SecondRegisterFragmentDirections.actionSecondRegisterFragmentToHomeFragment()
+                val action = SecondRegisterFragmentDirections.actionSecondRegisterFragmentToLoginFragment2()
                 findNavController().navigate(action)
             }
         }

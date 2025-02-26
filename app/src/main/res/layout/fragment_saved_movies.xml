@@ -7,12 +7,13 @@
     android:background="#242A32"
     tools:context=".presentation.savedmovies.SavedMoviesFragment">
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Content of saved movies -->
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
@@ -20,9 +21,21 @@
             android:layout_marginStart="26dp"
             android:layout_marginTop="26dp"
             android:scaleType="center"
-            android:background="@drawable/ic_arrorw_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrorw_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnClearAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginEnd="13dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tvWatchList"
+            app:layout_constraintTop_toTopOf="@id/tvWatchList" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSavedMovies"
@@ -31,6 +44,40 @@
             app:layout_constraintTop_toBottomOf="@id/tvWatchList"
             android:layout_marginTop="30dp"
             app:layout_constraintBottom_toBottomOf="parent"/>
+        <android.widget.ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:indeterminate="true"
+            app:layout_constraintTop_toBottomOf="@id/tvWatchList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_saved_movies_yet"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/movies_you_save_will_appear_here"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvWatchList"
@@ -48,7 +95,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
         android:layout_width="match_parent"

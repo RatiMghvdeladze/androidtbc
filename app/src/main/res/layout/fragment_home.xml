@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/bg_search"
-                    android:drawableEnd="@drawable/ic_search2"
+                    android:drawableEnd="@drawable/ic_search_blue"
                     android:fontFamily="@font/poppins_semibold"
                     android:hint="@string/search"
                     android:paddingVertical="12dp"
@@ -95,7 +95,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <!-- TabLayout will always stay on screen -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
@@ -109,7 +108,6 @@
             app:layout_scrollFlags="noScroll" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main content area -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -142,7 +140,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
         android:layout_width="match_parent"

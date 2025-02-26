@@ -26,4 +26,6 @@
     <string name="about_movie">About Movie</string>
     <string name="cast">Cast</string>
     <string name="minutes_format">%d Minutes</string>
+    <string name="no_saved_movies_yet">No saved movies yet</string>
+    <string name="movies_you_save_will_appear_here">Movies you save will appear here</string>
 </resources>

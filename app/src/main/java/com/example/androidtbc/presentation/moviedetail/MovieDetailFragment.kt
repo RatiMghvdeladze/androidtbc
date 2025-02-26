@@ -1,8 +1,11 @@
 package com.example.androidtbc.presentation.moviedetail
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +21,7 @@ import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
 import com.example.androidtbc.presentation.moviedetail.innerfragments.aboutmovie.AboutMovieFragment
 import com.example.androidtbc.presentation.moviedetail.innerfragments.cast.CastFragment
+import com.example.androidtbc.presentation.savedmovies.SavedMoviesViewModel
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.loadTmdbImage
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,6 +34,7 @@ import java.util.Locale
 class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMovieDetailBinding::inflate) {
 
     private val viewModel: MovieDetailViewModel by viewModels()
+    private val savedMoviesViewModel: SavedMoviesViewModel by activityViewModels()
     private val args: MovieDetailFragmentArgs by navArgs()
 
     override fun start() {
@@ -37,20 +42,50 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
         initVP()
         fetchMovieDetails()
         observeMovieDetails()
+        observeIsSaved()
     }
 
     private fun setupListeners() {
-        binding.btnBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        with(binding) {
+            btnBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
 
-        // Add click listener for rating container
-        binding.ratingContainer.setOnClickListener {
-            // Toggle vote count visibility
-            val isVisible = binding.tvVoteCount.visibility == View.VISIBLE
-            binding.tvVoteCount.visibility = if (isVisible) View.GONE else View.VISIBLE
+            btnFavorite.setOnClickListener {
+                viewModel.toggleSaveMovie()
+            }
+
+            ratingContainer.setOnClickListener {
+                val isVisible = tvVoteCount.visibility == View.VISIBLE
+                tvVoteCount.visibility = if (isVisible) View.GONE else View.VISIBLE
+            }
         }
     }
+
+    private fun observeIsSaved() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isSaved.collect { isSaved ->
+                    updateFavoriteButton(isSaved)
+
+                   if (isSaved) {
+                        savedMoviesViewModel.fetchSavedMovies()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateFavoriteButton(isSaved: Boolean) {
+       if (isSaved) {
+            binding.btnFavorite.setImageResource(R.drawable.ic_favorite_filled)
+            binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.RED)
+        } else {
+            binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite)
+            binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        }
+    }
+
 
     private fun fetchMovieDetails() {
         viewModel.getMovieDetails(args.movieId)
@@ -81,7 +116,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     }
 
     private fun displayMovieDetails(movie: MovieDetailDto) {
-        binding.progressBar.visibility = View.GONE // Hide when data loads
+        binding.progressBar.visibility = View.GONE
 
         with(binding) {
             tvMovieTitle.text = movie.title
@@ -96,8 +131,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
             if(movie.adult) ivAgeRestriction.visibility = View.VISIBLE
 
-            // Format the rating to display only one decimal place
-            tvRating.text = String.format("%.1f", movie.voteAverage)
+           tvRating.text = String.format("%.1f", movie.voteAverage)
 
             tvVoteCount.text = "(${NumberFormat.getNumberInstance(Locale.US).format(movie.voteCount)})"
 
@@ -114,12 +148,12 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
 
     private fun initVP() {
-        val movieId = args.movieId  // Ensure movieId is retrieved properly
+        val movieId = args.movieId
 
         val fragments = listOf(
             AboutMovieFragment().apply {
                 arguments = Bundle().apply {
-                    putInt("movieId", movieId)  // Pass movieId as an argument
+                    putInt("movieId", movieId)
                 }
             },
             CastFragment().apply {
