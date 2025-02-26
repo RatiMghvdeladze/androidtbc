@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.home.innerfragments.nowplaying
+package com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying
 
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -11,7 +11,7 @@ import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentNowPlayingBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.HomeFragmentDirections
-import com.example.androidtbc.presentation.home.innerfragments.nowplaying.adapter.NowPlayingAdapter
+import com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying.adapter.NowPlayingAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

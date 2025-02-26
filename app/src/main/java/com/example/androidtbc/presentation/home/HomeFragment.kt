@@ -18,10 +18,10 @@ import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.PopularMoviesAdapter
 import com.example.androidtbc.presentation.home.adapter.PopularMoviesSearchAdapter
 import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
-import com.example.androidtbc.presentation.home.innerfragments.nowplaying.NowPlayingFragment
-import com.example.androidtbc.presentation.home.innerfragments.popular.PopularFragment
-import com.example.androidtbc.presentation.home.innerfragments.toprated.TopRatedFragment
-import com.example.androidtbc.presentation.home.innerfragments.upcoming.UpcomingFragment
+import com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying.NowPlayingFragment
+import com.example.androidtbc.presentation.home.tablayoutfragments.popular.PopularFragment
+import com.example.androidtbc.presentation.home.tablayoutfragments.toprated.TopRatedFragment
+import com.example.androidtbc.presentation.home.tablayoutfragments.upcoming.UpcomingFragment
 import com.example.androidtbc.presentation.login.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -110,6 +110,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
             btnLogOut.setOnClickListener{
                 logout()
+            }
+            btnProfile.setOnClickListener{
+                val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment()
+                findNavController().navigate(action)
+
             }
         }
     }

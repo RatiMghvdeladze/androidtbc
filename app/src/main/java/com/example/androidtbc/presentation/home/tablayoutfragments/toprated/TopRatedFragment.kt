@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.home.innerfragments.popular
+package com.example.androidtbc.presentation.home.tablayoutfragments.toprated
 
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -8,19 +8,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.example.androidtbc.data.remote.dto.MovieResult
-import com.example.androidtbc.databinding.FragmentPopularBinding
+import com.example.androidtbc.databinding.FragmentTopRatedBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.HomeFragmentDirections
-import com.example.androidtbc.presentation.home.innerfragments.popular.adapter.PopularAdapter
+import com.example.androidtbc.presentation.home.tablayoutfragments.toprated.adapter.TopRatedMovieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PopularFragment : BaseFragment<FragmentPopularBinding>(FragmentPopularBinding::inflate) {
-    private val viewModel: PopularViewModel by viewModels()
-    private val adapter: PopularAdapter by lazy {
-        PopularAdapter { movie: MovieResult ->
+class TopRatedFragment : BaseFragment<FragmentTopRatedBinding>(FragmentTopRatedBinding::inflate) {
+
+    private val viewModel: TopRatedViewModel by viewModels()
+    // Then update the adapter instantiation
+    private val adapter: TopRatedMovieAdapter by lazy {
+        TopRatedMovieAdapter { movie: MovieResult ->
             navigateToDetailScreen(movie)
         }
     }
@@ -41,14 +43,14 @@ class PopularFragment : BaseFragment<FragmentPopularBinding>(FragmentPopularBind
 
     private fun setUpRV() {
         with(binding) {
-            rvPopular.adapter = adapter
+            rvTopRated.adapter = adapter
         }
     }
 
     private fun collectMovies() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.popularMovies.collectLatest {
+                viewModel.topRatedMovies.collectLatest {
                     adapter.submitData(it)
                 }
             }

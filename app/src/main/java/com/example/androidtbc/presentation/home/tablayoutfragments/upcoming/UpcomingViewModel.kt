@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.home.innerfragments.upcoming
+package com.example.androidtbc.presentation.home.tablayoutfragments.upcoming
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

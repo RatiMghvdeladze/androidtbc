@@ -1,11 +1,11 @@
-package com.example.androidtbc.presentation.home.innerfragments.upcoming.adapter
+package com.example.androidtbc.presentation.home.tablayoutfragments.popular.adapter
 
 import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.ItemMoviePosterBinding
 import com.example.androidtbc.presentation.base.BaseMovieAdapter
 import com.example.androidtbc.utils.loadTmdbImage
 
-class UpcomingMovieAdapter(
+class PopularAdapter(
     private val onMovieClick: (MovieResult) -> Unit
 ) : BaseMovieAdapter<ItemMoviePosterBinding>(
     bindingInflater = { inflater, parent, attachToParent ->
@@ -15,4 +15,5 @@ class UpcomingMovieAdapter(
         binding.ivPoster.loadTmdbImage(movie.posterPath, "w185")
     },
     itemClickListener = onMovieClick
+
 )

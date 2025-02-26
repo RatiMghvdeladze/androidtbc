@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.home.innerfragments.upcoming
+package com.example.androidtbc.presentation.home.tablayoutfragments.upcoming
 
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -11,7 +11,7 @@ import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentUpcomingBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.HomeFragmentDirections
-import com.example.androidtbc.presentation.home.innerfragments.upcoming.adapter.UpcomingMovieAdapter
+import com.example.androidtbc.presentation.home.tablayoutfragments.upcoming.adapter.UpcomingMovieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.example.androidtbc.presentation.home.innerfragments.nowplaying.adapter
+package com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying.adapter
 
 import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.ItemMoviePosterBinding
