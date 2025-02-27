@@ -48,18 +48,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/btnLogOut"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:src="@android:drawable/ic_lock_power_off"
-                    app:layout_constraintStart_toEndOf="@id/btnProfile"
-                    app:layout_constraintTop_toTopOf="@id/btnProfile"
-                    app:layout_constraintBottom_toBottomOf="@id/btnProfile"
-                    />"
-
-
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSearch"

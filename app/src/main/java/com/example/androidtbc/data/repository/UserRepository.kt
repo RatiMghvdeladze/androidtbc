@@ -6,13 +6,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) {
 
     private val usersCollection = firestore.collection("users")
+    private var cachedUser: User? = null
 
     suspend fun saveUserInfo(name: String, phoneNumber: String, city: String): Result<Unit> {
         return try {
@@ -26,13 +29,27 @@ class UserRepository @Inject constructor(
             )
 
             usersCollection.document(currentUser.uid).set(userData).await()
+
+            // Update cache with new data
+            cachedUser = User(
+                email = currentUser.email ?: "",
+                fullName = name,
+                phoneNumber = phoneNumber,
+                city = city
+            )
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun getUserInfo(): Result<User> {
+    suspend fun getUserInfo(forceRefresh: Boolean = false): Result<User> {
+        // Return cached user if available and not forcing refresh
+        if (!forceRefresh && cachedUser != null) {
+            return Result.success(cachedUser!!)
+        }
+
         return try {
             val currentUser = auth.currentUser ?: return Result.failure(Exception("No authenticated user"))
 
@@ -44,6 +61,10 @@ class UserRepository @Inject constructor(
                     phoneNumber = document.getString("phoneNumber") ?: "",
                     city = document.getString("city") ?: ""
                 )
+
+                // Update cache
+                cachedUser = user
+
                 Result.success(user)
             } else {
                 Result.failure(Exception("User data not found"))
@@ -51,5 +72,9 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    fun clearCache() {
+        cachedUser = null
     }
 }

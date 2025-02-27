@@ -22,8 +22,6 @@ import com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying.No
 import com.example.androidtbc.presentation.home.tablayoutfragments.popular.PopularFragment
 import com.example.androidtbc.presentation.home.tablayoutfragments.toprated.TopRatedFragment
 import com.example.androidtbc.presentation.home.tablayoutfragments.upcoming.UpcomingFragment
-import com.example.androidtbc.presentation.login.LoginViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -32,7 +30,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private val viewModel: HomeViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var popularMoviesAdapter: PopularMoviesAdapter
     private lateinit var searchResultsAdapter: PopularMoviesSearchAdapter
 
@@ -46,21 +43,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         setupBottomNavigation()
     }
 
-    private fun logout() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                loginViewModel.logout()
-
-                kotlinx.coroutines.delay(300)
-
-                val action = HomeFragmentDirections.actionHomeFragmentToLoginFragment(fromLogout = true)
-                findNavController().navigate(action)
-                Snackbar.make(binding.root, "Logged out successfully", Snackbar.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Snackbar.make(binding.root, "Logout error: ${e.message}", Snackbar.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     private fun setupBottomNavigation() {
         binding.bottomNavView.apply {
@@ -108,9 +90,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 override fun afterTextChanged(s: Editable?) {}
             })
 
-            btnLogOut.setOnClickListener{
-                logout()
-            }
             btnProfile.setOnClickListener{
                 val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment()
                 findNavController().navigate(action)
