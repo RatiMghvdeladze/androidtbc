@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="#242A32"
+    android:padding="16dp"
     tools:context=".presentation.home.profile.innerfragments.EditProfileFragment">
 
 
@@ -22,34 +22,34 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"
-        android:textSize="24sp"
-        android:textColor="@color/white"
         android:fontFamily="@font/poppins_semibold"
-        app:layout_constraintTop_toTopOf="@id/btnBack"
+        android:text="@string/edit_profile"
+        android:textColor="@color/white"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:hint="Full Name"
-        app:endIconMode="clear_text"
+        android:hint="@string/full_name"
         android:textColorHint="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:endIconMode="clear_text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etName"
-            android:fontFamily="@font/poppins"
-            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:fontFamily="@font/poppins"
+            android:inputType="textPersonName"
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -57,12 +57,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Phone Number"
+        android:hint="@string/phone_number"
         android:textColorHint="@color/white"
         app:endIconMode="clear_text"
-        app:layout_constraintTop_toBottomOf="@id/tilName"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tilName">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPhone"
@@ -77,13 +77,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColorHint="@color/white"
-        android:hint="City"
         android:fontFamily="@font/poppins"
+        android:hint="City"
+        android:textColorHint="@color/white"
         app:endIconMode="clear_text"
-        app:layout_constraintTop_toBottomOf="@id/tilPhone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tilPhone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCity"
@@ -96,25 +96,25 @@
         android:id="@+id/btnUpdateProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update Profile"
         android:layout_marginHorizontal="40dp"
-        android:background="@drawable/bg_et_edit_profile"
         android:layout_marginTop="32dp"
-        android:textColor="@color/white"
+        android:background="@drawable/bg_et_edit_profile"
         android:fontFamily="@font/poppins_semibold"
-        app:layout_constraintTop_toBottomOf="@id/tilCity"
+        android:text="@string/update_profile"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tilCity" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_marginTop="40dp"
         android:indeterminateTint="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/btnUpdateProfile"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnUpdateProfile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

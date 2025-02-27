@@ -253,7 +253,7 @@
             android:textColor="#979797"
             android:fontFamily="@font/poppins"
 
-            android:text="Already have an account?"
+            android:text="@string/already_have_an_account"
 
             />
 

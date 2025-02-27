@@ -4,10 +4,10 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home"/>
+        android:title="@string/home"/>
     <item
         android:id="@+id/savedMoviesFragment"
         android:icon="@drawable/ic_bookmark"
-        android:title="Watch list"/>
+        android:title="@string/watch_list"/>
 
 </menu>

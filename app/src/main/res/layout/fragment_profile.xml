@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/poppins"
-                    android:text="My Account"
+                    android:text="@string/my_account"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@+id/ivMyAccount"
@@ -164,7 +164,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
-                    android:text="Make changes to your account"
+                    android:text="@string/make_changes_to_your_account"
                     android:textColor="#AAAAAA"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@+id/ivMyAccount"
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/poppins"
-                    android:text="Log out"
+                    android:text="@string/log_out"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@+id/ivLogout"
@@ -221,7 +221,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
-                    android:text="Further secure your account for safety"
+                    android:text="@string/further_secure_your_account_for_safety"
                     android:textColor="#AAAAAA"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@+id/ivLogout"
@@ -241,7 +241,6 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.cardview.widget.CardView>
 
-    <!-- More Label -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvMore"
         android:layout_width="wrap_content"
@@ -249,13 +248,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/poppins"
-        android:text="More"
+        android:text="@string/more"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardAccountSettings" />
 
-    <!-- More Options Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardMore"
         android:layout_width="0dp"
@@ -299,7 +297,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/poppins"
-                    android:text="Help &amp; Support"
+                    android:text="@string/help_amp_support"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/ivHelp"
@@ -322,7 +320,6 @@
                 android:layout_height="1dp"
                 android:background="#F0F0F0" />
 
-            <!-- About App -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutAbout"
                 android:layout_width="match_parent"
@@ -347,7 +344,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/poppins"
-                    android:text="About App"
+                    android:text="@string/about_app"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/ivAbout"

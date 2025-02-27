@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_clear_all"
-        android:title="Clear All"
+        android:title="@string/clear_all"
         android:icon="@drawable/ic_delete"
     app:showAsAction="always" />
 </menu>

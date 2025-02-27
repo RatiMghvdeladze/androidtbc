@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="What do you want to watch?"
+                    android:text="@string/what_do_you_want_to_watch"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/btnProfile"

@@ -50,4 +50,23 @@
     <string name="profile_updated_successfully">Profile updated successfully</string>
     <string name="error_updating_profile">Error updating profile</string>
     <string name="no_changes_made">No changes made</string>
+    <string name="character_john_doe">Character: John Doe</string>
+    <string name="gender_male">Gender: Male</string>
+    <string name="popularity_32_5">Popularity: 32.5</string>
+    <string name="actor_name">Actor Name</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="what_do_you_want_to_watch">What do you want to watch?</string>
+    <string name="remember_me">Remember me</string>
+    <string name="my_account">My Account</string>
+    <string name="make_changes_to_your_account">Make changes to your account</string>
+    <string name="log_out">Log out</string>
+    <string name="further_secure_your_account_for_safety">Further secure your account for safety</string>
+    <string name="more">More</string>
+    <string name="help_amp_support"><![CDATA[Help & Support]]></string>
+    <string name="about_app">About App</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="watch_list">Watch list</string>
+    <string name="home">Home</string>
 </resources>
