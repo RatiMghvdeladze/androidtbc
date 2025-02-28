@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">androidtbc</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">გამარჯობა ფრაგმენტი</string>
+    <string name="sign_in">შესვლა</string>
+    <string name="e_mail">ელ-ფოსტა</string>
+    <string name="or">ან</string>
+    <string name="don_t_you_have_an_account">არ გაქვთ ანგარიში?</string>
+    <string name="password">პაროლი</string>
+    <string name="sign_up">რეგისტრაცია</string>
+    <string name="repeat_password">გაიმეორეთ პაროლი</string>
+    <string name="default_web_client_id">259919719765-f3gojs1r67kkkhn4anj762eaockct907.apps.googleusercontent.com</string>
+    <string name="by_clicking_the_sign_up_button_you_accept_the_terms_of_the">\"რეგისტრაციის\" ღილაკზე დაჭერით, თქვენ ეთანხმებით</string>
+    <string name="privacy_policy">კონფიდენციალურობის პოლიტიკას</string>
+    <string name="tell_us_more_about_you">მოგვიყევით მეტი თქვენს შესახებ</string>
+    <string name="sign_up_successfully">რეგისტრაცია წარმატებით დასრულდა!</string>
+    <string name="your_name">თქვენი სახელი</string>
+    <string name="phone_number">ტელეფონის ნომერი</string>
+    <string name="current_city">ამჟამინდელი ქალაქი</string>
+    <string name="now_playing">ახლა უჩვენებენ</string>
+    <string name="top_rated">მაღალი შეფასებით</string>
+    <string name="upcoming">მოსალოდნელი</string>
+    <string name="popular">პოპულარული</string>
+    <string name="search">ძიება</string>
+    <string name="detail">დეტალები</string>
+    <string name="about_movie">ფილმის შესახებ</string>
+    <string name="cast">მსახიობები</string>
+    <string name="minutes_format">%d წუთი</string>
+    <string name="no_saved_movies_yet">ჯერ შენახული ფილმები არ არის</string>
+    <string name="movies_you_save_will_appear_here">თქვენს მიერ შენახული ფილმები გამოჩნდება აქ</string>
+    <string name="please_enter_your_name">გთხოვთ შეიყვანოთ თქვენი სახელი</string>
+    <string name="please_enter_your_phone_number">გთხოვთ შეიყვანოთ თქვენი ტელეფონის ნომერი</string>
+    <string name="please_enter_your_city">გთხოვთ შეიყვანოთ თქვენი ქალაქი</string>
+    <string name="profile_information_saved_successfully">პროფილის ინფორმაცია წარმატებით შეინახა</string>
+    <string name="continuee">გაგრძელება</string>
+    <string name="loading_and_three_dot">იტვირთება...</string>
+    <string name="clear_watchlist">სანახავი სიის გასუფთავება</string>
+    <string name="are_you_sure_you_want_to_clear_all_saved_movies">დარწმუნებული ხართ, რომ გსურთ ყველა შენახული ფილმის წაშლა?</string>
+    <string name="clear_all">ყველას წაშლა</string>
+    <string name="cancel">გაუქმება</string>
+    <string name="logout">გასვლა</string>
+    <string name="are_you_sure_you_want_to_log_out">დარწმუნებული ხართ, რომ გსურთ გასვლა?</string>
+    <string name="yes">დიახ</string>
+    <string name="no">არა</string>
+    <string name="my_account_feature_coming_soon">ჩემი ანგარიშის ფუნქცია მალე იქნება ხელმისაწვდომი</string>
+    <string name="help_support_feature_coming_soon"><![CDATA[დახმარება და მხარდაჭერის ფუნქცია მალე იქნება ხელმისაწვდომი]]></string>
+    <string name="about_app_feature_coming_soon">აპლიკაციის შესახებ ფუნქცია მალე იქნება ხელმისაწვდომი</string>
+
+    <string name="error_field_required">ეს ველი აუცილებელია</string>
+    <string name="profile_updated_successfully">პროფილი წარმატებით განახლდა</string>
+    <string name="error_updating_profile">შეცდომა პროფილის განახლებისას</string>
+    <string name="no_changes_made">ცვლილებები არ განხორციელებულა</string>
+    <string name="character_john_doe">პერსონაჟი: ჯონ დოუ</string>
+    <string name="gender_male">სქესი: მამრობითი</string>
+    <string name="popularity_32_5">პოპულარობა: 32.5</string>
+    <string name="actor_name">მსახიობის სახელი</string>
+    <string name="update_profile">პროფილის განახლება</string>
+    <string name="full_name">სრული სახელი</string>
+    <string name="edit_profile">პროფილის რედაქტირება</string>
+    <string name="what_do_you_want_to_watch">რისი ყურება გსურთ?</string>
+    <string name="remember_me">დამიმახსოვრე</string>
+    <string name="my_account">ჩემი ანგარიში</string>
+    <string name="make_changes_to_your_account">შეიტანეთ ცვლილებები თქვენს ანგარიშში</string>
+    <string name="log_out">გასვლა</string>
+    <string name="further_secure_your_account_for_safety">დამატებით დაიცავით თქვენი ანგარიში უსაფრთხოებისთვის</string>
+    <string name="more">მეტი</string>
+    <string name="help_amp_support"><![CDATA[დახმარება და მხარდაჭერა]]></string>
+    <string name="about_app">აპლიკაციის შესახებ</string>
+    <string name="already_have_an_account">უკვე გაქვთ ანგარიში?</string>
+    <string name="watch_list">სანახავი სია</string>
+    <string name="home">მთავარი</string>
+    <string name="profile">პროფილი</string>
+
+
+    <!-- Language change functionality -->
+    <string name="change_language">ენის შეცვლა</string>
+    <string name="language_english">ინგლისური</string>
+    <string name="language_georgian">ქართული</string>
+    <string name="language_settings">ენის პარამეტრები</string>
+    <string name="select_language">აირჩიეთ ენა</string>
+    <string name="language_changed">ენა წარმატებით შეიცვალა</string>
+</resources>

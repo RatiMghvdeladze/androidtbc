@@ -69,4 +69,14 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="watch_list">Watch list</string>
     <string name="home">Home</string>
+    <string name="profile">Profile</string>
+
+    <!-- Add these to your English strings.xml file -->
+    <string name="change_language">Change Language</string>
+    <string name="language_english">English</string>
+    <string name="language_georgian">Georgian</string>
+    <string name="language_settings">Language Settings</string>
+    <string name="select_language">Select Language</string>
+    <string name="language_changed">Language changed successfully</string>
+
 </resources>

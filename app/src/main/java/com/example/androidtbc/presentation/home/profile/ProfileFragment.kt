@@ -1,5 +1,7 @@
 package com.example.androidtbc.presentation.home.profile
 
+import android.content.Context
+import android.content.res.Configuration
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
@@ -14,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
@@ -56,7 +59,50 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                 Snackbar.make(root,
                     getString(R.string.about_app_feature_coming_soon), Snackbar.LENGTH_SHORT).show()
             }
+            layoutLanguage.setOnClickListener {
+                showLanguageSelectionDialog()
+            }
         }
+    }
+    private fun showLanguageSelectionDialog() {
+        val languages = arrayOf("English", "Français", "Español", "Deutsch", "Georgian")
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getString(R.string.select_language))
+            .setItems(languages) { dialog, which ->
+                val locale = when (which) {
+                    0 -> Locale("en")
+                    1 -> Locale("fr")
+                    2 -> Locale("es")
+                    3 -> Locale("de")
+                    4 -> Locale("ka")
+                    else -> Locale("en")
+                }
+                updateLocale(locale)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+    private fun updateLocale(locale: Locale) {
+        // Save the selected language preference
+        val sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("app_language", locale.language).apply()
+
+        // Create updated configuration
+        val configuration = Configuration(resources.configuration)
+        configuration.setLocale(locale)
+
+        // Create context with the new configuration
+        val context = requireContext().createConfigurationContext(configuration)
+
+        // Update resources with the new configuration
+        val resources = context.resources
+
+        // Restart the activity to apply changes
+        requireActivity().recreate()
     }
 
     private fun showLogoutConfirmationDialog() {
