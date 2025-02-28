@@ -3,6 +3,7 @@ package com.example.androidtbc.di
 import com.example.androidtbc.data.repository.FirestoreMovieRepository
 import com.example.androidtbc.data.repository.FirestoreMovieRepositoryImpl
 import com.example.androidtbc.data.repository.UserRepository
+import com.example.androidtbc.data.repository.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -28,7 +29,7 @@ object FirebaseModule {
     fun provideUserRepository(
         firestore: FirebaseFirestore,
         auth: FirebaseAuth
-    ): UserRepository = UserRepository(firestore, auth)
+    ): UserRepository = UserRepositoryImpl(firestore, auth)
 
     @Provides
     @Singleton
