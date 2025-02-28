@@ -18,9 +18,9 @@
     <string name="your_name">თქვენი სახელი</string>
     <string name="phone_number">ტელეფონის ნომერი</string>
     <string name="current_city">ამჟამინდელი ქალაქი</string>
-    <string name="now_playing">ახლა უჩვენებენ</string>
+    <string name="now_playing">ახლა გადის</string>
     <string name="top_rated">მაღალი შეფასებით</string>
-    <string name="upcoming">მოსალოდნელი</string>
+    <string name="upcoming">მალე</string>
     <string name="popular">პოპულარული</string>
     <string name="search">ძიება</string>
     <string name="detail">დეტალები</string>

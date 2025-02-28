@@ -1,5 +1,7 @@
 package com.example.androidtbc.di
 
+import com.example.androidtbc.data.repository.FirestoreMovieRepository
+import com.example.androidtbc.data.repository.FirestoreMovieRepositoryImpl
 import com.example.androidtbc.data.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,4 +29,13 @@ object FirebaseModule {
         firestore: FirebaseFirestore,
         auth: FirebaseAuth
     ): UserRepository = UserRepository(firestore, auth)
+
+    @Provides
+    @Singleton
+    fun provideFirestoreMovieRepository(
+        db: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): FirestoreMovieRepository {
+        return FirestoreMovieRepositoryImpl(db, auth)
+    }
 }

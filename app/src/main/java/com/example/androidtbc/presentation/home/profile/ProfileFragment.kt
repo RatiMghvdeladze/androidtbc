@@ -7,9 +7,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentProfileBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.home.profile.adapter.ProfileItemAdapter
 import com.example.androidtbc.presentation.login.LoginViewModel
 import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
@@ -22,14 +24,99 @@ import java.util.Locale
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val viewModel: ProfileViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var profileAdapter: ProfileItemAdapter
 
     override fun start() {
+        setUpRv()
         loadUserProfile()
         observeUserProfile()
-        setUpListeners()
+        setupProfileHeader()
     }
 
-    private fun setUpListeners() {
+    private fun setUpRv() {
+        profileAdapter = ProfileItemAdapter { menuItem ->
+            handleMenuItemClick(menuItem)
+        }
+
+        with(binding.rvProfileMenu) {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = profileAdapter
+
+        }
+
+        profileAdapter.submitList(createProfileMenuItems())
+    }
+
+    private fun createProfileMenuItems(): List<ProfileMenuItem> {
+        return listOf(
+            ProfileMenuItem(
+                id = 1,
+                iconResId = R.drawable.ic_person_for_profile_page,
+                backgroundResId = R.drawable.bg_profile_page_item,
+                titleResId = R.string.my_account,
+                descriptionResId = R.string.make_changes_to_your_account,
+                showDivider = true
+            ),
+
+            ProfileMenuItem(
+                id = 2,
+                iconResId = R.drawable.ic_language,
+                backgroundResId = R.drawable.bg_profile_page_item,
+                iconTint = R.color.indigo_500,
+                titleResId = R.string.change_language,
+                showDivider = true
+            ),
+
+            ProfileMenuItem(
+                id = 3,
+                iconResId = R.drawable.ic_help_support,
+                backgroundResId = R.drawable.bg_profile_page_item,
+                iconTint = R.color.indigo_500,
+                titleResId = R.string.help_amp_support,
+                showDivider = true
+            ),
+
+            ProfileMenuItem(
+                id = 4,
+                iconResId = R.drawable.ic_heart_about_app,
+                backgroundResId = R.drawable.bg_profile_page_item,
+                iconTint = R.color.indigo_500,
+                titleResId = R.string.about_app,
+                showDivider = true
+            ),
+
+            ProfileMenuItem(
+                id = 5,
+                iconResId = R.drawable.ic_logout,
+                backgroundResId = R.drawable.bg_profile_page_item,
+                titleResId = R.string.log_out,
+                descriptionResId = R.string.further_secure_your_account_for_safety,
+                showDivider = false
+            )
+        )
+    }
+
+    private fun handleMenuItemClick(menuItem: ProfileMenuItem) {
+        when (menuItem.id) {
+            1 -> findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment())
+            2 -> showLanguageSelectionDialog()
+            3 -> Snackbar.make(
+                binding.root,
+                getString(R.string.help_support_feature_coming_soon),
+                Snackbar.LENGTH_SHORT
+            ).show()
+
+            4 -> Snackbar.make(
+                binding.root,
+                getString(R.string.about_app_feature_coming_soon),
+                Snackbar.LENGTH_SHORT
+            ).show()
+
+            5 -> showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun setupProfileHeader() {
         with(binding) {
             btnBack.setOnClickListener {
                 findNavController().navigateUp()
@@ -38,32 +125,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             btnEdit.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment())
             }
-
-            layoutMyAccount.setOnClickListener {
-                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment())
-            }
-
-
-            layoutLogout.setOnClickListener {
-                showLogoutConfirmationDialog()
-            }
-
-
-
-            layoutHelp.setOnClickListener {
-                Snackbar.make(root,
-                    getString(R.string.help_support_feature_coming_soon), Snackbar.LENGTH_SHORT).show()
-            }
-
-            layoutAbout.setOnClickListener {
-                Snackbar.make(root,
-                    getString(R.string.about_app_feature_coming_soon), Snackbar.LENGTH_SHORT).show()
-            }
-            layoutLanguage.setOnClickListener {
-                showLanguageSelectionDialog()
-            }
         }
     }
+
     private fun showLanguageSelectionDialog() {
         val languages = arrayOf("English", "Français", "Español", "Deutsch", "Georgian")
         val builder = AlertDialog.Builder(requireContext())
@@ -86,9 +150,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             .create()
             .show()
     }
+
     private fun updateLocale(locale: Locale) {
-        // Save the selected language preference
-        val sharedPreferences = requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
         sharedPreferences.edit().putString("app_language", locale.language).apply()
 
         // Create updated configuration
@@ -127,10 +192,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
                 kotlinx.coroutines.delay(300)
 
-                val action = ProfileFragmentDirections.actionProfileFragmentToLoginFragment(fromLogout = true)
+                val action =
+                    ProfileFragmentDirections.actionProfileFragmentToLoginFragment(fromLogout = true)
                 findNavController().navigate(action)
             } catch (e: Exception) {
-                Snackbar.make(binding.root, "Logout error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Logout error: ${e.message}", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -146,6 +213,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                     is Resource.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
+
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
 
@@ -156,11 +224,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                             }
                         }
                     }
+
                     is Resource.Error -> {
-                        Snackbar.make(binding.root, "Error: ${state.errorMessage}", Snackbar.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
+                        Snackbar.make(
+                            binding.root,
+                            "Error: ${state.errorMessage}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
+
                     is Resource.Idle -> {
-                        // Initial state, do nothing
                     }
                 }
             }
