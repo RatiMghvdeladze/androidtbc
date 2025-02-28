@@ -27,55 +27,44 @@ class MovieDetailViewModel @Inject constructor(
 
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
-            try {
-                _movieDetails.value = Resource.Loading
-                val response = repository.getMovieDetails(movieId)
-                _movieDetails.value = response
+            _movieDetails.value = Resource.Loading
+            val response = repository.getMovieDetails(movieId)
+            _movieDetails.value = response
 
-                checkIfMovieSaved(movieId)
-
-            } catch (e: Exception) {
-                _movieDetails.value = Resource.Error(e.message ?: "Unknown error occurred")
-            }
+            checkIfMovieSaved(movieId)
         }
     }
 
     private fun checkIfMovieSaved(movieId: Int) {
         viewModelScope.launch {
-            try {
-                val isSaved = firestoreRepository.isMovieSaved(movieId)
-                _isSaved.value = isSaved
-            } catch (e: Exception) {
-               }
+            val isSaved = firestoreRepository.isMovieSaved(movieId)
+            _isSaved.value = isSaved
         }
     }
 
     fun toggleSaveMovie() {
         viewModelScope.launch {
-            try {
-                when (val movieDetailsResource = _movieDetails.value) {
-                    is Resource.Success -> {
-                        val movie = movieDetailsResource.data
-                        val currentSaveStatus = _isSaved.value
+            when (val movieDetailsResource = _movieDetails.value) {
+                is Resource.Success -> {
+                    val movie = movieDetailsResource.data
+                    val currentSaveStatus = _isSaved.value
 
-                        if (currentSaveStatus) {
-                            if (firestoreRepository.removeMovie(movie.id)) {
-                                _isSaved.value = false
-                            }
-                        } else {
-                            if (firestoreRepository.saveMovie(movie)) {
-                                _isSaved.value = true
-                            }
+                    if (currentSaveStatus) {
+                        if (firestoreRepository.removeMovie(movie.id)) {
+                            _isSaved.value = false
                         }
-
-                        val actualStatus = firestoreRepository.isMovieSaved(movie.id)
-                        if (_isSaved.value != actualStatus) {
-                            _isSaved.value = actualStatus
+                    } else {
+                        if (firestoreRepository.saveMovie(movie)) {
+                            _isSaved.value = true
                         }
                     }
-                    else -> {}
+
+                    val actualStatus = firestoreRepository.isMovieSaved(movie.id)
+                    if (_isSaved.value != actualStatus) {
+                        _isSaved.value = actualStatus
+                    }
                 }
-            } catch (e: Exception) {
+                else -> {}
             }
         }
     }

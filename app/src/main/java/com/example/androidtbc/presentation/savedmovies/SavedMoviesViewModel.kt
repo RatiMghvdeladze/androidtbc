@@ -22,26 +22,18 @@ class SavedMoviesViewModel @Inject constructor(
     fun fetchSavedMovies() {
         viewModelScope.launch {
             _savedMovies.value = Resource.Loading
-            try {
-                val movies = firestoreRepository.getAllSavedMovies()
-                _savedMovies.value = Resource.Success(movies)
-            } catch (e: Exception) {
-                _savedMovies.value = Resource.Error(e.message ?: "Unknown error occurred")
-            }
+            val movies = firestoreRepository.getAllSavedMovies()
+            _savedMovies.value = Resource.Success(movies)
         }
     }
 
     fun clearAllSavedMovies() {
         viewModelScope.launch {
-            try {
-                val success = firestoreRepository.clearAllSavedMovies()
-                if (success) {
-                    fetchSavedMovies()
-                } else {
-                    _savedMovies.value = Resource.Error("Failed to clear saved movies")
-                }
-            } catch (e: Exception) {
-                _savedMovies.value = Resource.Error(e.message ?: "Unknown error occurred")
+            val success = firestoreRepository.clearAllSavedMovies()
+            if (success) {
+                fetchSavedMovies()
+            } else {
+                _savedMovies.value = Resource.Error("Failed to clear saved movies")
             }
         }
     }
