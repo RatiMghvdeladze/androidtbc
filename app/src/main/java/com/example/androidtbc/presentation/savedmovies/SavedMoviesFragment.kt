@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.R
+import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.databinding.FragmentSavedMoviesBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.savedmovies.adapter.SavedMovieAdapter
@@ -63,16 +64,33 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
     }
 
     private fun setUpRV() {
-        adapter = SavedMovieAdapter { movie ->
-            findNavController().navigate(
-                SavedMoviesFragmentDirections.actionSavedMoviesFragmentToMovieDetailFragment(movie.id)
-            )
-        }
+        adapter = SavedMovieAdapter(
+            onMovieClicked = { movie ->
+                findNavController().navigate(
+                    SavedMoviesFragmentDirections.actionSavedMoviesFragmentToMovieDetailFragment(movie.id)
+                )
+            },
+            onMovieLongClicked = { movie ->
+                showDeleteConfirmationDialog(movie)
+                true // Consume the event
+            }
+        )
 
         binding.rvSavedMovies.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SavedMoviesFragment.adapter
         }
+    }
+
+    private fun showDeleteConfirmationDialog(movie: MovieDetailDto) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.remove_from_watchlist))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_remove_this_movie_from_your_watchlist))
+            .setPositiveButton(getString(R.string.remove)) { _, _ ->
+                viewModel.deleteMovie(movie.id)
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     private fun observeSavedMovies() {

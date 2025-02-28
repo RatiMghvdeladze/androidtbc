@@ -13,6 +13,7 @@ interface FirestoreMovieRepository {
     suspend fun getAllSavedMovies(): List<MovieDetailDto>
     suspend fun isMovieSaved(movieId: Int): Boolean
     suspend fun clearAllSavedMovies(): Boolean
+    suspend fun deleteSavedMovie(movieId: Int): Boolean
 }
 
 @Singleton
@@ -21,11 +22,9 @@ class FirestoreMovieRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ) : FirestoreMovieRepository {
 
-    // Make this a computed property to always get the most current user
     private val currentUserId: String
         get() = auth.currentUser?.uid ?: "anonymous"
 
-    // Make this a computed property too
     private val savedMoviesCollection
         get() = db.collection("users").document(currentUserId).collection("savedMovies")
 
@@ -45,6 +44,10 @@ class FirestoreMovieRepositoryImpl @Inject constructor(
 
         savedMoviesCollection.document(movieId.toString()).delete().await()
         return !isMovieSaved(movieId)
+    }
+
+    override suspend fun deleteSavedMovie(movieId: Int): Boolean {
+        return removeMovie(movieId)
     }
 
     override suspend fun getAllSavedMovies(): List<MovieDetailDto> {

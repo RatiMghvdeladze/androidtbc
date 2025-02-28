@@ -10,9 +10,9 @@ import com.example.androidtbc.databinding.ItemSavedMovieBinding
 import com.example.androidtbc.utils.loadTmdbImage
 
 class SavedMovieAdapter(
-    private val onMovieClicked: (MovieDetailDto) -> Unit
+    private val onMovieClicked: (MovieDetailDto) -> Unit,
+    private val onMovieLongClicked: (MovieDetailDto) -> Boolean // Return true to consume the event
 ) : ListAdapter<MovieDetailDto, SavedMovieAdapter.SavedMovieViewHolder>(SavedMovieDiffCallback()) {
-
 
     inner class SavedMovieViewHolder(
         private val binding: ItemSavedMovieBinding
@@ -25,13 +25,21 @@ class SavedMovieAdapter(
                     onMovieClicked(getItem(position))
                 }
             }
+
+            binding.root.setOnLongClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    return@setOnLongClickListener onMovieLongClicked(getItem(position))
+                }
+                false
+            }
         }
 
         fun bind(movie: MovieDetailDto) {
             binding.apply {
                 tvTitle.text = movie.title
 
-                tvRating.text = movie.voteAverage.toString()
+                tvRating.text = String.format("%.1f", movie.voteAverage)
 
                 val genreName = movie.genres?.firstOrNull()?.name ?: "N/A"
                 tvGenre.text = genreName

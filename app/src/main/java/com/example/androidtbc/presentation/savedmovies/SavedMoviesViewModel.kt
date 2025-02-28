@@ -37,4 +37,14 @@ class SavedMoviesViewModel @Inject constructor(
             }
         }
     }
+    fun deleteMovie(movieId: Int) {
+        viewModelScope.launch {
+            val success = firestoreRepository.deleteSavedMovie(movieId)
+            if (success) {
+                fetchSavedMovies()
+            } else {
+                _savedMovies.value = Resource.Error("Failed to delete movie")
+            }
+        }
+    }
 }
