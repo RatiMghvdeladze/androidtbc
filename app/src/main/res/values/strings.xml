@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location_coordinates">Lat: %1$.6f, Lng: %2$.6f</string>
 </resources>

@@ -8,6 +8,7 @@ plugins {
     id("com.google.protobuf") version "0.9.4"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.secrets.gradle)
 }
 
 android {
@@ -25,7 +26,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://run.mocky.io/v3/\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://run.mocky.io/v3/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -43,10 +48,16 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation("com.google.android.gms:play-services-maps:17.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
     implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
@@ -100,6 +111,9 @@ protobuf {
 buildscript {
     repositories {
         google()
+    }
+    dependencies {
+        classpath ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:1.3.0")
     }
 }
 
