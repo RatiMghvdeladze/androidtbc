@@ -3,4 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="location_coordinates">Lat: %1$.6f, Lng: %2$.6f</string>
+    <string name="location_permission_needed">Location Permission Needed</string>
+    <string name="this_app_needs_location_permissions_to_function_properly_we_use_your_location_to_provide_accurate_location_based_services">This app needs location permissions to function properly. We use your location to provide accurate location-based services.</string>
+    <string name="ok">OK</string>
 </resources>

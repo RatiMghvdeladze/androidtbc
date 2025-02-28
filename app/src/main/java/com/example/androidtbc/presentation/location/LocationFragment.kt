@@ -2,10 +2,15 @@ package com.example.androidtbc.presentation.location
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,16 +18,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.androidtbc.BaseFragment
 import com.example.androidtbc.R
-import com.example.androidtbc.data.remote.dto.LocationDto
 import com.example.androidtbc.databinding.FragmentLocationBinding
-import com.example.androidtbc.utils.Resource
+import com.example.androidtbc.presentation.location.model.LocationUi
+import com.example.androidtbc.presentation.location.utils.Resource
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.maps.android.clustering.ClusterManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -31,76 +36,103 @@ class LocationFragment : BaseFragment<FragmentLocationBinding>(FragmentLocationB
 
     private val viewModel: LocationViewModel by viewModels()
     private var googleMap: GoogleMap? = null
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var clusterManager: ClusterManager<LocationClusterItem>
+
+    override fun start() {
+        observers()
+        setUpListeners()
+        checkLocationPermissions()
+    }
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         when {
-            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                initializeMapWithLocation()
-                Toast.makeText(requireContext(), "Precise location access granted", Toast.LENGTH_SHORT).show()
-            }
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                initializeMapWithLocation()
-                Toast.makeText(requireContext(), "Approximate location access granted", Toast.LENGTH_SHORT).show()
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
+                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                Toast.makeText(requireContext(), "Location services enabled", Toast.LENGTH_SHORT).show()
+                initializeMap(true)
             }
             else -> {
-                Toast.makeText(requireContext(), "Location permission is required to view the map", Toast.LENGTH_LONG).show()
-                setupMapWithoutLocation()
+                showPermissionRationale {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", requireContext().packageName, null)
+                    }
+                    startActivity(intent)
+                }
             }
         }
     }
 
-    override fun start() {
-        checkLocationPermissions()
-        setupBottomSheet()
-        setupObservers()
-        setupListeners()
-    }
 
     private fun checkLocationPermissions() {
-        when {
-            hasLocationPermissions(requireContext()) -> {
-                initializeMapWithLocation()
-            }
-            else -> {
-                requestLocationPermissions()
-            }
+        if (hasLocationPermissions(requireContext())) {
+            initializeMap(true)
+        } else {
+            requestPermissions()
         }
     }
 
     private fun hasLocationPermissions(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestLocationPermissions() {
-        locationPermissionRequest.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+    private fun requestPermissions() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ) {
+            showPermissionRationale {
+                locationPermissionRequest.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            }
+        } else {
+            locationPermissionRequest.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
-        )
+        }
     }
-    private fun initializeMapWithLocation() {
+
+    private fun showPermissionRationale(onRationaleShown: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.location_permission_needed))
+            .setMessage(getString(R.string.this_app_needs_location_permissions_to_function_properly_we_use_your_location_to_provide_accurate_location_based_services))
+            .setPositiveButton(getString(R.string.ok)) { _, _ -> onRationaleShown() }
+            .setCancelable(false)
+            .create()
+            .show()
+    }
+
+    private fun initializeMap(locationEnabled: Boolean) {
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             googleMap = map
+            setupClusterManager()
 
-            try {
-                if (hasLocationPermissions(requireContext())) {
-                    map.isMyLocationEnabled = true
+            if (locationEnabled && hasLocationPermissions(requireContext())) {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+                    googleMap?.isMyLocationEnabled = true
                     viewModel.setLocationPermissionGranted(true)
+                } else {
+                    viewModel.setLocationPermissionGranted(false)
                 }
-            } catch (e: SecurityException) {
-                Toast.makeText(requireContext(), "Error enabling location on map", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.setLocationPermissionGranted(false)
             }
 
             map.setOnMapClickListener {
@@ -109,102 +141,74 @@ class LocationFragment : BaseFragment<FragmentLocationBinding>(FragmentLocationB
             }
 
             viewModel.getLocations()
-
-            Toast.makeText(requireContext(), "Map initialized, fetching locations...", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun handleLocationState(state: Resource<List<LocationDto>>) {
+    private fun setupClusterManager() {
+        googleMap?.let { map ->
+            clusterManager = ClusterManager(requireContext(), map)
+
+            val renderer = ClusterRenderer(requireContext(), map, clusterManager)
+            clusterManager.renderer = renderer
+
+            clusterManager.setOnClusterClickListener { cluster ->
+                val builder = LatLngBounds.Builder()
+                cluster.items.forEach { builder.include(it.position) }
+
+                val bounds = builder.build()
+                val padding = resources.getDimensionPixelSize(R.dimen.map_padding)
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+                true
+            }
+
+            clusterManager.setOnClusterItemClickListener { item ->
+                hideBottomSheet()
+
+                viewModel.selectLocation(item.locationUi)
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(item.locationUi.latitude, item.locationUi.longitude),
+                        15f
+                    )
+                )
+                true
+            }
+
+            map.setOnCameraIdleListener(clusterManager)
+        }
+    }
+
+    private fun handleLocationState(state: Resource<List<LocationUi>>) {
+        binding.progressBar.visibility = if (state is Resource.Loading) View.VISIBLE else View.GONE
+
         when (state) {
-            is Resource.Idle -> {
-                binding.progressBar.visibility = View.GONE
-            }
-            is Resource.Loading -> {
-                binding.progressBar.visibility = View.VISIBLE
-                Toast.makeText(requireContext(), "Loading locations...", Toast.LENGTH_SHORT).show()
-            }
             is Resource.Success -> {
-                binding.progressBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Found ${state.data.size} locations", Toast.LENGTH_SHORT).show()
                 if (state.data.isNotEmpty()) {
-                    addMarkersToMap(state.data)
-                } else {
-                    Toast.makeText(requireContext(), "No locations available to display", Toast.LENGTH_LONG).show()
+                    addMarkersToClusterManager(state.data)
                 }
             }
             is Resource.Error -> {
-                binding.progressBar.visibility = View.GONE
                 Toast.makeText(requireContext(), "Error: ${state.errorMessage}", Toast.LENGTH_LONG).show()
             }
+            else -> {}
         }
     }
 
-    private fun addMarkersToMap(locations: List<LocationDto>) {
-        if (googleMap == null) {
-            Toast.makeText(requireContext(), "Map not initialized yet", Toast.LENGTH_SHORT).show()
-            return
+    private fun addMarkersToClusterManager(locations: List<LocationUi>) {
+        if (googleMap == null || !::clusterManager.isInitialized) return
+
+        clusterManager.clearItems()
+        locations.forEach { locationUi ->
+            clusterManager.addItem(LocationClusterItem(locationUi))
         }
+        clusterManager.cluster()
 
-        googleMap?.clear()
-        var markersAdded = 0
-
-        locations.forEach { location ->
-            try {
-                val position = LatLng(location.latitude, location.longitude)
-                val marker = googleMap?.addMarker(
-                    MarkerOptions()
-                        .position(position)
-                        .title(location.title)
-                        .snippet(location.address)
-                )
-                marker?.tag = location
-                markersAdded++
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error adding marker: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        Toast.makeText(requireContext(), "Added $markersAdded markers to map", Toast.LENGTH_SHORT).show()
-
-        googleMap?.setOnMarkerClickListener { marker ->
-            val location = marker.tag as? LocationDto ?: return@setOnMarkerClickListener false
-            viewModel.selectLocation(location)
-
-            googleMap?.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    LatLng(location.latitude, location.longitude),
-                    15f
-                )
-            )
-
-            true
-        }
-
-        if (markersAdded > 0) {
-            zoomToFitAllMarkers()
+        if (locations.isNotEmpty()) {
+            zoomToAllMarkers(locations)
         }
     }
 
-    private fun setupMapWithoutLocation() {
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
-        mapFragment.getMapAsync { map ->
-            googleMap = map
-
-            map.setOnMapClickListener {
-                viewModel.clearSelectedLocation()
-                hideBottomSheet()
-            }
-
-            viewModel.getLocations()
-        }
-    }
-
-    private fun setupBottomSheet() {
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.root)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    private fun setupObservers() {
+    private fun observers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -215,31 +219,49 @@ class LocationFragment : BaseFragment<FragmentLocationBinding>(FragmentLocationB
 
                 launch {
                     viewModel.selectedLocation.collect { location ->
-                        location?.let {
-                            showLocationDetails(it)
-                        }
+                        location?.let { showLocationDetails(it) }
                     }
                 }
             }
         }
     }
 
-
-
-    private fun setupListeners() {
+    private fun setUpListeners() {
         binding.fabZoom.setOnClickListener {
-            zoomToFitAllMarkers()
+            if (hasLocationPermissions(requireContext())) {
+                googleMap?.let { map ->
+                    map.animateCamera(CameraUpdateFactory.zoomTo(15f))
+
+                    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                            location?.let {
+                                val userLatLng = LatLng(it.latitude, it.longitude)
+                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f))
+                            }
+                        }
+                    } else {
+                        requestPermissions()
+                    }
+                }
+            } else {
+                requestPermissions()
+            }
         }
     }
 
-    private fun zoomToFitAllMarkers() {
-        val state = viewModel.locationsState.value
-        if (state !is Resource.Success || state.data.isEmpty()) return
-
-        val locations = state.data
+    private fun zoomToAllMarkers(locations: List<LocationUi>) {
         val builder = LatLngBounds.Builder()
-        locations.forEach { location ->
-            builder.include(LatLng(location.latitude, location.longitude))
+        locations.forEach {
+            builder.include(LatLng(it.latitude, it.longitude))
         }
 
         val bounds = builder.build()
@@ -248,18 +270,18 @@ class LocationFragment : BaseFragment<FragmentLocationBinding>(FragmentLocationB
         googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
     }
 
-    private fun showLocationDetails(location: LocationDto) {
-        with(binding.bottomSheet) {
-            tvLocationTitle.text = location.title
-            tvLocationAddress.text = location.address
-            tvLocationCoordinates.text =
-                getString(R.string.location_coordinates, location.latitude, location.longitude)
+    private fun showLocationDetails(location: LocationUi) {
+        hideBottomSheet()
 
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
+        val bottomSheetFragment = LocationBottomSheetFragment.newInstance(location)
+        bottomSheetFragment.show(childFragmentManager, "LocationBottomSheet")
     }
 
     private fun hideBottomSheet() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        childFragmentManager.fragments.forEach { fragment ->
+            if (fragment is LocationBottomSheetFragment) {
+                fragment.dismiss()
+            }
+        }
     }
 }

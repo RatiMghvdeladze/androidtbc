@@ -1,4 +1,4 @@
-package com.example.androidtbc.utils
+package com.example.androidtbc.presentation.location.utils
 
 import retrofit2.HttpException
 import retrofit2.Response
