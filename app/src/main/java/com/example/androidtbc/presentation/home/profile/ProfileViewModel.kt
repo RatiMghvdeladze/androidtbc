@@ -3,8 +3,12 @@ package com.example.androidtbc.presentation.home.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.data.remote.dto.User
+import com.example.androidtbc.data.repository.UserPreferencesRepository
 import com.example.androidtbc.data.repository.UserRepository
 import com.example.androidtbc.utils.Resource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userPreferencesRepository: UserPreferencesRepository // Inject this repository
 ) : ViewModel() {
+    private val auth: FirebaseAuth = Firebase.auth
 
     private val _userProfile = MutableStateFlow<Resource<User>>(Resource.Idle)
     val userProfile: StateFlow<Resource<User>> = _userProfile
@@ -61,18 +67,22 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun clearCache() {
-        cachedUserProfile = null
-    }
+    // Moved logout functionality from LoginViewModel
+    fun logout() {
+        viewModelScope.launch {
+            // First clear the preferences to prevent auto-login
+            userPreferencesRepository.clearLoginSession()
 
-    // Call this method when you want to force a fresh load from the network
-    fun refreshUserProfile() {
-        cachedUserProfile = null
-        getUserProfile()
-    }
+            // Verify the logout was successful
+            val isStillLoggedIn = userPreferencesRepository.checkLoginStateImmediately()
 
-    // New function to save user info
-    suspend fun saveUserInfo(name: String, phoneNumber: String, city: String): Result<Unit> {
-        return userRepository.saveUserInfo(name, phoneNumber, city)
+            if (isStillLoggedIn) {
+                // Try again with a different approach
+                userPreferencesRepository.clearLoginSession()
+            }
+
+            // Then sign out from Firebase
+            auth.signOut()
+        }
     }
 }

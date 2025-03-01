@@ -36,7 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private var isSearchActive = false
 
     override fun start() {
-        setupRecyclerView()
+        setUpRv()
         setUpListeners()
         observeMovies()
         initVP()
@@ -187,7 +187,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         touchSlopField.set(recyclerView, touchSlop * 4)
     }
 
-    private fun setupRecyclerView() {
+    private fun setUpRv() {
         popularMoviesAdapter = PopularMoviesAdapter { movie: MovieResult ->
             navigateToDetailScreen(movie)
         }

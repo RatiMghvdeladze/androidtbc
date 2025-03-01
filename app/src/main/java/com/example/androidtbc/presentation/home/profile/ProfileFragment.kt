@@ -12,7 +12,6 @@ import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentProfileBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.profile.adapter.ProfileItemAdapter
-import com.example.androidtbc.presentation.login.LoginViewModel
 import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +22,6 @@ import java.util.Locale
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val viewModel: ProfileViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var profileAdapter: ProfileItemAdapter
 
     override fun start() {
@@ -169,7 +167,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         // Restart the activity to apply changes
         requireActivity().recreate()
     }
-
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.logout))
@@ -188,7 +185,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     private fun logout() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                loginViewModel.logout()
+                viewModel.logout()
 
                 kotlinx.coroutines.delay(300)
 
@@ -234,8 +231,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                         ).show()
                     }
 
-                    is Resource.Idle -> {
-                    }
+                    is Resource.Idle -> {}
                 }
             }
         }

@@ -26,7 +26,12 @@ class LoginViewModel @Inject constructor(
 
     fun signIn(email: String, password: String, rememberMe: Boolean) {
         if (email.isEmpty() || password.isEmpty()) {
-            _loginState.value = Resource.Error("Email and password must be filled")
+            val errorMessage = when {
+                email.isEmpty() && password.isEmpty() -> "Email and password must be filled"
+                email.isEmpty() -> "Email must be filled"
+                else -> "Password must be filled"
+            }
+            _loginState.value = Resource.Error(errorMessage)
             return
         }
 
@@ -35,7 +40,6 @@ class LoginViewModel @Inject constructor(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Save the login session with remember me preference
                     viewModelScope.launch {
                         userPreferencesRepository.saveLoginSession(auth.currentUser?.uid ?: "", rememberMe)
                         _loginState.value = Resource.Success(Unit)
@@ -46,26 +50,7 @@ class LoginViewModel @Inject constructor(
             }
     }
 
-    // Function to check if user is already logged in with "Remember Me"
     val isUserLoggedIn: Flow<Boolean> = userPreferencesRepository.isLoggedInWithRememberMe
-
-    fun logout() {
-        viewModelScope.launch {
-            // First clear the preferences to prevent auto-login
-            userPreferencesRepository.clearLoginSession()
-
-            // Verify the logout was successful
-            val isStillLoggedIn = userPreferencesRepository.checkLoginStateImmediately()
-
-            if (isStillLoggedIn) {
-                // Try again with a different approach
-                userPreferencesRepository.clearLoginSession()
-            }
-
-            // Then sign out from Firebase
-            auth.signOut()
-        }
-    }
 
     fun resetState() {
         _loginState.value = Resource.Idle

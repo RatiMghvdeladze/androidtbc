@@ -4,6 +4,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import com.example.androidtbc.databinding.FragmentAboutMovieBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.utils.Resource
@@ -18,10 +19,12 @@ import java.util.Locale
 class AboutMovieFragment : BaseFragment<FragmentAboutMovieBinding>(FragmentAboutMovieBinding::inflate) {
 
     private val viewModel: AboutMovieViewModel by viewModels()
+    private val args: AboutMovieFragmentArgs by navArgs()
 
     override fun start() {
-        val movieId = arguments?.getInt("movieId") ?: return  // Get movie ID from bundle
+        val movieId = args.movieId  // Get movie ID from Safe Args
         viewModel.getMovieDetails(movieId)  // Fetch movie details
+
 
         observeMovieDetails()
     }

@@ -8,7 +8,6 @@ import com.example.androidtbc.R
 import com.example.androidtbc.data.remote.dto.User
 import com.example.androidtbc.databinding.FragmentEditProfileBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.presentation.home.profile.ProfileViewModel
 import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,14 +16,13 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEditProfileBinding::inflate) {
-    private val viewModel: ProfileViewModel by viewModels()
+    private val viewModel: EditProfileViewModel by viewModels()
     private var originalUser: User? = null
 
     override fun start() {
         observeUserProfile()
         setUpListeners()
     }
-
 
     private fun setUpListeners() {
         with(binding) {
@@ -102,8 +100,8 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
 
                 if (result.isSuccess) {
                     Snackbar.make(binding.root, getString(R.string.profile_updated_successfully), Snackbar.LENGTH_SHORT).show()
-                    viewModel.refreshUserProfile()
 
+                    // Navigate back to refresh the profile
                     findNavController().navigateUp()
                 } else {
                     Snackbar.make(binding.root, result.exceptionOrNull()?.message ?: getString(R.string.error_updating_profile), Snackbar.LENGTH_SHORT).show()

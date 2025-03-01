@@ -54,25 +54,21 @@ class UserPreferencesRepository @Inject constructor(
             isLoggedIn && rememberMe
         }
 
-    // Get current login status regardless of remember me
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[IS_LOGGED_IN] ?: false
         }
 
-    // Get user ID
     val userId: Flow<String?> = context.dataStore.data
         .map { preferences ->
             preferences[USER_ID]
         }
 
-    // Get remember me setting
     val rememberMe: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
             preferences[REMEMBER_ME] ?: false
         }
 
-    // Add a method to check login state immediately (not as a Flow)
     suspend fun checkLoginStateImmediately(): Boolean {
         return context.dataStore.data.first().let { preferences ->
             val isLoggedIn = preferences[IS_LOGGED_IN] ?: false

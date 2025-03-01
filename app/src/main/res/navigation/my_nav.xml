@@ -84,6 +84,27 @@
             android:name="movie_id"
             app:argType="integer" />
     </fragment>
+
+    <fragment
+        android:id="@+id/aboutMovieFragment"
+        android:name="com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragment"
+        android:label="fragment_about_movie"
+        tools:layout="@layout/fragment_about_movie" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/castFragment"
+        android:name="com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragment"
+        android:label="fragment_cast"
+        tools:layout="@layout/fragment_cast" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+    </fragment>
+
     <fragment
         android:id="@+id/savedMoviesFragment"
         android:name="com.example.androidtbc.presentation.savedmovies.SavedMoviesFragment"

@@ -37,7 +37,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 loginViewModel.isUserLoggedIn.collectLatest { isLoggedIn ->
-                    // Only navigate if we came here directly, not from logout
+                    //only navigate if we came here directly, not from logout
                     if (isLoggedIn && !args.fromLogout) {
                         safeNavigateToHome()
                     }
@@ -47,10 +47,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
     private fun safeNavigateToHome() {
-        val navController = findNavController()
-        if (navController.currentDestination?.id == R.id.loginFragment) {
+        if (findNavController().currentDestination?.id == R.id.loginFragment) {
             val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
-            navController.navigate(action)
+            findNavController().navigate(action)
         }
     }
 
@@ -102,17 +101,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             btnSignIn.setOnClickListener {
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
-
-                // Add validation here
-                if (email.isEmpty() || password.isEmpty()) {
-                    val errorMessage = when {
-                        email.isEmpty() && password.isEmpty() -> "Email and password must be filled"
-                        email.isEmpty() -> "Email must be filled"
-                        else -> "Password must be filled"
-                    }
-                    Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
 
                 loginViewModel.signIn(email, password, cbRememberMe.isChecked)
             }

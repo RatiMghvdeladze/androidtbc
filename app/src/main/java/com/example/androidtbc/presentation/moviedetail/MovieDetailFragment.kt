@@ -2,10 +2,8 @@ package com.example.androidtbc.presentation.moviedetail
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,8 +18,9 @@ import com.example.androidtbc.databinding.FragmentMovieDetailBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragment
+import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragmentArgs
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragment
-import com.example.androidtbc.presentation.savedmovies.SavedMoviesViewModel
+import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragmentArgs
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.loadTmdbImage
 import com.google.android.material.tabs.TabLayoutMediator
@@ -34,7 +33,6 @@ import java.util.Locale
 class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMovieDetailBinding::inflate) {
 
     private val viewModel: MovieDetailViewModel by viewModels()
-    private val savedMoviesViewModel: SavedMoviesViewModel by activityViewModels()
     private val args: MovieDetailFragmentArgs by navArgs()
 
     override fun start() {
@@ -67,17 +65,13 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSaved.collect { isSaved ->
                     updateFavoriteButton(isSaved)
-
-                   if (isSaved) {
-                        savedMoviesViewModel.fetchSavedMovies()
-                    }
                 }
             }
         }
     }
 
     private fun updateFavoriteButton(isSaved: Boolean) {
-       if (isSaved) {
+        if (isSaved) {
             binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite_filled)
             binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.RED)
         } else {
@@ -150,19 +144,16 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     private fun initVP() {
         val movieId = args.movieId
 
-        val fragments = listOf(
-            AboutMovieFragment().apply {
-                arguments = Bundle().apply {
-                    putInt("movieId", movieId)
-                }
-            },
-            CastFragment().apply {
-                arguments = Bundle().apply {
-                    putInt("movieId", movieId)
-                }
-            }
-        )
+        // Create fragments and pass arguments using SafeArgs bundles
+        val aboutMovieFragment = AboutMovieFragment().apply {
+            arguments = AboutMovieFragmentArgs(movieId).toBundle()
+        }
 
+        val castFragment = CastFragment().apply {
+            arguments = CastFragmentArgs(movieId).toBundle()
+        }
+
+        val fragments = listOf(aboutMovieFragment, castFragment)
 
         val tabTitles = listOf(
             getString(R.string.about_movie),
@@ -183,7 +174,6 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
             }
         }
     }
-
     private fun ViewPager2.reduceDragSensitivity() {
         val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
         recyclerViewField.isAccessible = true

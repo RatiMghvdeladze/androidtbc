@@ -39,8 +39,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                             val email = etEmail.text.toString()
                             val password = etPassword.text.toString()
 
-                            registerViewModel.setUserCredentials(email, password)
-
                             val action = RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment(
                                 email = email,
                                 password = password
