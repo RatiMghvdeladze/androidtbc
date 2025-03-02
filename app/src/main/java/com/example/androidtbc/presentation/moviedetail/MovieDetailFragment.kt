@@ -12,10 +12,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.androidtbc.R
-import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.databinding.FragmentMovieDetailBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
+import com.example.androidtbc.presentation.model.MovieDetail
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragment
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragmentArgs
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragment
@@ -71,15 +71,16 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     }
 
     private fun updateFavoriteButton(isSaved: Boolean) {
-        if (isSaved) {
-            binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite_filled)
-            binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.RED)
-        } else {
-            binding.btnFavorite.setImageResource(R.drawable.ic_add_favorite)
-            binding.btnFavorite.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        binding.btnFavorite.apply {
+            setImageResource(
+                if (isSaved) R.drawable.ic_add_favorite_filled
+                else R.drawable.ic_add_favorite
+            )
+            imageTintList = ColorStateList.valueOf(
+                if (isSaved) Color.RED else Color.WHITE
+            )
         }
     }
-
 
     private fun fetchMovieDetails() {
         viewModel.getMovieDetails(args.movieId)
@@ -109,7 +110,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun displayMovieDetails(movie: MovieDetailDto) {
+    private fun displayMovieDetails(movie: MovieDetail) {
         binding.progressBar.visibility = View.GONE
 
         with(binding) {
@@ -123,7 +124,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
                 ivPoster.loadTmdbImage(path)
             }
 
-            if(movie.adult) ivAgeRestriction.visibility = View.VISIBLE
+            ivAgeRestriction.visibility = if (movie.adult) View.VISIBLE else View.GONE
 
             tvRating.text = String.format("%.1f", movie.voteAverage)
 
@@ -131,15 +132,16 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
             val year = movie.releaseDate.split("-").firstOrNull() ?: ""
             tvReleaseYear.text = year
+
             movie.runtime?.let { minutes ->
                 tvDuration.text = getString(R.string.minutes_format, minutes)
             }
-            movie.genres?.firstOrNull()?.let { genre ->
-                tvGenre.text = genre.name
+
+            if (movie.genres.isNotEmpty()) {
+                tvGenre.text = movie.genres.first().name
             }
         }
     }
-
 
     private fun initVP() {
         val movieId = args.movieId
@@ -154,13 +156,12 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
         }
 
         val fragments = listOf(aboutMovieFragment, castFragment)
-
         val tabTitles = listOf(
             getString(R.string.about_movie),
             getString(R.string.cast)
         )
 
-        with(binding) {
+        binding.apply {
             if (isAdded) {
                 vp2.apply {
                     adapter = ViewPagerAdapter(requireActivity(), fragments)
@@ -174,6 +175,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
             }
         }
     }
+
     private fun ViewPager2.reduceDragSensitivity() {
         val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
         recyclerViewField.isAccessible = true

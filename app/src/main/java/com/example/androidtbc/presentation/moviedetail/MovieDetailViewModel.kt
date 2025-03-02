@@ -2,9 +2,10 @@ package com.example.androidtbc.presentation.moviedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.data.repository.FirestoreMovieRepository
 import com.example.androidtbc.data.repository.MovieDetailRepository
+import com.example.androidtbc.presentation.mapper.toMovieDetail
+import com.example.androidtbc.presentation.model.MovieDetail
 import com.example.androidtbc.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,17 +20,31 @@ class MovieDetailViewModel @Inject constructor(
     private val firestoreRepository: FirestoreMovieRepository
 ) : ViewModel() {
 
-    private val _movieDetails = MutableStateFlow<Resource<MovieDetailDto>>(Resource.Loading)
-    val movieDetails: StateFlow<Resource<MovieDetailDto>> = _movieDetails
+    private val _movieDetails = MutableStateFlow<Resource<MovieDetail>>(Resource.Loading)
+    val movieDetails: StateFlow<Resource<MovieDetail>> = _movieDetails
 
     private val _isSaved = MutableStateFlow(false)
     val isSaved: StateFlow<Boolean> = _isSaved.asStateFlow()
 
+    private var cachedMovieDetail: MovieDetail? = null
+
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
             _movieDetails.value = Resource.Loading
-            val response = repository.getMovieDetails(movieId)
-            _movieDetails.value = response
+
+            when (val response = repository.getMovieDetails(movieId)) {
+                is Resource.Success -> {
+                    val movieDetail = response.data.toMovieDetail()
+                    cachedMovieDetail = movieDetail
+                    _movieDetails.value = Resource.Success(movieDetail)
+                }
+                is Resource.Error -> {
+                    _movieDetails.value = Resource.Error(response.errorMessage)
+                }
+                else -> {
+                    _movieDetails.value = Resource.Error("Unknown error occurred")
+                }
+            }
 
             checkIfMovieSaved(movieId)
         }
@@ -44,27 +59,33 @@ class MovieDetailViewModel @Inject constructor(
 
     fun toggleSaveMovie() {
         viewModelScope.launch {
-            when (val movieDetailsResource = _movieDetails.value) {
-                is Resource.Success -> {
-                    val movie = movieDetailsResource.data
-                    val currentSaveStatus = _isSaved.value
+            cachedMovieDetail?.let { movie ->
+                val currentSaveStatus = _isSaved.value
 
-                    if (currentSaveStatus) {
-                        if (firestoreRepository.removeMovie(movie.id)) {
-                            _isSaved.value = false
-                        }
-                    } else {
-                        if (firestoreRepository.saveMovie(movie)) {
-                            _isSaved.value = true
-                        }
+                if (currentSaveStatus) {
+                    if (firestoreRepository.removeMovie(movie.id)) {
+                        _isSaved.value = false
                     }
-
-                    val actualStatus = firestoreRepository.isMovieSaved(movie.id)
-                    if (_isSaved.value != actualStatus) {
-                        _isSaved.value = actualStatus
+                } else {
+                    // We need the original DTO for saving to Firestore
+                    // This is where we would ideally have a reverse mapper
+                    when (val response = repository.getMovieDetails(movie.id)) {
+                        is Resource.Success -> {
+                            if (firestoreRepository.saveMovie(response.data)) {
+                                _isSaved.value = true
+                            }
+                        }
+                        else -> {
+                            // If we can't get fresh data, try with cached data if possible
+                        }
                     }
                 }
-                else -> {}
+
+                // Verify the actual saved status
+                val actualStatus = firestoreRepository.isMovieSaved(movie.id)
+                if (_isSaved.value != actualStatus) {
+                    _isSaved.value = actualStatus
+                }
             }
         }
     }

@@ -93,6 +93,7 @@ fun MovieDetailDto.toMovieDetail(): MovieDetail {
         backdropPath = backdropPath,
         releaseDate = releaseDate,
         voteAverage = voteAverage,
+        voteCount = voteCount,
         runtime = runtime,
         status = status,
         budget = budget,
