@@ -23,10 +23,6 @@
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
-            android:name="fromRegistration"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
             android:name="email"
             app:argType="string"
             android:defaultValue="" />

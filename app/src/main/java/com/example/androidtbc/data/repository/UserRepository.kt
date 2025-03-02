@@ -1,4 +1,3 @@
-// FirebaseUserRepository.kt
 package com.example.androidtbc.data.repository
 
 import com.example.androidtbc.data.remote.dto.User

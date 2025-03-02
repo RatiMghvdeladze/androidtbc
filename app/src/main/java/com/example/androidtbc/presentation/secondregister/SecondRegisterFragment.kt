@@ -1,7 +1,9 @@
 package com.example.androidtbc.presentation.secondregister
 
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.androidtbc.R
@@ -25,33 +27,41 @@ class SecondRegisterFragment : BaseFragment<FragmentSecondRegisterBinding>(Fragm
 
     private fun observeUserInfoState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userInfoState.collectLatest { state ->
-                when (state) {
-                    is Resource.Success -> {
-                        val action = SecondRegisterFragmentDirections.actionSecondRegisterFragmentToLoginFragment2(
-                            fromRegistration = true,
-                            email = args.email,
-                            password = args.password
-                        )
-                        findNavController().navigate(action)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userInfoState.collectLatest { state ->
+                    when (state) {
+                        is Resource.Success -> {
+                            val action =
+                                SecondRegisterFragmentDirections.actionSecondRegisterFragmentToLoginFragment2(
+                                    email = args.email,
+                                    password = args.password
+                                )
+                            findNavController().navigate(action)
 
-                        Snackbar.make(binding.root,
-                            getString(R.string.profile_information_saved_successfully), Snackbar.LENGTH_SHORT).show()
-                        viewModel.resetState()
-                    }
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.profile_information_saved_successfully),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            viewModel.resetState()
+                        }
 
-                    is Resource.Loading -> {
-                        binding.btnContinue.isEnabled = false
-                        binding.btnContinue.text = getString(R.string.loading_and_three_dot)
-                    }
-                    is Resource.Error -> {
-                        binding.btnContinue.isEnabled = true
-                        binding.btnContinue.text = getString(R.string.continuee)
-                        Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_SHORT).show()
-                    }
-                    is Resource.Idle -> {
-                        binding.btnContinue.isEnabled = true
-                        binding.btnContinue.text = getString(R.string.continuee)
+                        is Resource.Loading -> {
+                            binding.btnContinue.isEnabled = false
+                            binding.btnContinue.text = getString(R.string.loading_and_three_dot)
+                        }
+
+                        is Resource.Error -> {
+                            binding.btnContinue.isEnabled = true
+                            binding.btnContinue.text = getString(R.string.continuee)
+                            Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        is Resource.Idle -> {
+                            binding.btnContinue.isEnabled = true
+                            binding.btnContinue.text = getString(R.string.continuee)
+                        }
                     }
                 }
             }

@@ -2,7 +2,9 @@ package com.example.androidtbc.presentation.register
 
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
@@ -23,40 +25,47 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
     private fun observeRegisterState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            registerViewModel.registerState.collect { state ->
-                with(binding) {
-                    when (state) {
-                        is Resource.Loading -> {
-                            btnSignUp.isEnabled = false
-                            progressBarSignUp.visibility = View.VISIBLE
-                            btnSignUp.text = ""
-                        }
-                        is Resource.Success -> {
-                            btnSignUp.isEnabled = true
-                            progressBarSignUp.visibility = View.GONE
-                            btnSignUp.text = getString(R.string.sign_up)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                registerViewModel.registerState.collect { state ->
+                    with(binding) {
+                        when (state) {
+                            is Resource.Loading -> {
+                                btnSignUp.isEnabled = false
+                                progressBarSignUp.visibility = View.VISIBLE
+                                btnSignUp.text = ""
+                            }
 
-                            val email = etEmail.text.toString()
-                            val password = etPassword.text.toString()
+                            is Resource.Success -> {
+                                btnSignUp.isEnabled = true
+                                progressBarSignUp.visibility = View.GONE
+                                btnSignUp.text = getString(R.string.sign_up)
 
-                            val action = RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment(
-                                email = email,
-                                password = password
-                            )
-                            findNavController().navigate(action)
+                                val email = etEmail.text.toString()
+                                val password = etPassword.text.toString()
 
-                            registerViewModel.resetState()
-                        }
-                        is Resource.Error -> {
-                            btnSignUp.isEnabled = true
-                            progressBarSignUp.visibility = View.GONE
-                            btnSignUp.text = getString(R.string.sign_up)
-                            Snackbar.make(root, state.errorMessage, Snackbar.LENGTH_SHORT).show()
-                        }
-                        is Resource.Idle -> {
-                            btnSignUp.isEnabled = true
-                            progressBarSignUp.visibility = View.GONE
-                            btnSignUp.text = getString(R.string.sign_up)
+                                val action =
+                                    RegisterFragmentDirections.actionRegisterFragmentToSecondRegisterFragment(
+                                        email = email,
+                                        password = password
+                                    )
+                                findNavController().navigate(action)
+
+                                registerViewModel.resetState()
+                            }
+
+                            is Resource.Error -> {
+                                btnSignUp.isEnabled = true
+                                progressBarSignUp.visibility = View.GONE
+                                btnSignUp.text = getString(R.string.sign_up)
+                                Snackbar.make(root, state.errorMessage, Snackbar.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is Resource.Idle -> {
+                                btnSignUp.isEnabled = true
+                                progressBarSignUp.visibility = View.GONE
+                                btnSignUp.text = getString(R.string.sign_up)
+                            }
                         }
                     }
                 }

@@ -37,7 +37,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 loginViewModel.isUserLoggedIn.collectLatest { isLoggedIn ->
-                    //only navigate if we came here directly, not from logout
                     if (isLoggedIn && !args.fromLogout) {
                         safeNavigateToHome()
                     }
