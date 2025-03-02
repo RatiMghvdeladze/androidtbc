@@ -76,7 +76,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             }
         )
 
-        binding.rvSavedMovies.apply {
+        with(binding.rvSavedMovies) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SavedMoviesFragment.adapter
         }
