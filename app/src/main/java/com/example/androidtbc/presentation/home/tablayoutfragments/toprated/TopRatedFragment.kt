@@ -20,26 +20,25 @@ import kotlinx.coroutines.launch
 class TopRatedFragment : BaseFragment<FragmentTopRatedBinding>(FragmentTopRatedBinding::inflate) {
 
     private val viewModel: TopRatedViewModel by viewModels()
-    // Then update the adapter instantiation
     private val adapter: TopRatedMovieAdapter by lazy {
         TopRatedMovieAdapter { movie: Movie ->
             navigateToDetailScreen(movie)
         }
     }
 
-    private fun navigateToDetailScreen(movie: Movie) {
-        // Navigate using the parent fragment's action
-        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
-        // Get the parent NavController
-        findNavController().navigate(action)
-    }
-
-
     override fun start() {
         setUpRV()
         collectMovies()
         setupLoadingState()
     }
+
+
+    private fun navigateToDetailScreen(movie: Movie) {
+        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
+        findNavController().navigate(action)
+    }
+
+
 
     private fun setUpRV() {
         with(binding) {

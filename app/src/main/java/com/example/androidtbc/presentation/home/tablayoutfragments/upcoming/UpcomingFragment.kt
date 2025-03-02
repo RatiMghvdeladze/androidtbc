@@ -25,19 +25,19 @@ class UpcomingFragment : BaseFragment<FragmentUpcomingBinding>(FragmentUpcomingB
         }
     }
 
-    private fun navigateToDetailScreen(movie: Movie) {
-        // Navigate using the parent fragment's action
-        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
-        // Get the parent NavController
-        findNavController().navigate(action)
-    }
-
 
     override fun start() {
         setUpRV()
         collectMovies()
         setupLoadingState()
     }
+
+
+    private fun navigateToDetailScreen(movie: Movie) {
+        val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
+        findNavController().navigate(action)
+    }
+
 
     private fun setUpRV() {
         with(binding) {

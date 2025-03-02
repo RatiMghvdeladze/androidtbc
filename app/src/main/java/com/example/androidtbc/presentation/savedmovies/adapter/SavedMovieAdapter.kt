@@ -18,23 +18,6 @@ class SavedMovieAdapter(
         private val binding: ItemSavedMovieBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onMovieClicked(getItem(position))
-                }
-            }
-
-            binding.root.setOnLongClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    return@setOnLongClickListener onMovieLongClicked(getItem(position))
-                }
-                false
-            }
-        }
-
         fun bind(movie: MovieUI) {
             binding.apply {
                 tvTitle.text = movie.title
@@ -45,6 +28,14 @@ class SavedMovieAdapter(
 
                 movie.posterPath?.let { posterPath ->
                     ivPoster.loadTmdbImage(posterPath)
+                }
+
+                root.setOnClickListener {
+                    onMovieClicked(movie)
+                }
+
+                root.setOnLongClickListener {
+                    onMovieLongClicked(movie)
                 }
             }
         }
