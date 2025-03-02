@@ -6,10 +6,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.androidtbc.data.remote.dto.MovieResult
+import androidx.paging.map
 import com.example.androidtbc.data.remote.paging.PopularMoviesPagingSource
 import com.example.androidtbc.data.remote.paging.SearchMoviesPagingSource
 import com.example.androidtbc.data.repository.MovieRepository
+import com.example.androidtbc.presentation.mapper.toMovie
+import com.example.androidtbc.presentation.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +30,7 @@ class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    val popularMovies: Flow<PagingData<MovieResult>> = Pager(
+    val popularMovies: Flow<PagingData<Movie>> = Pager(
         config = PagingConfig(
             pageSize = 6,
             enablePlaceholders = false,
@@ -35,7 +38,9 @@ class HomeViewModel @Inject constructor(
             initialLoadSize = 6
         ),
         pagingSourceFactory = { PopularMoviesPagingSource(movieRepository) }
-    ).flow.cachedIn(viewModelScope)
+    ).flow
+        .map { pagingData -> pagingData.map { it.toMovie() } }
+        .cachedIn(viewModelScope)
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery= _searchQuery.asStateFlow()
@@ -45,7 +50,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val searchResults: Flow<PagingData<MovieResult>> = _searchQuery
+    val searchResults: Flow<PagingData<Movie>> = _searchQuery
         .debounce(300)
         .distinctUntilChanged()
         .flatMapLatest { query ->
@@ -61,6 +66,7 @@ class HomeViewModel @Inject constructor(
                     ),
                     pagingSourceFactory = { SearchMoviesPagingSource(movieRepository, query) }
                 ).flow
+                    .map { pagingData -> pagingData.map { it.toMovie()} }
             }
         }.cachedIn(viewModelScope)
 }

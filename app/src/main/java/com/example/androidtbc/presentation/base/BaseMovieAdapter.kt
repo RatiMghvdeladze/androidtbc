@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.androidtbc.data.remote.dto.MovieResult
+import com.example.androidtbc.presentation.model.Movie
 
 /**
  * A generic movie adapter that can be used for different movie lists
@@ -15,10 +15,9 @@ import com.example.androidtbc.data.remote.dto.MovieResult
  */
 abstract class BaseMovieAdapter<VB : ViewBinding>(
     private val bindingInflater: (LayoutInflater, ViewGroup, Boolean) -> VB,
-    private val bindData: (VB, MovieResult, Int) -> Unit,
-    private val itemClickListener: ((MovieResult) -> Unit)? = null // Add this parameter
-) : PagingDataAdapter<MovieResult, BaseMovieAdapter.MovieViewHolder<VB>>(MovieDiffCallback()) {
-
+    private val bindData: (VB, Movie, Int) -> Unit,
+    private val itemClickListener: ((Movie) -> Unit)? = null
+) : PagingDataAdapter<Movie, BaseMovieAdapter.MovieViewHolder<VB>>(MovieDiffCallback()) {
 
     class MovieViewHolder<VB : ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root)
 
@@ -37,12 +36,12 @@ abstract class BaseMovieAdapter<VB : ViewBinding>(
         }
     }
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<MovieResult>() {
-        override fun areItemsTheSame(oldItem: MovieResult, newItem: MovieResult): Boolean {
+    class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: MovieResult, newItem: MovieResult): Boolean {
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem == newItem
         }
     }

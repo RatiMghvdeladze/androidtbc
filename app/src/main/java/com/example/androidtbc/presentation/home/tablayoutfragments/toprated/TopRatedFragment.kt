@@ -7,11 +7,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentTopRatedBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.HomeFragmentDirections
 import com.example.androidtbc.presentation.home.tablayoutfragments.toprated.adapter.TopRatedMovieAdapter
+import com.example.androidtbc.presentation.model.Movie
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,12 +22,12 @@ class TopRatedFragment : BaseFragment<FragmentTopRatedBinding>(FragmentTopRatedB
     private val viewModel: TopRatedViewModel by viewModels()
     // Then update the adapter instantiation
     private val adapter: TopRatedMovieAdapter by lazy {
-        TopRatedMovieAdapter { movie: MovieResult ->
+        TopRatedMovieAdapter { movie: Movie ->
             navigateToDetailScreen(movie)
         }
     }
 
-    private fun navigateToDetailScreen(movie: MovieResult) {
+    private fun navigateToDetailScreen(movie: Movie) {
         // Navigate using the parent fragment's action
         val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
         // Get the parent NavController

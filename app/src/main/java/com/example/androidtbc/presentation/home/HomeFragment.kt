@@ -12,7 +12,6 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.androidtbc.R
-import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.home.adapter.PopularMoviesAdapter
@@ -22,6 +21,7 @@ import com.example.androidtbc.presentation.home.tablayoutfragments.nowplaying.No
 import com.example.androidtbc.presentation.home.tablayoutfragments.popular.PopularFragment
 import com.example.androidtbc.presentation.home.tablayoutfragments.toprated.TopRatedFragment
 import com.example.androidtbc.presentation.home.tablayoutfragments.upcoming.UpcomingFragment
+import com.example.androidtbc.presentation.model.Movie
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -188,7 +188,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun setUpRv() {
-        popularMoviesAdapter = PopularMoviesAdapter { movie: MovieResult ->
+        popularMoviesAdapter = PopularMoviesAdapter { movie: Movie ->
             navigateToDetailScreen(movie)
         }
         binding.rvPopular.apply {
@@ -196,7 +196,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             setHasFixedSize(true)
         }
 
-        searchResultsAdapter = PopularMoviesSearchAdapter { movie: MovieResult ->
+        searchResultsAdapter = PopularMoviesSearchAdapter { movie: Movie ->
             navigateToDetailScreen(movie)
         }
         binding.rvSearchResults.apply {
@@ -205,7 +205,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    private fun navigateToDetailScreen(movie: MovieResult) {
+    private fun navigateToDetailScreen(movie: Movie) {
         val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
         findNavController().navigate(action)
     }

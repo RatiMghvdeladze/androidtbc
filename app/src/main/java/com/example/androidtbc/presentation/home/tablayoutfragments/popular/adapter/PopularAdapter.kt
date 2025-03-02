@@ -1,12 +1,12 @@
 package com.example.androidtbc.presentation.home.tablayoutfragments.popular.adapter
 
-import com.example.androidtbc.data.remote.dto.MovieResult
 import com.example.androidtbc.databinding.ItemMoviePosterBinding
 import com.example.androidtbc.presentation.base.BaseMovieAdapter
+import com.example.androidtbc.presentation.model.Movie
 import com.example.androidtbc.utils.loadTmdbImage
 
 class PopularAdapter(
-    private val onMovieClick: (MovieResult) -> Unit
+    private val onMovieClick: (Movie) -> Unit
 ) : BaseMovieAdapter<ItemMoviePosterBinding>(
     bindingInflater = { inflater, parent, attachToParent ->
         ItemMoviePosterBinding.inflate(inflater, parent, attachToParent)
