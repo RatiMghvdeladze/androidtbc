@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentSavedMoviesBinding
@@ -42,6 +41,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             }
         }
     }
+
 
     private fun showClearAllConfirmationDialog() {
         AlertDialog.Builder(requireContext())
@@ -102,6 +102,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
                         is Resource.Success -> {
                             hideLoading()
                             adapter.submitList(result.data)
+
                             updateEmptyState(result.data.isEmpty())
                         }
                         is Resource.Error -> {
@@ -134,45 +135,17 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             binding.emptyStateLayout.visibility = View.GONE
         }
     }
-
     private fun setupBottomNavigation() {
-        with(binding.bottomNavView) {
+        binding.bottomNavView.apply {
             selectedItemId = R.id.savedMoviesFragment
 
             setOnItemSelectedListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.homeFragment -> {
-                        if (selectedItemId != R.id.homeFragment) {
-                            findNavController().navigate(
-                                R.id.homeFragment,
-                                null,
-                                navOptions {
-                                    popUpTo(R.id.my_nav) {
-                                        inclusive = false
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            )
-                        }
-                        true
+                        findNavController().navigate(R.id.homeFragment)
+                        false
                     }
                     R.id.savedMoviesFragment -> {
-                        if (selectedItemId != R.id.savedMoviesFragment) {
-                            findNavController().navigate(
-                                R.id.savedMoviesFragment,
-                                null,
-                                navOptions {
-                                    popUpTo(R.id.my_nav) {
-                                        inclusive = false
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            )
-                        }
                         true
                     }
                     else -> false

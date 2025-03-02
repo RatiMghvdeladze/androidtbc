@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -44,52 +43,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         setupBottomNavigation()
     }
 
-
-    private fun setupBottomNavigation() {
-        with(binding.bottomNavView) {
-            selectedItemId = R.id.homeFragment
-
-            setOnItemSelectedListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.homeFragment -> {
-                        if (selectedItemId != R.id.homeFragment) {
-                            findNavController().navigate(
-                                R.id.homeFragment,
-                                null,
-                                navOptions {
-                                    popUpTo(R.id.my_nav) {
-                                        inclusive = false
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            )
-                        }
-                        true
-                    }
-                    R.id.savedMoviesFragment -> {
-                        if (selectedItemId != R.id.savedMoviesFragment) {
-                            findNavController().navigate(
-                                R.id.savedMoviesFragment,
-                                null,
-                                navOptions {
-                                    popUpTo(R.id.my_nav) {
-                                        inclusive = false
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            )
-                        }
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
-    }
 
     private fun setUpListeners() {
         with(binding) {
@@ -236,5 +189,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun navigateToDetailScreen(movie: Movie) {
         val action = HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(movie.id)
         findNavController().navigate(action)
+    }
+
+    private fun setupBottomNavigation() {
+        binding.bottomNavView.apply {
+            selectedItemId = R.id.homeFragment
+
+            setOnItemSelectedListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.homeFragment -> {
+                        true
+                    }
+                    R.id.savedMoviesFragment -> {
+                        findNavController().navigate(R.id.savedMoviesFragment)
+                        false
+                    }
+                    else -> false
+                }
+            }
+        }
     }
 }
