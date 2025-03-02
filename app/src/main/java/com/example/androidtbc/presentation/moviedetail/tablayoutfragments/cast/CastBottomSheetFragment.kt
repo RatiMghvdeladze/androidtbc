@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.androidtbc.data.remote.dto.CastMemberDto
 import com.example.androidtbc.databinding.FragmentCastBottomSheetBinding
+import com.example.androidtbc.presentation.model.CastMember
 import com.example.androidtbc.utils.loadTmdbImage
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CastBottomSheetFragment(private val cast: CastMemberDto) : BottomSheetDialogFragment() {
+class CastBottomSheetFragment(private val cast: CastMember) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentCastBottomSheetBinding? = null
     private val binding get() = _binding!!

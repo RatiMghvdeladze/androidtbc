@@ -1,5 +1,6 @@
 package com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast
 
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -10,6 +11,7 @@ import com.example.androidtbc.databinding.FragmentCastBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.adapter.CastAdapter
 import com.example.androidtbc.utils.Resource
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -43,23 +45,42 @@ class CastFragment : BaseFragment<FragmentCastBinding>(FragmentCastBinding::infl
                 viewModel.castDetails.collect { resource ->
                     when (resource) {
                         is Resource.Loading -> {
-                            // Show loading state (optional)
+                            showLoading(true)
                         }
 
                         is Resource.Success -> {
+                            showLoading(false)
                             resource.data.cast.let { castList ->
                                 castAdapter.submitList(castList)
                             }
                         }
 
                         is Resource.Error -> {
-                            // Show error message
+                            showLoading(false)
+                            showError(resource.errorMessage)
                         }
 
-                        else -> {}
+                        else -> {
+                            showLoading(false)
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.rvCasts.visibility = if (isLoading) View.GONE else View.VISIBLE
+    }
+
+    private fun showError(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).setAction("Retry") {
+            viewModel.getMovieCast(args.movieId)
+        }.show()
     }
 }

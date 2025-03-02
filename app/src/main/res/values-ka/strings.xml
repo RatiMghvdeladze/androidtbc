@@ -84,5 +84,6 @@
     <string name="are_you_sure_you_want_to_remove_this_movie_from_your_watchlist">ნამდვილად გსურთ ფილმის წაშლა სანახავი სიიდან?</string>
     <string name="remove">წაშლა</string>
     <string name="city">ქალაქი</string>
+    <string name="loading">იტვირთება...</string>
 
 </resources>

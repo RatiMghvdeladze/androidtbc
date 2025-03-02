@@ -101,7 +101,6 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
                 if (result.isSuccess) {
                     Snackbar.make(binding.root, getString(R.string.profile_updated_successfully), Snackbar.LENGTH_SHORT).show()
 
-                    // Navigate back to refresh the profile
                     findNavController().navigateUp()
                 } else {
                     Snackbar.make(binding.root, result.exceptionOrNull()?.message ?: getString(R.string.error_updating_profile), Snackbar.LENGTH_SHORT).show()

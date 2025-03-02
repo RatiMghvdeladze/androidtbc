@@ -35,7 +35,6 @@ class UserRepositoryImpl @Inject constructor(
 
         usersCollection.document(currentUser.uid).set(userData).await()
 
-        // Update cache with new data
         cachedUser = User(
             email = currentUser.email ?: "",
             fullName = name,
@@ -47,7 +46,6 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserInfo(forceRefresh: Boolean): Result<User> {
-        // Return cached user if available and not forcing refresh
         if (!forceRefresh && cachedUser != null) {
             return Result.success(cachedUser!!)
         }
@@ -63,7 +61,6 @@ class UserRepositoryImpl @Inject constructor(
                 city = document.getString("city") ?: ""
             )
 
-            // Update cache
             cachedUser = user
 
             return Result.success(user)

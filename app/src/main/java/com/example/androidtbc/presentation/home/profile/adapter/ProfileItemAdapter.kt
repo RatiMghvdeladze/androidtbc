@@ -1,6 +1,7 @@
 package com.example.androidtbc.presentation.home.profile.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,18 +15,16 @@ class ProfileItemAdapter(private val onItemClicked: (ProfileMenuItem) -> Unit) :
     inner class MenuItemViewHolder(private val binding: ItemProfileMenuBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClicked(getItem(position))
-                }
-            }
-        }
-
         fun bind(item: ProfileMenuItem) {
             with(binding) {
                 with(item) {
+                    root.setOnClickListener {
+                        val position = bindingAdapterPosition
+                        if (position != RecyclerView.NO_POSITION) {
+                            onItemClicked(getItem(position))
+                        }
+                    }
+
                     ivIcon.setImageResource(iconResId)
                     ivIcon.background = ivIcon.context.getDrawable(backgroundResId)
                     if (iconTint != null) {
@@ -37,16 +36,15 @@ class ProfileItemAdapter(private val onItemClicked: (ProfileMenuItem) -> Unit) :
 
                     if (descriptionResId != null) {
                         tvDescription.text = itemView.context.getString(descriptionResId)
-                        tvDescription.visibility = android.view.View.VISIBLE
+                        tvDescription.visibility = View.VISIBLE
                     } else {
-                        tvDescription.visibility = android.view.View.GONE
+                        tvDescription.visibility = View.GONE
                     }
-                    divider.visibility = if (showDivider) android.view.View.VISIBLE else android.view.View.GONE
+                    divider.visibility = if (showDivider) View.VISIBLE else View.GONE
                 }
             }
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuItemViewHolder {
         val binding = ItemProfileMenuBinding.inflate(
             LayoutInflater.from(parent.context),

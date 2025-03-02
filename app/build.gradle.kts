@@ -5,8 +5,6 @@ plugins {
     id(libs.plugins.safeArgs.get().pluginId)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.protobuf") version "0.9.4"
-    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.google.gms.google.services)
 }
@@ -52,13 +50,12 @@ android {
 }
 
 dependencies {
-    implementation("com.google.firebase:firebase-firestore:25.0.0")
-//    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
-//    implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+    implementation(libs.firebase.firestore.v2500)
+
     implementation(libs.logging.interceptor)
 
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    implementation(libs.play.services.auth.v2070)
+    implementation(libs.googleid)
     // Google Auth
 
     implementation(libs.androidx.core.splashscreen)
@@ -66,7 +63,8 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
     implementation(libs.firebase.auth)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
+
 
     implementation(libs.androidx.room.runtime)
     implementation (libs.androidx.room.ktx)
@@ -74,7 +72,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     //noinspection GradleDependency
     implementation (libs.androidx.datastore)
-    implementation( libs.protobuf.javalite)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.datastore.preferences)
@@ -90,27 +87,10 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.glide)
-    ksp(libs.moshi.kotlin.codegen)
     testImplementation(libs.junit)
-    implementation(libs.moshi.kotlin)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.24.0"
-    }
-    generateProtoTasks {
-        all().configureEach {
-            builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
 }
 
 
@@ -118,8 +98,4 @@ buildscript {
     repositories {
         google()
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }

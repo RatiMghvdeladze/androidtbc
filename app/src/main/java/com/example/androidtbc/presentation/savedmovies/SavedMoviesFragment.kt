@@ -8,11 +8,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.R
-import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.databinding.FragmentSavedMoviesBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.model.MovieUI
 import com.example.androidtbc.presentation.savedmovies.adapter.SavedMovieAdapter
 import com.example.androidtbc.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +42,6 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             }
         }
     }
-
 
     private fun showClearAllConfirmationDialog() {
         AlertDialog.Builder(requireContext())
@@ -72,7 +72,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             },
             onMovieLongClicked = { movie ->
                 showDeleteConfirmationDialog(movie)
-                true // Consume the event
+                true
             }
         )
 
@@ -82,7 +82,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
         }
     }
 
-    private fun showDeleteConfirmationDialog(movie: MovieDetailDto) {
+    private fun showDeleteConfirmationDialog(movie: MovieUI) {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.remove_from_watchlist))
             .setMessage(getString(R.string.are_you_sure_you_want_to_remove_this_movie_from_your_watchlist))
@@ -102,7 +102,6 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
                         is Resource.Success -> {
                             hideLoading()
                             adapter.submitList(result.data)
-
                             updateEmptyState(result.data.isEmpty())
                         }
                         is Resource.Error -> {
@@ -135,17 +134,45 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
             binding.emptyStateLayout.visibility = View.GONE
         }
     }
+
     private fun setupBottomNavigation() {
-        binding.bottomNavView.apply {
+        with(binding.bottomNavView) {
             selectedItemId = R.id.savedMoviesFragment
 
             setOnItemSelectedListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.homeFragment -> {
-                        findNavController().navigate(R.id.homeFragment)
-                        false
+                        if (selectedItemId != R.id.homeFragment) {
+                            findNavController().navigate(
+                                R.id.homeFragment,
+                                null,
+                                navOptions {
+                                    popUpTo(R.id.my_nav) {
+                                        inclusive = false
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            )
+                        }
+                        true
                     }
                     R.id.savedMoviesFragment -> {
+                        if (selectedItemId != R.id.savedMoviesFragment) {
+                            findNavController().navigate(
+                                R.id.savedMoviesFragment,
+                                null,
+                                navOptions {
+                                    popUpTo(R.id.my_nav) {
+                                        inclusive = false
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            )
+                        }
                         true
                     }
                     else -> false

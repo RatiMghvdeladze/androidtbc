@@ -4,7 +4,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class ProfileMenuItem(
+data class  ProfileMenuItem(
     val id: Int,
     @DrawableRes val iconResId: Int,
     @DrawableRes val backgroundResId: Int,

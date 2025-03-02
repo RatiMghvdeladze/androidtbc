@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidtbc.data.remote.dto.MovieDetailDto
 import com.example.androidtbc.databinding.ItemSavedMovieBinding
+import com.example.androidtbc.presentation.model.MovieUI
 import com.example.androidtbc.utils.loadTmdbImage
 
 class SavedMovieAdapter(
-    private val onMovieClicked: (MovieDetailDto) -> Unit,
-    private val onMovieLongClicked: (MovieDetailDto) -> Boolean // Return true to consume the event
-) : ListAdapter<MovieDetailDto, SavedMovieAdapter.SavedMovieViewHolder>(SavedMovieDiffCallback()) {
+    private val onMovieClicked: (MovieUI) -> Unit,
+    private val onMovieLongClicked: (MovieUI) -> Boolean
+) : ListAdapter<MovieUI, SavedMovieAdapter.SavedMovieViewHolder>(SavedMovieDiffCallback()) {
 
     inner class SavedMovieViewHolder(
         private val binding: ItemSavedMovieBinding
@@ -35,19 +35,13 @@ class SavedMovieAdapter(
             }
         }
 
-        fun bind(movie: MovieDetailDto) {
+        fun bind(movie: MovieUI) {
             binding.apply {
                 tvTitle.text = movie.title
-
                 tvRating.text = String.format("%.1f", movie.voteAverage)
-
-                val genreName = movie.genres?.firstOrNull()?.name ?: "N/A"
-                tvGenre.text = genreName
-
-                tvYear.text = movie.releaseDate.split("-").firstOrNull() ?: ""
-
-                val runtime = movie.runtime ?: 0
-                tvDuration.text = "$runtime minutes"
+                tvGenre.text = movie.genreName
+                tvYear.text = movie.releaseYear
+                tvDuration.text = movie.runtime
 
                 movie.posterPath?.let { posterPath ->
                     ivPoster.loadTmdbImage(posterPath)
@@ -55,8 +49,8 @@ class SavedMovieAdapter(
             }
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedMovieViewHolder {
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedMovieViewHolder {
         return SavedMovieViewHolder(ItemSavedMovieBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
@@ -69,12 +63,12 @@ class SavedMovieAdapter(
     }
 
 
-    class SavedMovieDiffCallback : DiffUtil.ItemCallback<MovieDetailDto>() {
-        override fun areItemsTheSame(oldItem: MovieDetailDto, newItem: MovieDetailDto): Boolean {
+    class SavedMovieDiffCallback : DiffUtil.ItemCallback<MovieUI>() {
+        override fun areItemsTheSame(oldItem: MovieUI, newItem: MovieUI): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: MovieDetailDto, newItem: MovieDetailDto): Boolean {
+        override fun areContentsTheSame(oldItem: MovieUI, newItem: MovieUI): Boolean {
             return oldItem == newItem
         }
     }

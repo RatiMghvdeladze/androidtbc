@@ -5,12 +5,28 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidtbc.data.remote.dto.CastMemberDto
 import com.example.androidtbc.databinding.ItemCastBinding
+import com.example.androidtbc.presentation.model.CastMember
 import com.example.androidtbc.utils.loadTmdbImage
 
-class CastAdapter(private val onCastClick: (CastMemberDto) -> Unit) :
-    ListAdapter<CastMemberDto, CastAdapter.CastViewHolder>(CastDiffCallback()) {
+class CastAdapter(private val onCastClick: (CastMember) -> Unit) :
+    ListAdapter<CastMember, CastAdapter.CastViewHolder>(CastDiffCallback()) {
+
+    inner class CastViewHolder(private val binding: ItemCastBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(cast: CastMember) {
+            binding.apply {
+                tvOriginalName.text = cast.name
+                tvCharacter.text = cast.character
+                ivCast.loadTmdbImage(cast.profilePath)
+
+                root.setOnClickListener {
+                    onCastClick(cast)
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
         val binding = ItemCastBinding.inflate(
@@ -26,35 +42,12 @@ class CastAdapter(private val onCastClick: (CastMemberDto) -> Unit) :
         holder.bind(cast)
     }
 
-    inner class CastViewHolder(private val binding: ItemCastBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onCastClick(getItem(position))
-                }
-            }
-        }
-
-        fun bind(cast: CastMemberDto) {
-            binding.apply {
-                tvOriginalName.text = cast.name
-                tvCharacter.text = cast.character
-
-                // Load image if profilePath is not null
-                ivCast.loadTmdbImage(cast.profilePath)
-            }
-        }
-    }
-
-    class CastDiffCallback : DiffUtil.ItemCallback<CastMemberDto>() {
-        override fun areItemsTheSame(oldItem: CastMemberDto, newItem: CastMemberDto): Boolean {
+    class CastDiffCallback : DiffUtil.ItemCallback<CastMember>() {
+        override fun areItemsTheSame(oldItem: CastMember, newItem: CastMember): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: CastMemberDto, newItem: CastMemberDto): Boolean {
+        override fun areContentsTheSame(oldItem: CastMember, newItem: CastMember): Boolean {
             return oldItem == newItem
         }
     }
