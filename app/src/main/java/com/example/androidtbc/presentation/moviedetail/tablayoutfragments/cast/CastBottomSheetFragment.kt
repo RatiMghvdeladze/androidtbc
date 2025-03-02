@@ -29,7 +29,6 @@ class CastBottomSheetFragment(private val cast: CastMember) : BottomSheetDialogF
             tvCastName.text = cast.name
             tvCharacter.text = "Character: ${cast.character}"
 
-            // Handle gender
             cast.gender?.let { genderValue ->
                 val genderText = when (genderValue) {
                     1 -> "Female"
@@ -42,7 +41,6 @@ class CastBottomSheetFragment(private val cast: CastMember) : BottomSheetDialogF
                 tvGender.visibility = View.GONE
             }
 
-            // Handle popularity
             cast.popularity?.let { popularityValue ->
                 tvPopularity.text = "Popularity: ${popularityValue}"
                 tvPopularity.visibility = View.VISIBLE
@@ -50,7 +48,6 @@ class CastBottomSheetFragment(private val cast: CastMember) : BottomSheetDialogF
                 tvPopularity.visibility = View.GONE
             }
 
-            // Load image if profilePath is not null
             ivCastImage.loadTmdbImage(cast.profilePath)
         }
     }
