@@ -83,5 +83,11 @@
     <string name="remove">remove</string>
     <string name="city">City</string>
     <string name="loading">Loading...</string>
+    <string name="character">Character: %1$s</string>
+    <string name="gender">Gender: %1$s</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="not_specified">Not specified</string>
+    <string name="popularity">Popularity: %1$s</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentCastBottomSheetBinding
 import com.example.androidtbc.presentation.model.CastMember
 import com.example.androidtbc.utils.loadTmdbImage
@@ -27,22 +28,22 @@ class CastBottomSheetFragment(private val cast: CastMember) : BottomSheetDialogF
 
         with(binding) {
             tvCastName.text = cast.name
-            tvCharacter.text = "Character: ${cast.character}"
+            tvCharacter.text = getString(R.string.character, cast.character)
 
             cast.gender?.let { genderValue ->
                 val genderText = when (genderValue) {
-                    1 -> "Female"
-                    2 -> "Male"
-                    else -> "Not specified"
+                    1 -> getString(R.string.female)
+                    2 -> getString(R.string.male)
+                    else -> getString(R.string.not_specified)
                 }
-                tvGender.text = "Gender: $genderText"
+                tvGender.text = getString(R.string.gender, genderText)
                 tvGender.visibility = View.VISIBLE
             } ?: run {
                 tvGender.visibility = View.GONE
             }
 
-            cast.popularity?.let { popularityValue ->
-                tvPopularity.text = "Popularity: ${popularityValue}"
+            cast.popularity?.let {
+                tvPopularity.text = getString(R.string.popularity, it.toString())
                 tvPopularity.visibility = View.VISIBLE
             } ?: run {
                 tvPopularity.visibility = View.GONE

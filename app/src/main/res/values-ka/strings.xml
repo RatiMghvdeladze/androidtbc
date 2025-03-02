@@ -85,5 +85,11 @@
     <string name="remove">წაშლა</string>
     <string name="city">ქალაქი</string>
     <string name="loading">იტვირთება...</string>
+    <string name="character">როლი: %1$s</string>
+    <string name="gender">სქესი: %1$s</string>
+    <string name="female">მდედრობითი</string>
+    <string name="male">მამრობითი</string>
+    <string name="not_specified">გაურკვეველია</string>
+    <string name="popularity">Popularity: %1$s</string>
 
 </resources>
