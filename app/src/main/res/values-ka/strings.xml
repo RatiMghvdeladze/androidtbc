@@ -90,6 +90,6 @@
     <string name="female">მდედრობითი</string>
     <string name="male">მამრობითი</string>
     <string name="not_specified">გაურკვეველია</string>
-    <string name="popularity">Popularity: %1$s</string>
+    <string name="popularity">პოპულარობა: %1$s</string>
 
 </resources>
