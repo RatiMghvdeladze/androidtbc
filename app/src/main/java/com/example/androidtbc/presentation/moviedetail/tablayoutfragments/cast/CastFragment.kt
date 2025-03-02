@@ -30,10 +30,9 @@ class CastFragment : BaseFragment<FragmentCastBinding>(FragmentCastBinding::infl
 
     private fun setupRecyclerView() {
         castAdapter = CastAdapter { castMember ->
-            // Show bottom sheet when cast is clicked
             CastBottomSheetFragment(castMember).show(childFragmentManager, "CastBottomSheet")
         }
-        binding.rvCasts.apply {
+        with(binding.rvCasts) {
             adapter = castAdapter
             layoutManager = GridLayoutManager(requireContext(), 3)
         }

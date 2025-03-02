@@ -71,7 +71,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     }
 
     private fun updateSaveButton(isSaved: Boolean) {
-        binding.btnSaveMovie.apply {
+        with(binding.btnSaveMovie) {
             setImageResource(
                 if (isSaved) R.drawable.ic_add_favorite_filled
                 else R.drawable.ic_add_favorite
@@ -160,9 +160,9 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
             getString(R.string.cast)
         )
 
-        binding.apply {
+        with(binding) {
             if (isAdded) {
-                vp2.apply {
+                with(vp2) {
                     adapter = ViewPagerAdapter(requireActivity(), fragments)
                     offscreenPageLimit = fragments.size
                     reduceDragSensitivity()

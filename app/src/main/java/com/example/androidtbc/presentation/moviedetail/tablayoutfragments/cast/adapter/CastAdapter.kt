@@ -16,7 +16,7 @@ class CastAdapter(private val onCastClick: (CastMember) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cast: CastMember) {
-            binding.apply {
+            with(binding) {
                 tvOriginalName.text = cast.name
                 tvCharacter.text = cast.character
                 ivCast.loadTmdbImage(cast.profilePath)
