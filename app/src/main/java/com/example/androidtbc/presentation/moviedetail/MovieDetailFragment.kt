@@ -64,13 +64,13 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSaved.collect { isSaved ->
-                    updateFavoriteButton(isSaved)
+                    updateSaveButton(isSaved)
                 }
             }
         }
     }
 
-    private fun updateFavoriteButton(isSaved: Boolean) {
+    private fun updateSaveButton(isSaved: Boolean) {
         binding.btnSaveMovie.apply {
             setImageResource(
                 if (isSaved) R.drawable.ic_add_favorite_filled
