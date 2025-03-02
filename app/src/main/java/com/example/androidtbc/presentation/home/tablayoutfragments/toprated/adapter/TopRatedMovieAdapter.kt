@@ -6,7 +6,7 @@ import com.example.androidtbc.presentation.model.Movie
 import com.example.androidtbc.utils.loadTmdbImage
 
 class TopRatedMovieAdapter(
-    private val onMovieClick: (Movie) -> Unit // Change Result to MovieResult
+    private val onMovieClick: (Movie) -> Unit
 ) : BaseMovieAdapter<ItemMoviePosterBinding>(
     bindingInflater = { inflater, parent, attachToParent ->
         ItemMoviePosterBinding.inflate(inflater, parent, attachToParent)

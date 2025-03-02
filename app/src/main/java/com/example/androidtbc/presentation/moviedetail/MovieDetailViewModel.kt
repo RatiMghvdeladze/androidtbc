@@ -67,21 +67,16 @@ class MovieDetailViewModel @Inject constructor(
                         _isSaved.value = false
                     }
                 } else {
-                    // We need the original DTO for saving to Firestore
-                    // This is where we would ideally have a reverse mapper
                     when (val response = repository.getMovieDetails(movie.id)) {
                         is Resource.Success -> {
                             if (firestoreRepository.saveMovie(response.data)) {
                                 _isSaved.value = true
                             }
                         }
-                        else -> {
-                            // If we can't get fresh data, try with cached data if possible
-                        }
+                        else -> {}
                     }
                 }
 
-                // Verify the actual saved status
                 val actualStatus = firestoreRepository.isMovieSaved(movie.id)
                 if (_isSaved.value != actualStatus) {
                     _isSaved.value = actualStatus

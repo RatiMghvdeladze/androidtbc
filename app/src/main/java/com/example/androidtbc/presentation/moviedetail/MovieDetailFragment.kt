@@ -49,7 +49,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
                 findNavController().navigateUp()
             }
 
-            btnFavorite.setOnClickListener {
+            btnSaveMovie.setOnClickListener {
                 viewModel.toggleSaveMovie()
             }
 
@@ -71,7 +71,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     }
 
     private fun updateFavoriteButton(isSaved: Boolean) {
-        binding.btnFavorite.apply {
+        binding.btnSaveMovie.apply {
             setImageResource(
                 if (isSaved) R.drawable.ic_add_favorite_filled
                 else R.drawable.ic_add_favorite
@@ -146,7 +146,6 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
     private fun initVP() {
         val movieId = args.movieId
 
-        // Create fragments and pass arguments using SafeArgs bundles
         val aboutMovieFragment = AboutMovieFragment().apply {
             arguments = AboutMovieFragmentArgs(movieId).toBundle()
         }
