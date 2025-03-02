@@ -2,7 +2,6 @@ package com.example.androidtbc.presentation.savedmovies
 
 import android.app.AlertDialog
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +14,7 @@ import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.model.MovieUI
 import com.example.androidtbc.presentation.savedmovies.adapter.SavedMovieAdapter
 import com.example.androidtbc.utils.Resource
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -107,7 +107,7 @@ class SavedMoviesFragment : BaseFragment<FragmentSavedMoviesBinding>(FragmentSav
                         }
                         is Resource.Error -> {
                             hideLoading()
-                            Toast.makeText(requireContext(), result.errorMessage, Toast.LENGTH_SHORT).show()
+                            Snackbar.make(binding.root, result.errorMessage, Snackbar.LENGTH_SHORT).show()
                         }
                         else -> {}
                     }

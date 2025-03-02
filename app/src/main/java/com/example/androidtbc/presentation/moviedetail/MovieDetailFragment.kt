@@ -3,7 +3,6 @@ package com.example.androidtbc.presentation.moviedetail
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +22,7 @@ import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.C
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragmentArgs
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.loadTmdbImage
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -106,7 +106,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>(FragmentMov
 
     private fun showError(message: String) {
         binding.progressBar.visibility = View.GONE
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun displayMovieDetails(movie: MovieDetailDto) {
