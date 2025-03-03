@@ -14,8 +14,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentMovieDetailBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.presentation.home.adapter.ViewPagerAdapter
 import com.example.androidtbc.presentation.model.MovieDetail
+import com.example.androidtbc.presentation.moviedetail.adapter.ViewPagerAdapter
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragment
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.aboutmovie.AboutMovieFragmentArgs
 import com.example.androidtbc.presentation.moviedetail.tablayoutfragments.cast.CastFragment
