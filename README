@@ -1,7 +1,3 @@
-Here's your updated README with the latest details:  
-
----
-
 ## 🎬 MovieApp  
 
 MovieApp is a modern Android application that allows users to explore movies, view details, save favorites, and manage their profiles. The app integrates with [TMDB API](https://www.themoviedb.org/) for fetching movie data and uses Firebase/Firestore for authentication and data storage.  
