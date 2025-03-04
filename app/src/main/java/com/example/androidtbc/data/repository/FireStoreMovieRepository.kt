@@ -11,6 +11,7 @@ import com.google.firebase.firestore.Source
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface FirestoreMovieRepository {
     suspend fun saveMovie(movie: MovieDetailDto): Boolean
@@ -21,6 +22,7 @@ interface FirestoreMovieRepository {
     suspend fun deleteSavedMovie(movieId: Int): Boolean
 }
 
+@Singleton
 class FirestoreMovieRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,

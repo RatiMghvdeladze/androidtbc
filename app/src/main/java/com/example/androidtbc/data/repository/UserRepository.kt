@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface UserRepository {
     suspend fun saveUserInfo(name: String, phoneNumber: String, city: String): Result<Unit>
@@ -12,6 +13,7 @@ interface UserRepository {
     fun clearCache()
 }
 
+@Singleton
 class UserRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
