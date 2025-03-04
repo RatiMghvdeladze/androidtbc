@@ -41,15 +41,9 @@ class ProfileViewModel @Inject constructor(
 
     fun getUserProfile() {
         viewModelScope.launch {
-            cachedUserProfile?.let {
-                if (_userProfile.value !is Resource.Error) {
-                    _userProfile.value = Resource.Success(it)
-                }
-            }
-
             _userProfile.value = Resource.Loading
 
-            userRepository.getUserInfo().fold(
+            userRepository.getUserInfo(forceRefresh = true).fold(
                 onSuccess = { user ->
                     cachedUserProfile = user
                     _userProfile.value = Resource.Success(user)
@@ -65,11 +59,10 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.clearLoginSession()
 
-            val isStillLoggedIn = userPreferencesRepository.checkLoginStateImmediately()
+            userRepository.clearCache()
 
-            if (isStillLoggedIn) {
-                userPreferencesRepository.clearLoginSession()
-            }
+            cachedUserProfile = null
+            _userProfile.value = Resource.Idle
 
             auth.signOut()
         }
