@@ -18,7 +18,6 @@ val localProperties = Properties().apply {
     }
 }
 
-
 android {
     namespace = "com.example.androidtbc"
     compileSdk = 34
