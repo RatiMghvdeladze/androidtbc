@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,12 +46,4 @@ class UserPreferencesRepository @Inject constructor(
             val rememberMe = preferences[REMEMBER_ME] ?: false
             isLoggedIn && rememberMe
         }
-
-    suspend fun checkLoginStateImmediately(): Boolean {
-        return context.dataStore.data.first().let { preferences ->
-            val isLoggedIn = preferences[IS_LOGGED_IN] ?: false
-            val rememberMe = preferences[REMEMBER_ME] ?: false
-            isLoggedIn && rememberMe
-        }
-    }
 }
