@@ -44,6 +44,7 @@ MovieApp is a modern Android application that allows users to explore movies, vi
 - **Preference Datastore** (Remember me) 
 - **Retrofit** (API calls)  
 - **Glide** (Image loading)  
+- **Snackbar** (Error messages and notifications)
 - **BottomNavigationView** (For Home & Watchlist navigation)
 - **ViewPager2 & TabLayout** (Navigation between sections)  
 - **RecyclerView** (Efficient list rendering)  
