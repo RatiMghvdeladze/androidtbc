@@ -160,10 +160,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         val configuration = Configuration(resources.configuration)
         configuration.setLocale(locale)
 
-        val context = requireContext().createConfigurationContext(configuration)
-
-        val resources = context.resources
-
         requireActivity().recreate()
     }
 
