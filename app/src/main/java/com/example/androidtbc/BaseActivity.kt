@@ -14,7 +14,6 @@ open class BaseActivity : AppCompatActivity() {
         val configuration = Configuration(newBase.resources.configuration)
         configuration.setLocale(locale)
 
-        // Create a new context with the updated configuration
         val context = newBase.createConfigurationContext(configuration)
 
         super.attachBaseContext(context)

@@ -2,7 +2,9 @@ package com.example.androidtbc.presentation.home.profile.innerfragments
 
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.data.remote.dto.User
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEditProfileBinding::inflate) {
+class EditProfileFragment :
+    BaseFragment<FragmentEditProfileBinding>(FragmentEditProfileBinding::inflate) {
     private val viewModel: EditProfileViewModel by viewModels()
     private var originalUser: User? = null
 
@@ -81,7 +84,8 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
 
     private fun updateUserProfile() {
         if (!hasChanges()) {
-            Snackbar.make(binding.root, getString(R.string.no_changes_made), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, getString(R.string.no_changes_made), Snackbar.LENGTH_SHORT)
+                .show()
             findNavController().navigateUp()
             return
         }
@@ -91,7 +95,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
         val city = binding.etCity.text.toString().trim()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 showProgress(true)
 
                 val result = viewModel.saveUserInfo(name, phone, city)
@@ -99,37 +103,53 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
                 showProgress(false)
 
                 if (result.isSuccess) {
-                    Snackbar.make(binding.root, getString(R.string.profile_updated_successfully), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.profile_updated_successfully),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
 
                     findNavController().navigateUp()
                 } else {
-                    Snackbar.make(binding.root, result.exceptionOrNull()?.message ?: getString(R.string.error_updating_profile), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        result.exceptionOrNull()?.message
+                            ?: getString(R.string.error_updating_profile),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
-            } catch (e: Exception) {
-                showProgress(false)
-                Snackbar.make(binding.root, e.message ?: getString(R.string.error_updating_profile), Snackbar.LENGTH_SHORT).show()
+
             }
         }
     }
 
     private fun observeUserProfile() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userProfile.collectLatest { state ->
-                when (state) {
-                    is Resource.Loading -> {
-                        showProgress(true)
-                    }
-                    is Resource.Success -> {
-                        showProgress(false)
-                        originalUser = state.data
-                        setFields(state.data)
-                    }
-                    is Resource.Error -> {
-                        showProgress(false)
-                        Snackbar.make(binding.root, "Error: ${state.errorMessage}", Snackbar.LENGTH_SHORT).show()
-                    }
-                    is Resource.Idle -> {
-                        viewModel.getUserProfile()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userProfile.collectLatest { state ->
+                    when (state) {
+                        is Resource.Loading -> {
+                            showProgress(true)
+                        }
+
+                        is Resource.Success -> {
+                            showProgress(false)
+                            originalUser = state.data
+                            setFields(state.data)
+                        }
+
+                        is Resource.Error -> {
+                            showProgress(false)
+                            Snackbar.make(
+                                binding.root,
+                                "Error: ${state.errorMessage}",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        is Resource.Idle -> {
+                            viewModel.getUserProfile()
+                        }
                     }
                 }
             }

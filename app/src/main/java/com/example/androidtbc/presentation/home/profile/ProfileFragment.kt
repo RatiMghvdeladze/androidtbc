@@ -5,7 +5,9 @@ import android.content.res.Configuration
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.R
@@ -15,6 +17,7 @@ import com.example.androidtbc.presentation.home.profile.adapter.ProfileItemAdapt
 import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -154,19 +157,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             requireActivity().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
         sharedPreferences.edit().putString("app_language", locale.language).apply()
 
-        // Create updated configuration
         val configuration = Configuration(resources.configuration)
         configuration.setLocale(locale)
 
-        // Create context with the new configuration
         val context = requireContext().createConfigurationContext(configuration)
 
-        // Update resources with the new configuration
         val resources = context.resources
 
-        // Restart the activity to apply changes
         requireActivity().recreate()
     }
+
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.logout))
@@ -184,17 +184,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     private fun logout() {
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.logout()
 
-                kotlinx.coroutines.delay(300)
+                delay(300)
 
                 val action =
                     ProfileFragmentDirections.actionProfileFragmentToLoginFragment(fromLogout = true)
                 findNavController().navigate(action)
-            } catch (e: Exception) {
-                Snackbar.make(binding.root, "Logout error: ${e.message}", Snackbar.LENGTH_SHORT)
-                    .show()
             }
         }
     }
@@ -205,33 +202,35 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     private fun observeUserProfile() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userProfile.collectLatest { state ->
-                when (state) {
-                    is Resource.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userProfile.collectLatest { state ->
+                    when (state) {
+                        is Resource.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
 
-                    is Resource.Success -> {
-                        binding.progressBar.visibility = View.GONE
+                        is Resource.Success -> {
+                            binding.progressBar.visibility = View.GONE
 
-                        state.data.let { user ->
-                            with(binding) {
-                                tvName.text = user.fullName
-                                tvEmail.text = user.email
+                            state.data.let { user ->
+                                with(binding) {
+                                    tvName.text = user.fullName
+                                    tvEmail.text = user.email
+                                }
                             }
                         }
-                    }
 
-                    is Resource.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Snackbar.make(
-                            binding.root,
-                            "Error: ${state.errorMessage}",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
+                        is Resource.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Snackbar.make(
+                                binding.root,
+                                "Error: ${state.errorMessage}",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
 
-                    is Resource.Idle -> {}
+                        is Resource.Idle -> {}
+                    }
                 }
             }
         }
