@@ -5,8 +5,6 @@ plugins {
     id(libs.plugins.safeArgs.get().pluginId)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.protobuf") version "0.9.4"
-    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 }
 
@@ -25,7 +23,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -42,14 +44,17 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
 
 dependencies {
+    implementation(libs.logging.interceptor)
+
     implementation(libs.androidx.viewpager2)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
     implementation (libs.androidx.room.ktx)
@@ -81,28 +86,10 @@ dependencies {
 
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.24.0"
-    }
-    generateProtoTasks {
-        all().configureEach {
-            builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
-}
 
 
 buildscript {
     repositories {
         google()
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
