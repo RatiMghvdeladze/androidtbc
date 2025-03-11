@@ -1,16 +1,16 @@
 package com.example.androidtbc.domain.usecase.auth
 
-import com.example.androidtbc.domain.repository.AuthRepository
+import com.example.androidtbc.domain.repository.UserSessionRepository
 import javax.inject.Inject
 
 class LogOutUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val userSessionRepository: UserSessionRepository
 ) {
     suspend operator fun invoke(completeLogout: Boolean = false) {
         if (completeLogout) {
-            authRepository.logoutCompletely()
+            userSessionRepository.logoutCompletely()
         } else {
-            authRepository.clearToken()
+            userSessionRepository.clearToken()
         }
     }
 }

@@ -1,12 +1,13 @@
 package com.example.androidtbc.di
 
-import com.example.androidtbc.domain.repository.AuthRepository
+import com.example.androidtbc.domain.repository.LoginRepository
+import com.example.androidtbc.domain.repository.RegisterRepository
 import com.example.androidtbc.domain.repository.UserRepository
+import com.example.androidtbc.domain.repository.UserSessionRepository
 import com.example.androidtbc.domain.usecase.auth.GetUserSessionUseCase
 import com.example.androidtbc.domain.usecase.auth.LogOutUseCase
 import com.example.androidtbc.domain.usecase.auth.LoginUseCase
 import com.example.androidtbc.domain.usecase.auth.RegisterUseCase
-import com.example.androidtbc.domain.usecase.auth.SessionManager
 import com.example.androidtbc.domain.usecase.user.GetUsersUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,32 +21,26 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideLoginUseCase(authRepository: AuthRepository): LoginUseCase {
-        return LoginUseCase(authRepository)
+    fun provideLoginUseCase(loginRepository: LoginRepository): LoginUseCase {
+        return LoginUseCase(loginRepository)
     }
 
     @Provides
     @Singleton
-    fun provideRegisterUseCase(authRepository: AuthRepository): RegisterUseCase {
-        return RegisterUseCase(authRepository)
+    fun provideRegisterUseCase(registerRepository: RegisterRepository): RegisterUseCase {
+        return RegisterUseCase(registerRepository)
     }
 
     @Provides
     @Singleton
-    fun provideLogoutUseCase(authRepository: AuthRepository): LogOutUseCase {
-        return LogOutUseCase(authRepository)
+    fun provideLogoutUseCase(userSessionRepository: UserSessionRepository): LogOutUseCase {
+        return LogOutUseCase(userSessionRepository)
     }
 
     @Provides
     @Singleton
-    fun provideGetUserSessionUseCase(authRepository: AuthRepository): GetUserSessionUseCase {
-        return GetUserSessionUseCase(authRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSessionManager(authRepository: AuthRepository): SessionManager {
-        return SessionManager(authRepository)
+    fun provideGetUserSessionUseCase(userSessionRepository: UserSessionRepository): GetUserSessionUseCase {
+        return GetUserSessionUseCase(userSessionRepository)
     }
 
     @Provides

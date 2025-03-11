@@ -3,7 +3,6 @@ package com.example.androidtbc.di
 import android.content.Context
 import com.example.androidtbc.BuildConfig
 import com.example.androidtbc.data.local.AppDatabase
-import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.utils.Validator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -71,15 +70,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocalDataStore(@ApplicationContext context: Context): LocalDataStore {
-        return LocalDataStore(context)
-    }
-
-    @Provides
-    @Singleton
     fun provideValidator(): Validator {
         return Validator()
     }
-
-
 }
