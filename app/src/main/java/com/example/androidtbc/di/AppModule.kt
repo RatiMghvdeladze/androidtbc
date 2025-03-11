@@ -5,10 +5,6 @@ import com.example.androidtbc.BuildConfig
 import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.data.remote.api.AuthService
-import com.example.androidtbc.data.repository.AuthRepository
-import com.example.androidtbc.data.repository.AuthRepositoryImpl
-import com.example.androidtbc.data.repository.UserRepository
-import com.example.androidtbc.data.repository.UsersAdapter
 import com.example.androidtbc.utils.Validator
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -23,11 +19,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor() : HttpLoggingInterceptor {
@@ -50,7 +44,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideJson() : Json = Json {
-       ignoreUnknownKeys = true
+        ignoreUnknownKeys = true
         explicitNulls = false
     }
 
@@ -69,13 +63,6 @@ object AppModule {
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
 
-
-
-
-
-
-
-
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
@@ -84,52 +71,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserDao(appDatabase: AppDatabase) = appDatabase.userDao()
-
-
-    @Provides
-    @Singleton
-    fun provideUserRepository(
-        authService: AuthService,
-        appDatabase: AppDatabase
-    ): UserRepository {
-        return UserRepository(authService, appDatabase)
-    }
-
-
-
-
-
-    @Provides
-    @Singleton
     fun provideLocalDataStore(@ApplicationContext context: Context): LocalDataStore {
         return LocalDataStore(context)
     }
 
-
-
-
-
-
     @Provides
     @Singleton
-    fun provideValidator() : Validator = Validator()
-
-    @Provides
-    @Singleton
-    fun provideUserAdapter() : UsersAdapter = UsersAdapter()
-
-
-
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        authService: AuthService,
-        dataStore: LocalDataStore,
-        validator: Validator
-    ): AuthRepository {
-        return AuthRepositoryImpl(authService, dataStore, validator)
+    fun provideValidator(): Validator {
+        return Validator()
     }
 
-}
 
+}

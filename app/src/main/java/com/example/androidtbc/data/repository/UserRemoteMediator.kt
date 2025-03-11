@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.local.entity.UserEntity
 import com.example.androidtbc.data.remote.api.AuthService
+import com.example.androidtbc.domain.mapper.UserMapper
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.handleHttpRequest
 import java.util.concurrent.TimeUnit
@@ -55,14 +56,7 @@ class UserRemoteMediator @Inject constructor(
             val response = handleHttpRequest { authService.getUsers(page) }
             if (response is Resource.Success) {
                 val users = response.data.data.map { user ->
-                    UserEntity(
-                        id = user.id,
-                        email = user.email,
-                        firstName = user.firstName,
-                        lastName = user.lastName,
-                        avatar = user.avatar,
-                        lastUpdated = System.currentTimeMillis()
-                    )
+                    UserMapper.mapDtoToEntity(user, System.currentTimeMillis())
                 }
 
                 appDatabase.withTransaction {

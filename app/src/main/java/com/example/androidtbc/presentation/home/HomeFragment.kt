@@ -16,13 +16,11 @@ import com.example.androidtbc.presentation.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private val homeViewModel: HomeViewModel by viewModels()
-    @Inject
-    lateinit var usersAdapter: UsersAdapter
+    private lateinit var usersAdapter: UsersAdapter
     private val args: HomeFragmentArgs by navArgs()
 
     override fun start() {
@@ -33,6 +31,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun setUpRv() {
         with(binding.rvUsers) {
+            usersAdapter = UsersAdapter()
             layoutManager = LinearLayoutManager(requireContext())
             adapter = usersAdapter.withLoadStateFooter(
                 footer = UsersLoadStateAdapter { usersAdapter.retry() }

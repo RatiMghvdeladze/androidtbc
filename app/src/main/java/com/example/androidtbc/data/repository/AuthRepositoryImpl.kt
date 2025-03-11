@@ -4,25 +4,18 @@ import com.example.androidtbc.data.local.LocalDataStore
 import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.domain.model.LoginRawData
 import com.example.androidtbc.domain.model.RegisterRawData
+import com.example.androidtbc.domain.model.UserSession
+import com.example.androidtbc.domain.repository.AuthRepository
 import com.example.androidtbc.utils.Resource
 import com.example.androidtbc.utils.Validator
 import com.example.androidtbc.utils.handleHttpRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
-interface AuthRepository {
-    suspend fun login(email: String, password: String, rememberMe: Boolean): Flow<Resource<String>>
-    suspend fun register(email: String, password: String): Flow<Resource<String>>
-    suspend fun saveUserSession(email: String, token: String, rememberMe: Boolean)
-    suspend fun clearToken()
-    suspend fun logoutCompletely()
-    fun getUserEmail(): Flow<String?>
-    fun isSessionActive(): Flow<Boolean>
-}
 
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
@@ -120,9 +113,26 @@ class AuthRepositoryImpl @Inject constructor(
         dataStore.clearAllUserData()
     }
 
-    override fun getUserEmail(): Flow<String?> = dataStore.getEmail()
+    override fun getUserEmail(): Flow<String?> = dataStore.getEmail().map { email ->
+        if (email.isEmpty()) null else email
+    }
 
     override fun isSessionActive(): Flow<Boolean> = dataStore.getToken().map { token ->
         token.isNotEmpty()
+    }
+
+    override fun getUserSession(): Flow<UserSession?> = combine(
+        dataStore.getToken(),
+        dataStore.getEmail()
+    ) { token, email ->
+        if (token.isNotEmpty()) {
+            UserSession(
+                email = email,
+                token = token,
+                isActive = true
+            )
+        } else {
+            null
+        }
     }
 }
