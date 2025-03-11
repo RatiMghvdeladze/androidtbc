@@ -4,8 +4,9 @@ import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.domain.datastore.DataStoreManager
 import com.example.androidtbc.domain.model.RegisterRawData
 import com.example.androidtbc.domain.repository.RegisterRepository
+import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
+import com.example.androidtbc.domain.validation.ValidationResult
 import com.example.androidtbc.utils.Resource
-import com.example.androidtbc.utils.Validator
 import com.example.androidtbc.utils.handleHttpRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,19 +17,21 @@ import javax.inject.Inject
 class RegisterRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val dataStoreManager: DataStoreManager,
-    private val validator: Validator
+    private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : RegisterRepository {
 
     override suspend fun register(email: String, password: String): Flow<Resource<String>> = flow {
-        when {
-            !validator.validateEmail(email) -> {
-                emit(Resource.Error("Please enter a valid email address"))
+        if (!isValidEmail(email)) {
+            emit(Resource.Error("Please enter a valid email address"))
+            return@flow
+        }
+
+        when (val result = validatePasswordUseCase(password)) {
+            is ValidationResult.Error -> {
+                emit(Resource.Error(result.message))
                 return@flow
             }
-            !validator.validatePassword(password) -> {
-                emit(Resource.Error("Password must contain at least 6 characters"))
-                return@flow
-            }
+            else -> {}
         }
 
         emit(Resource.Loading)
@@ -54,4 +57,8 @@ class RegisterRepositoryImpl @Inject constructor(
             else -> Unit
         }
     }.flowOn(Dispatchers.IO)
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 }

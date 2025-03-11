@@ -24,7 +24,6 @@ abstract class DomainModule {
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
 
-
     @Binds
     @Singleton
     abstract fun bindLoginRepository(
@@ -42,6 +41,4 @@ abstract class DomainModule {
     abstract fun bindUserSessionRepository(
         userSessionRepositoryImpl: UserSessionRepositoryImpl
     ): UserSessionRepository
-
-
 }

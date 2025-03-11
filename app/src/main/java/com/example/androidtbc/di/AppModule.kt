@@ -4,7 +4,8 @@ import android.content.Context
 import com.example.androidtbc.BuildConfig
 import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.remote.api.AuthService
-import com.example.androidtbc.utils.Validator
+import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
+import com.example.androidtbc.domain.usecase.validation.ValidateRepeatedPasswordUseCase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -23,7 +24,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideHttpLoggingInterceptor() : HttpLoggingInterceptor {
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -32,25 +33,22 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(logging : HttpLoggingInterceptor) : OkHttpClient{
+    fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
     }
 
-
-
     @Provides
     @Singleton
-    fun provideJson() : Json = Json {
+    fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
     }
 
-
     @Provides
     @Singleton
-    fun provideRetrofit(json: Json, okHttpClient: OkHttpClient) : Retrofit {
+    fun provideRetrofit(json: Json, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
@@ -60,7 +58,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
+    fun provideAuthService(retrofit: Retrofit): AuthService = retrofit.create(AuthService::class.java)
 
     @Provides
     @Singleton
@@ -70,7 +68,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideValidator(): Validator {
-        return Validator()
+    fun provideValidatePasswordUseCase(): ValidatePasswordUseCase {
+        return ValidatePasswordUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateRepeatedPasswordUseCase(): ValidateRepeatedPasswordUseCase {
+        return ValidateRepeatedPasswordUseCase()
     }
 }
