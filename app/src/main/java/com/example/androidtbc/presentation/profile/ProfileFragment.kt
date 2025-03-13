@@ -2,16 +2,13 @@ package com.example.androidtbc.presentation.profile
 
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentProfileBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.extension.launchLatest
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
@@ -37,13 +34,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     }
 
     private fun observeViewState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                profileViewModel.viewState.collect { state ->
+        launchLatest(profileViewModel.viewState) { state ->
                     handleViewState(state)
                 }
-            }
-        }
+
     }
 
     private fun handleViewState(state: ProfileViewState) {
@@ -57,12 +51,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     }
 
     private fun observeEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                profileViewModel.events.collect { event ->
-                    handleEvent(event)
-                }
-            }
+        launchLatest(profileViewModel.events) { event ->
+            handleEvent(event)
         }
     }
 
@@ -74,6 +64,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                     navigateToLogin()
                 }
             }
+
             is ProfileEvent.ShowSnackbar -> {
                 Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
             }

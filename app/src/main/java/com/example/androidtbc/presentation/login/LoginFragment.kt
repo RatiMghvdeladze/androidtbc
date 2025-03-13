@@ -4,16 +4,13 @@ import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
+import com.example.androidtbc.presentation.extension.launchLatest
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
@@ -61,22 +58,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
     private fun observeViewState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewState.collect { state ->
-                    updateUI(state)
-                }
-            }
+        launchLatest(viewModel.viewState) { state ->
+            updateUI(state)
         }
+
+
     }
 
     private fun observeEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.events.collect { event ->
-                    handleEvent(event)
-                }
-            }
+        launchLatest(viewModel.events) { event ->
+            handleEvent(event)
         }
     }
 
@@ -102,6 +93,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             is LoginEvent.ShowSnackbar -> {
                 showSnackbar(event.message)
             }
+
             is LoginEvent.NavigateToHome -> {
                 val currentDestination = findNavController().currentDestination?.id
                 if (currentDestination != R.id.homeFragment) {
