@@ -1,7 +1,11 @@
+// Replace your existing file at:
+// com/example/androidtbc/presentation/register/RegisterFragment.kt
+
 package com.example.androidtbc.presentation.register
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -11,27 +15,33 @@ import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
-    private val registerViewModel: RegisterViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels()
 
     override fun start() {
         setupListeners()
-        observeRegistrationState()
+        observeViewState()
+        observeEvents()
     }
 
     private fun setupListeners() {
         with(binding) {
+            etEmail.doAfterTextChanged { viewModel.processIntent(RegisterIntent.ClearValidationErrors) }
+            etPassword.doAfterTextChanged { viewModel.processIntent(RegisterIntent.ClearValidationErrors) }
+            etRepeatPassword.doAfterTextChanged { viewModel.processIntent(RegisterIntent.ClearValidationErrors) }
+
             btnRegister.setOnClickListener {
-                registerViewModel.register(
-                    email = etEmail.text.toString(),
-                    password = etPassword.text.toString(),
-                    repeatPassword = etRepeatPassword.text.toString()
+                viewModel.processIntent(
+                    RegisterIntent.RegisterUser(
+                        email = etEmail.text.toString(),
+                        password = etPassword.text.toString(),
+                        repeatPassword = etRepeatPassword.text.toString()
+                    )
                 )
             }
 
@@ -41,48 +51,55 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
     }
 
-    private fun observeRegistrationState() {
+    private fun observeViewState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                registerViewModel.registrationState.collect { state ->
-                    handleRegistrationState(state)
+                viewModel.viewState.collect { state ->
+                    updateUI(state)
                 }
             }
         }
     }
 
-    private fun handleRegistrationState(state: Resource<String>) {
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    handleEvent(event)
+                }
+            }
+        }
+    }
+
+    private fun updateUI(state: RegisterViewState) {
         with(binding) {
-            when (state) {
-                is Resource.Idle -> {
-                    btnRegister.isEnabled = true
-                    btnRegister.text = getString(R.string.register)
-                    btnRegisterProgress.visibility = View.GONE
-                }
-                is Resource.Loading -> {
-                    btnRegister.isEnabled = false
-                    btnRegister.text = ""
-                    btnRegisterProgress.visibility = View.VISIBLE
-                }
-                is Resource.Success -> {
-                    btnRegister.isEnabled = true
-                    btnRegister.text = getString(R.string.register)
-                    btnRegisterProgress.visibility = View.GONE
+            btnRegister.isEnabled = !state.isLoading
+            btnRegister.text = if (state.isLoading) "" else getString(R.string.register)
+            btnRegisterProgress.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
-                    showSnackbar("Registration successful!")
+            showFieldError(state.emailError, etEmail)
+            showFieldError(state.passwordError, etPassword)
+            showFieldError(state.repeatPasswordError, etRepeatPassword)
+        }
+    }
 
-                    setFragmentResult("register_request", Bundle().apply {
-                        putString("email", state.data)
-                        putString("password", binding.etPassword.text.toString())
-                    })
-                    findNavController().popBackStack()
-                }
-                is Resource.Error -> {
-                    btnRegister.isEnabled = true
-                    btnRegister.text = getString(R.string.register)
-                    btnRegisterProgress.visibility = View.GONE
-                    showSnackbar(state.errorMessage)
-                }
+    private fun showFieldError(errorMessage: String?, editText: View) {
+        if (editText is androidx.appcompat.widget.AppCompatEditText) {
+            editText.error = errorMessage
+        }
+    }
+
+    private fun handleEvent(event: RegisterEvent) {
+        when (event) {
+            is RegisterEvent.ShowSnackbar -> {
+                showSnackbar(event.message)
+            }
+            is RegisterEvent.NavigateBack -> {
+                setFragmentResult("register_request", Bundle().apply {
+                    putString("email", event.email)
+                    putString("password", event.password)
+                })
+                findNavController().popBackStack()
             }
         }
     }

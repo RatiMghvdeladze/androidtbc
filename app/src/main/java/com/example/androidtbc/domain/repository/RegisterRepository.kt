@@ -1,6 +1,6 @@
 package com.example.androidtbc.domain.repository
 
-import com.example.androidtbc.utils.Resource
+import com.example.androidtbc.domain.common.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface RegisterRepository {

@@ -1,7 +1,7 @@
 package com.example.androidtbc.domain.usecase.auth
 
+import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.repository.LoginRepository
-import com.example.androidtbc.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

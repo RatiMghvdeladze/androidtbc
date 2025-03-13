@@ -6,6 +6,7 @@ import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
 import com.example.androidtbc.domain.usecase.validation.ValidateRepeatedPasswordUseCase
+import com.example.mysecondapp.data.common.ApiHelper
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -76,5 +77,11 @@ object AppModule {
     @Singleton
     fun provideValidateRepeatedPasswordUseCase(): ValidateRepeatedPasswordUseCase {
         return ValidateRepeatedPasswordUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiHelper(): ApiHelper {
+        return ApiHelper()
     }
 }

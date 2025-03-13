@@ -8,16 +8,18 @@ import androidx.room.withTransaction
 import com.example.androidtbc.data.local.AppDatabase
 import com.example.androidtbc.data.local.entity.UserEntity
 import com.example.androidtbc.data.remote.api.AuthService
+import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.mapper.UserMapper
-import com.example.androidtbc.utils.Resource
-import com.example.androidtbc.utils.handleHttpRequest
+import com.example.mysecondapp.data.common.ApiHelper
+import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class UserRemoteMediator @Inject constructor(
     private val authService: AuthService,
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val apiHelper: ApiHelper
 ) : RemoteMediator<Int, UserEntity>() {
 
     private var currentPage = 1
@@ -53,28 +55,36 @@ class UserRemoteMediator @Inject constructor(
                 }
             }
 
-            val response = handleHttpRequest { authService.getUsers(page) }
-            if (response is Resource.Success) {
-                val users = response.data.data.map { user ->
-                    UserMapper.mapDtoToEntity(user, System.currentTimeMillis())
-                }
-
-                appDatabase.withTransaction {
-                    if (loadType == LoadType.REFRESH) {
-                        appDatabase.userDao().clearAllUsers()
-                    }
-                    appDatabase.userDao().insertAll(users)
-                }
-
-                if (loadType == LoadType.APPEND) {
-                    currentPage = page
-                }
-
-                return MediatorResult.Success(endOfPaginationReached = users.size < state.config.pageSize)
+            val response = apiHelper.handleHttpRequest { authService.getUsers(page) }.first {
+                it !is Resource.Loading || !(it as Resource.Loading).isLoading
             }
 
-            return MediatorResult.Error(Exception("Network request failed"))
+            when (response) {
+                is Resource.Success -> {
+                    val users = response.data.data.map { user ->
+                        UserMapper.mapDtoToEntity(user, System.currentTimeMillis())
+                    }
 
+                    appDatabase.withTransaction {
+                        if (loadType == LoadType.REFRESH) {
+                            appDatabase.userDao().clearAllUsers()
+                        }
+                        appDatabase.userDao().insertAll(users)
+                    }
+
+                    if (loadType == LoadType.APPEND) {
+                        currentPage = page
+                    }
+
+                    return MediatorResult.Success(endOfPaginationReached = users.size < state.config.pageSize)
+                }
+                is Resource.Error -> {
+                    return MediatorResult.Error(Exception(response.errorMessage))
+                }
+                else -> {
+                    return MediatorResult.Error(Exception("Unknown error occurred"))
+                }
+            }
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }

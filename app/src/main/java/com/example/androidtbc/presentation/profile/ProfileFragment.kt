@@ -1,6 +1,6 @@
-// Update the ProfileFragment.kt
 package com.example.androidtbc.presentation.profile
 
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,40 +20,62 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     private var isNavigating = false
 
     override fun start() {
-        displayEmail()
-        setUpBtnLogOut()
-        observerLogout()
-        checkSessionStatus()
+        setupUI()
+        observeViewState()
+        observeEvents()
+
+        profileViewModel.processIntent(ProfileIntent.CheckSessionStatus)
+        profileViewModel.processIntent(ProfileIntent.LoadUserEmail)
     }
 
-    private fun setUpBtnLogOut() {
+    private fun setupUI() {
+        binding.tvYourEmail.text = args.email
+
         binding.btnLogOut.setOnClickListener {
-            profileViewModel.logoutCompletely()
+            profileViewModel.processIntent(ProfileIntent.LogoutUser)
         }
     }
 
-    private fun observerLogout() {
+    private fun observeViewState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                profileViewModel.isLoggingOut.collect {
-                    if (it && !isNavigating) {
-                        isNavigating = true
-                        navigateToLogin()
-                    }
+                profileViewModel.viewState.collect { state ->
+                    handleViewState(state)
                 }
             }
         }
     }
 
-    private fun checkSessionStatus() {
+    private fun handleViewState(state: ProfileViewState) {
+        binding.btnLogOut.isEnabled = !state.isLoading
+
+        state.userEmail?.let { email ->
+            if (email.isNotEmpty() && binding.tvYourEmail.text.isEmpty()) {
+                binding.tvYourEmail.text = email
+            }
+        }
+    }
+
+    private fun observeEvents() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                profileViewModel.isSessionActive().collect { existToken ->
-                    if (!existToken && !isNavigating) {
-                        isNavigating = true
-                        navigateToLogin()
-                    }
+                profileViewModel.events.collect { event ->
+                    handleEvent(event)
                 }
+            }
+        }
+    }
+
+    private fun handleEvent(event: ProfileEvent) {
+        when (event) {
+            is ProfileEvent.NavigateToLogin -> {
+                if (!isNavigating) {
+                    isNavigating = true
+                    navigateToLogin()
+                }
+            }
+            is ProfileEvent.ShowSnackbar -> {
+                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -71,10 +93,5 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         } catch (e: Exception) {
             findNavController().popBackStack(R.id.loginFragment, false)
         }
-    }
-
-    private fun displayEmail() {
-        val email = args.email
-        binding.tvYourEmail.text = email
     }
 }

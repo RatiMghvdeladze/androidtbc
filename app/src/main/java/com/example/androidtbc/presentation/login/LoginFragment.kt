@@ -1,6 +1,7 @@
 package com.example.androidtbc.presentation.login
 
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -10,33 +11,20 @@ import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
-import com.example.androidtbc.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
-    private val loginViewModel: LoginViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun start() {
-        checkSession()
         setupListeners()
-        observeLoginState()
+        observeViewState()
+        observeEvents()
         setupFragmentResultListener()
-    }
-
-
-    private fun checkSession() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            loginViewModel.getEmail().collect { email ->
-                if (!email.isNullOrEmpty()) {
-                    findNavController().navigate(
-                        LoginFragmentDirections.actionLoginFragmentToHomeFragment(email)
-                    )
-                }
-            }
-        }
+        viewModel.processIntent(LoginIntent.CheckUserSession)
     }
 
     private fun setupFragmentResultListener() {
@@ -53,11 +41,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     private fun setupListeners() {
         with(binding) {
+            etEmail.doAfterTextChanged { viewModel.processIntent(LoginIntent.ClearValidationErrors) }
+            etPassword.doAfterTextChanged { viewModel.processIntent(LoginIntent.ClearValidationErrors) }
+
             btnLogin.setOnClickListener {
-                loginViewModel.login(
-                    email = etEmail.text.toString(),
-                    password = etPassword.text.toString(),
-                    rememberMe = cbRememberMe.isChecked
+                viewModel.processIntent(
+                    LoginIntent.LoginUser(
+                        email = etEmail.text.toString(),
+                        password = etPassword.text.toString(),
+                        rememberMe = cbRememberMe.isChecked
+                    )
                 )
             }
 
@@ -67,48 +60,54 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun observeLoginState() {
+    private fun observeViewState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loginViewModel.loginState.collect { state ->
-                    handleLoginState(state)
+                viewModel.viewState.collect { state ->
+                    updateUI(state)
                 }
             }
         }
     }
 
-    private fun handleLoginState(state: Resource<String>) {
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    handleEvent(event)
+                }
+            }
+        }
+    }
+
+    private fun updateUI(state: LoginViewState) {
         with(binding) {
-            when (state) {
-                is Resource.Idle -> {
-                    btnLogin.isEnabled = true
-                    btnLogin.text = getString(R.string.login)
-                    btnLoginProgress.visibility = View.GONE
-                }
-                is Resource.Loading -> {
-                    btnLogin.isEnabled = false
-                    btnLogin.text = ""
-                    btnLoginProgress.visibility = View.VISIBLE
-                }
-                is Resource.Success -> {
-                    btnLogin.isEnabled = true
-                    btnLogin.text = getString(R.string.login)
-                    btnLoginProgress.visibility = View.GONE
+            btnLogin.isEnabled = !state.isLoading
+            btnLogin.text = if (state.isLoading) "" else getString(R.string.login)
+            btnLoginProgress.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
-                    showSnackbar("Successfully Logged In!")
+            showFieldError(state.emailError, etEmail)
+            showFieldError(state.passwordError, etPassword)
+        }
+    }
 
-                    val currentDestination = findNavController().currentDestination?.id
-                    if (currentDestination != R.id.homeFragment) {
-                        findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToHomeFragment(state.data)
-                        )
-                    }
-                }
-                is Resource.Error -> {
-                    btnLogin.isEnabled = true
-                    btnLogin.text = getString(R.string.login)
-                    btnLoginProgress.visibility = View.GONE
-                    showSnackbar(state.errorMessage)
+    private fun showFieldError(errorMessage: String?, editText: View) {
+        if (editText is androidx.appcompat.widget.AppCompatEditText) {
+            editText.error = errorMessage
+        }
+    }
+
+    private fun handleEvent(event: LoginEvent) {
+        when (event) {
+            is LoginEvent.ShowSnackbar -> {
+                showSnackbar(event.message)
+            }
+            is LoginEvent.NavigateToHome -> {
+                val currentDestination = findNavController().currentDestination?.id
+                if (currentDestination != R.id.homeFragment) {
+                    findNavController().navigate(
+                        LoginFragmentDirections.actionLoginFragmentToHomeFragment(event.email)
+                    )
                 }
             }
         }

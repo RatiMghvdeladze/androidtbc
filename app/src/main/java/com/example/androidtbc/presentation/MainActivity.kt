@@ -1,4 +1,4 @@
-package com.example.androidtbc
+package com.example.androidtbc.presentation
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

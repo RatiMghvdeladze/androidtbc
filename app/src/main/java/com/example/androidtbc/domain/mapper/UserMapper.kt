@@ -25,4 +25,6 @@ object UserMapper {
             lastUpdated = lastUpdated
         )
     }
+
+
 }
