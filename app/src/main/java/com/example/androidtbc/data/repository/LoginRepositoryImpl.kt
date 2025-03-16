@@ -5,6 +5,7 @@ import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.common.mapResource
 import com.example.androidtbc.domain.datastore.DataStoreManager
+import com.example.androidtbc.domain.datastore.PreferenceKey
 import com.example.androidtbc.domain.model.LoginRawData
 import com.example.androidtbc.domain.repository.LoginRepository
 import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
@@ -65,11 +66,11 @@ class LoginRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun saveUserSession(email: String, token: String, rememberMe: Boolean) {
-        dataStoreManager.saveToken(token)
-        dataStoreManager.saveRememberMeState(rememberMe)
+        dataStoreManager.savePreference(PreferenceKey.Token, token)
+        dataStoreManager.savePreference(PreferenceKey.RememberMe, rememberMe)
 
         if (rememberMe) {
-            dataStoreManager.saveEmail(email)
+            dataStoreManager.savePreference(PreferenceKey.Email, email)
         }
     }
 

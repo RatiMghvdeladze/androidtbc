@@ -6,7 +6,7 @@ sealed class ProfileIntent {
     data object LoadUserEmail : ProfileIntent()
 }
 
-data class ProfileViewState(
+data class ProfileState(
     val isLoading: Boolean = false,
     val userEmail: String? = null,
     val isSessionActive: Boolean = true,

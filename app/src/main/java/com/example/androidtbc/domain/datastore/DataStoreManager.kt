@@ -3,15 +3,8 @@ package com.example.androidtbc.domain.datastore
 import kotlinx.coroutines.flow.Flow
 
 interface DataStoreManager {
-    suspend fun saveEmail(email: String)
-    fun getEmail(): Flow<String>
-
-    suspend fun saveToken(token: String)
-    fun getToken(): Flow<String>
-
-    suspend fun saveRememberMeState(isRemembered: Boolean)
-    fun getRememberMeState(): Flow<Boolean>
-
-    suspend fun clearUserToken()
-    suspend fun clearAllUserData()
+    suspend fun <T> savePreference(key: PreferenceKey<T>, value: T)
+    fun <T> getPreference(key: PreferenceKey<T>): Flow<T>
+    suspend fun clearPreference(vararg keys: PreferenceKey<*>)
+    suspend fun clearAllPreferences()
 }

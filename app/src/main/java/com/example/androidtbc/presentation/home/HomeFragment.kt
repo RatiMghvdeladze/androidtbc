@@ -11,6 +11,7 @@ import com.example.androidtbc.data.repository.UsersAdapter
 import com.example.androidtbc.databinding.FragmentHomeBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.extension.launchLatest
+import com.example.androidtbc.presentation.extension.showSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,7 +46,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    private fun handleViewState(state: HomeViewState) {
+    private fun handleViewState(state: HomeState) {
         binding.progressBar.isVisible = state.isLoading
         binding.tvNoUsers.isVisible = state.isEmpty
     }
@@ -65,7 +66,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
 
             is HomeEvent.ShowSnackbar -> {
-                Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
+                binding.root.showSnackbar(event.message)
             }
 
             is HomeEvent.UserDataLoaded -> {

@@ -1,10 +1,8 @@
-// Replace your existing file at:
-// com/example/androidtbc/presentation/register/RegisterFragment.kt
-
 package com.example.androidtbc.presentation.register
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -13,7 +11,7 @@ import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentRegisterBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.extension.launchLatest
-import com.google.android.material.snackbar.Snackbar
+import com.example.androidtbc.presentation.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -62,7 +60,7 @@ private fun observeEvents() {
             }
     }
 
-private fun updateUI(state: RegisterViewState) {
+private fun updateUI(state: RegisterState) {
     with(binding) {
         btnRegister.isEnabled = !state.isLoading
         btnRegister.text = if (state.isLoading) "" else getString(R.string.register)
@@ -75,7 +73,7 @@ private fun updateUI(state: RegisterViewState) {
 }
 
 private fun showFieldError(errorMessage: String?, editText: View) {
-    if (editText is androidx.appcompat.widget.AppCompatEditText) {
+    if (editText is AppCompatEditText) {
         editText.error = errorMessage
     }
 }
@@ -83,7 +81,7 @@ private fun showFieldError(errorMessage: String?, editText: View) {
 private fun handleEvent(event: RegisterEvent) {
     when (event) {
         is RegisterEvent.ShowSnackbar -> {
-            showSnackbar(event.message)
+            binding.root.showSnackbar(event.message)
         }
 
         is RegisterEvent.NavigateBack -> {
@@ -96,7 +94,4 @@ private fun handleEvent(event: RegisterEvent) {
     }
 }
 
-private fun showSnackbar(message: String) {
-    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-}
 }

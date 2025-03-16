@@ -1,6 +1,7 @@
 package com.example.androidtbc.data.repository
 
 import com.example.androidtbc.domain.datastore.DataStoreManager
+import com.example.androidtbc.domain.datastore.PreferenceKey
 import com.example.androidtbc.domain.model.UserSession
 import com.example.androidtbc.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,24 +14,30 @@ class UserSessionRepositoryImpl @Inject constructor(
 ) : UserSessionRepository {
 
     override suspend fun clearToken() {
-        dataStoreManager.clearUserToken()
+        dataStoreManager.clearPreference(PreferenceKey.Token)
     }
 
     override suspend fun logoutCompletely() {
-        dataStoreManager.clearAllUserData()
+        dataStoreManager.clearPreference(
+            PreferenceKey.Email,
+            PreferenceKey.Token,
+            PreferenceKey.RememberMe
+        )
     }
 
-    override fun getUserEmail(): Flow<String?> = dataStoreManager.getEmail().map { email ->
-        if (email.isEmpty()) null else email
-    }
+    override fun getUserEmail(): Flow<String?> =
+        dataStoreManager.getPreference(PreferenceKey.Email).map { email ->
+            if (email.isEmpty()) null else email
+        }
 
-    override fun isSessionActive(): Flow<Boolean> = dataStoreManager.getToken().map { token ->
-        token.isNotEmpty()
-    }
+    override fun isSessionActive(): Flow<Boolean> =
+        dataStoreManager.getPreference(PreferenceKey.Token).map { token ->
+            token.isNotEmpty()
+        }
 
     override fun getUserSession(): Flow<UserSession?> = combine(
-        dataStoreManager.getToken(),
-        dataStoreManager.getEmail()
+        dataStoreManager.getPreference(PreferenceKey.Token),
+        dataStoreManager.getPreference(PreferenceKey.Email)
     ) { token, email ->
         if (token.isNotEmpty()) {
             UserSession(

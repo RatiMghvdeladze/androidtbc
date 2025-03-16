@@ -22,8 +22,8 @@ class LoginViewModel @Inject constructor(
     private val getUserSessionUseCase: GetUserSessionUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow(LoginViewState())
-    val viewState: StateFlow<LoginViewState> = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(LoginState())
+    val viewState: StateFlow<LoginState> = _viewState.asStateFlow()
 
     private val _eventChannel = Channel<LoginEvent>()
     val events = _eventChannel.receiveAsFlow()

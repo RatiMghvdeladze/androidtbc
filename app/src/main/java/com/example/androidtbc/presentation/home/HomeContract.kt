@@ -9,7 +9,7 @@ sealed class HomeIntent {
     data object NavigateToProfile : HomeIntent()
 }
 
-data class HomeViewState(
+data class HomeState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isEmpty: Boolean = false

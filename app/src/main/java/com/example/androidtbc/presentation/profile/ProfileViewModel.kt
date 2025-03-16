@@ -17,8 +17,8 @@ class ProfileViewModel @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) : ViewModel() {
 
-    private val _viewState = MutableStateFlow(ProfileViewState())
-    val viewState: StateFlow<ProfileViewState> = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(ProfileState())
+    val viewState: StateFlow<ProfileState> = _viewState.asStateFlow()
 
     private val _eventChannel = Channel<ProfileEvent>()
     val events = _eventChannel.receiveAsFlow()

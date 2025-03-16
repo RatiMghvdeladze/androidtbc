@@ -5,6 +5,7 @@ import com.example.androidtbc.data.remote.api.AuthService
 import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.common.mapResource
 import com.example.androidtbc.domain.datastore.DataStoreManager
+import com.example.androidtbc.domain.datastore.PreferenceKey
 import com.example.androidtbc.domain.model.RegisterRawData
 import com.example.androidtbc.domain.repository.RegisterRepository
 import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
@@ -47,7 +48,7 @@ class RegisterRepositoryImpl @Inject constructor(
                     if (resource.data.token.isEmpty()) {
                         emit(Resource.Error("Registration failed. This email might already be registered."))
                     } else {
-                        dataStoreManager.saveToken(resource.data.token)
+                        dataStoreManager.savePreference(PreferenceKey.Token, resource.data.token)
                         emit(Resource.Success(email))
                     }
                 }

@@ -56,7 +56,7 @@ class UserRemoteMediator @Inject constructor(
             }
 
             val response = apiHelper.handleHttpRequest { authService.getUsers(page) }.first {
-                it !is Resource.Loading || !(it as Resource.Loading).isLoading
+                it !is Resource.Loading || !it.isLoading
             }
 
             when (response) {

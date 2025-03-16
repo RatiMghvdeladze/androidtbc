@@ -5,7 +5,7 @@ sealed class RegisterIntent {
     data object ClearValidationErrors : RegisterIntent()
 }
 
-data class RegisterViewState(
+data class RegisterState(
     val isLoading: Boolean = false,
     val emailError: String? = null,
     val passwordError: String? = null,

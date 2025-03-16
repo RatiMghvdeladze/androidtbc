@@ -1,6 +1,7 @@
 package com.example.androidtbc.presentation.login
 
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -9,7 +10,7 @@ import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentLoginBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.extension.launchLatest
-import com.google.android.material.snackbar.Snackbar
+import com.example.androidtbc.presentation.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,7 +72,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun updateUI(state: LoginViewState) {
+    private fun updateUI(state: LoginState) {
         with(binding) {
             btnLogin.isEnabled = !state.isLoading
             btnLogin.text = if (state.isLoading) "" else getString(R.string.login)
@@ -83,7 +84,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
     private fun showFieldError(errorMessage: String?, editText: View) {
-        if (editText is androidx.appcompat.widget.AppCompatEditText) {
+        if (editText is AppCompatEditText) {
             editText.error = errorMessage
         }
     }
@@ -91,7 +92,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private fun handleEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.ShowSnackbar -> {
-                showSnackbar(event.message)
+                binding.root.showSnackbar(event.message)
             }
 
             is LoginEvent.NavigateToHome -> {
@@ -105,7 +106,4 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun showSnackbar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-    }
 }

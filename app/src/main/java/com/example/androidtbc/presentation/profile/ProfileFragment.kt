@@ -40,7 +40,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     }
 
-    private fun handleViewState(state: ProfileViewState) {
+    private fun handleViewState(state: ProfileState) {
         binding.btnLogOut.isEnabled = !state.isLoading
 
         state.userEmail?.let { email ->

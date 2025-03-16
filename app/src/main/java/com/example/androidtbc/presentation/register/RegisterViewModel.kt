@@ -1,6 +1,3 @@
-// Replace your existing file at:
-// com/example/androidtbc/presentation/register/RegisterViewModel.kt
-
 package com.example.androidtbc.presentation.register
 
 import androidx.lifecycle.ViewModel
@@ -25,8 +22,8 @@ class RegisterViewModel @Inject constructor(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateRepeatedPasswordUseCase: ValidateRepeatedPasswordUseCase
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow(RegisterViewState())
-    val viewState: StateFlow<RegisterViewState> = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(RegisterState())
+    val viewState: StateFlow<RegisterState> = _viewState.asStateFlow()
 
     private val _eventChannel = Channel<RegisterEvent>()
     val events = _eventChannel.receiveAsFlow()

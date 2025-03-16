@@ -6,7 +6,7 @@ sealed class LoginIntent {
     data object CheckUserSession : LoginIntent()
 }
 
-data class LoginViewState(
+data class LoginState(
     val isLoading: Boolean = false,
     val emailError: String? = null,
     val passwordError: String? = null,
