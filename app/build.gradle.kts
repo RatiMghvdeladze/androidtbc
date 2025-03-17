@@ -24,10 +24,10 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
+            buildConfigField("String", "BASE_URL", "\"https://reqres.in/api/\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
+            buildConfigField("String", "BASE_URL", "\"https://reqres.in/api/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

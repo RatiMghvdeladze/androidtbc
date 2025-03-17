@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="home">Home</string>
+    <string name="log_out">Log Out</string>
+    <string name="your_email">Your Email:  </string>
+    <string name="remember_me">Remember Me</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="the_passwords_don_t_match">The passwords don\'t match</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="registration_failed_please_try_again">Registration failed! Please try again</string>
+    <string name="login_failed_please_try_again">Login failed! Please try again</string>
+    <string name="profile">Profile</string>
+    <string name="go_to_profile">Go to Profile</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="no_users_found">No users found</string>
+    <string name="retry">Retry</string>
 </resources>
