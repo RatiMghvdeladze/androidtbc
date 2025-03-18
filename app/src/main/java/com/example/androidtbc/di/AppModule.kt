@@ -1,7 +1,8 @@
 package com.example.androidtbc.di
 
 import com.example.androidtbc.BuildConfig
-import com.example.androidtbc.data.remote.api.ApiService
+import com.example.androidtbc.data.remote.api.CategoryApiService
+import com.example.androidtbc.data.utils.ApiHelper
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -35,15 +36,12 @@ object AppModule {
             .build()
     }
 
-
-
     @Provides
     @Singleton
     fun provideJson() : Json = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
     }
-
 
     @Provides
     @Singleton
@@ -57,8 +55,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(retrofit: Retrofit) : ApiService = retrofit.create(ApiService::class.java)
+    fun provideAuthService(retrofit: Retrofit) : CategoryApiService = retrofit.create(CategoryApiService::class.java)
 
-
-
+    @Provides
+    @Singleton
+    fun provideApiHelper() : ApiHelper{
+        return ApiHelper()
+    }
 }
