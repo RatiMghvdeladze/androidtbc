@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor() : HttpLoggingInterceptor {
@@ -35,15 +34,12 @@ object AppModule {
             .build()
     }
 
-
-
     @Provides
     @Singleton
     fun provideJson() : Json = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
     }
-
 
     @Provides
     @Singleton
@@ -58,7 +54,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit) : ApiService = retrofit.create(ApiService::class.java)
-
-
-
 }
