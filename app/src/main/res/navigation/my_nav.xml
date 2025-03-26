@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/my_nav">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/imageSelectorFragment">
 
+    <fragment
+        android:id="@+id/imageSelectorFragment"
+        android:name="com.example.androidtbc.presentation.imageselect.ImageSelectFragment"
+        android:label="fragment_image_select"
+        tools:layout="@layout/fragment_image_select" >
+        <action
+            android:id="@+id/action_imageSelectorFragment_to_imageActionBottomSheetFragment"
+            app:destination="@id/imageActionBottomSheetFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/imageActionBottomSheetFragment"
+        android:name="com.example.androidtbc.presentation.imageaction.ImageActionBottomSheetFragment"
+        android:label="fragment_image_action_bottom_sheet"
+        tools:layout="@layout/fragment_image_action_bottom_sheet" />
 </navigation>

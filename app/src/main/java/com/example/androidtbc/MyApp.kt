@@ -1,6 +1,7 @@
 package com.example.androidtbc
 
 import android.app.Application
+import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
@@ -16,7 +17,7 @@ class MyApp : Application() {
 
             val token = task.result
 
-            println(token)
+            Log.d("TAG", "onCreate: $token")
 
         })
     }
