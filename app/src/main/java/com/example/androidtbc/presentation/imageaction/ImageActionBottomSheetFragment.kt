@@ -37,7 +37,6 @@ class ImageActionBottomSheetFragment : BottomSheetDialogFragment() {
         setUpRv()
     }
 
-
     private fun setUpRv() {
         binding.rvImageActions.apply {
             layoutManager =
