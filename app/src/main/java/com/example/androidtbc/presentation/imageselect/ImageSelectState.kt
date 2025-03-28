@@ -5,5 +5,8 @@ import android.net.Uri
 
 data class ImageSelectState(
     val compressedImage: Bitmap? = null,
-    val tempUri: Uri? = null
+    val tempUri: Uri? = null,
+    val isUploading: Boolean = false,
+    val uploadError: String? = null,
+    val uploadSuccess: Boolean = false
 )

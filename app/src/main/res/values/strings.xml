@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">androidtbc</string>
-    <string name="upload_image">Upload Image</string>
     <string name="uploaded_success">Image Uploaded successfully</string>
     <string name="image_not_selected">Image is Not Selected</string>
     <string name="default_notification_channel_id">channel_id</string>
@@ -12,4 +11,12 @@
     <string name="capture_new_photo">Capture New Photo</string>
     <string name="select_image">Select Image</string>
     <string name="clear_image">Clear Image</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="upload_in_progress">Uploading...</string>
+    <string name="image_selected">Image selected!</string>
+    <string name="image_compressed">Image compressed successfully!</string>
+    <string name="image_cleared">Image cleared!</string>
+    <string name="upload_started">Upload started...</string>
+    <string name="upload_success">Upload successful!</string>
+    <string name="upload_failure">Upload failed</string>
 </resources>

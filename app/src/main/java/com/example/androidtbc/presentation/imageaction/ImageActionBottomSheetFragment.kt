@@ -17,9 +17,7 @@ class ImageActionBottomSheetFragment : BottomSheetDialogFragment() {
 
     private val itemAdapter by lazy {
         ImageActionAdapter(
-            onClick = {
-                selectedItem(it)
-            }
+            onClick = { selectedItem(it) }
         )
     }
 
@@ -38,9 +36,8 @@ class ImageActionBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun setUpRv() {
-        binding.rvImageActions.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        with(binding.rvImageActions){
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = itemAdapter
         }
     }

@@ -1,9 +1,10 @@
-package com.example.androidtbc.presentation.util
+package com.example.androidtbc.data.compressor
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import com.example.androidtbc.domain.repository.ImageCompressor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,8 +13,8 @@ import javax.inject.Inject
 
 class Compressor @Inject constructor(
     @ApplicationContext private val context: Context
-) {
-    suspend fun compressImage(uri: Uri): Bitmap? {
+) : ImageCompressor {
+    override suspend fun compressImage(uri: Uri): Bitmap? {
         return withContext(Dispatchers.IO) {
             val inputBytes = context
                 .contentResolver
@@ -26,7 +27,7 @@ class Compressor @Inject constructor(
 
                 var outputBytes: ByteArray
                 ByteArrayOutputStream().use { outputStream ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStream)
                     outputBytes = outputStream.toByteArray()
                 }
 
