@@ -11,21 +11,15 @@ import com.example.androidtbc.domain.usecase.ValidateAccountUseCase
 import com.example.androidtbc.presentation.model.AccountUI
 import com.example.androidtbc.presentation.model.ExchangeRateUI
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -47,22 +41,6 @@ class TransferViewModel @Inject constructor(
     // Flag to prevent feedback loops in bidirectional updates
     private var isUpdatingAmount = false
 
-    // Coroutine dispatchers for different types of work
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-
-    // Error handler to prevent app crashes from coroutines
-    private val errorHandler = CoroutineExceptionHandler { _, exception ->
-        viewModelScope.launch(Dispatchers.Main) {
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    error = exception.message ?: "An unexpected error occurred"
-                )
-            }
-        }
-    }
-
     init {
         loadAccounts()
     }
@@ -75,9 +53,9 @@ class TransferViewModel @Inject constructor(
             is TransferEvent.ValidateAccount -> validateAccount(event.accountNumber, event.validationType)
             is TransferEvent.UpdateSellAmount -> updateSellAmount(event.amount)
             is TransferEvent.UpdateReceiveAmount -> updateReceiveAmount(event.amount)
-            is TransferEvent.UpdateDescription -> updateDescription(event.description)
+            is TransferEvent.UpdateDescription -> _state.update { it.copy(description = event.description) }
             is TransferEvent.Transfer -> transfer(event.fromAccount, event.toAccount, event.amount)
-            is TransferEvent.ClearError -> clearError()
+            is TransferEvent.ClearError -> _state.update { it.copy(error = null) }
             is TransferEvent.ClearInputs -> resetInputValues()
         }
     }
@@ -99,12 +77,9 @@ class TransferViewModel @Inject constructor(
                     when (result) {
                         is Resource.Success -> {
                             val accountsUI = result.data.map { AccountUI.fromDomain(it) }
-
-                            // Store current selected accounts to preserve references
                             val currentFromAccount = _state.value.fromAccount
                             val currentToAccount = _state.value.toAccount
 
-                            // Update accounts list
                             _state.update {
                                 it.copy(
                                     isLoading = false,
@@ -113,7 +88,6 @@ class TransferViewModel @Inject constructor(
                                 )
                             }
 
-                            // Now update selected accounts with refreshed data if they exist
                             if (currentFromAccount != null || currentToAccount != null) {
                                 updateSelectedAccounts()
                             }
@@ -135,7 +109,7 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun selectFromAccount(account: AccountUI) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             _state.update {
                 it.copy(
                     fromAccount = account,
@@ -143,7 +117,6 @@ class TransferViewModel @Inject constructor(
                 )
             }
 
-            // If to account is also selected, check if currencies match
             _state.value.toAccount?.let { toAccount ->
                 checkCurrencies(account, toAccount)
             }
@@ -151,7 +124,7 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun selectToAccount(account: AccountUI) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             _state.update {
                 it.copy(
                     toAccount = account,
@@ -159,7 +132,6 @@ class TransferViewModel @Inject constructor(
                 )
             }
 
-            // If from account is also selected, check if currencies match
             _state.value.fromAccount?.let { fromAccount ->
                 checkCurrencies(fromAccount, account)
             }
@@ -167,7 +139,7 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun checkCurrencies(fromAccount: AccountUI, toAccount: AccountUI) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             if (fromAccount.valuteType == toAccount.valuteType) {
                 _state.update {
                     it.copy(
@@ -176,8 +148,6 @@ class TransferViewModel @Inject constructor(
                         exchangeRate = null
                     )
                 }
-
-                // Ensure receive amount matches sell amount for same currency
                 updateSellAmount(_state.value.sellAmount)
             } else {
                 _state.update {
@@ -192,241 +162,174 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun validateAccount(accountNumber: String, validationType: String) {
-        viewModelScope.launch(errorHandler + ioDispatcher) {
-            withContext(Dispatchers.Main) {
-                _state.update { it.copy(isLoading = true) }
-            }
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
 
-            try {
-                validateAccountUseCase(accountNumber, validationType)
-                    .catch { exception ->
-                        withContext(Dispatchers.Main) {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    error = exception.message ?: "Validation failed"
-                                )
-                            }
-                        }
-                    }
-                    .flowOn(ioDispatcher)
-                    .collectLatest { result ->
-                        withContext(Dispatchers.Main) {
-                            when (result) {
-                                is Resource.Success -> {
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            accountValidation = result.data,
-                                            error = null
-                                        )
-                                    }
-
-                                    if (result.data.isValid) {
-                                        // For account numbers, try to find in our list first
-                                        if (validationType == "ACCOUNT_NUMBER") {
-                                            val matchingAccountUI = _state.value.accounts.find {
-                                                it.accountNumber.replace(" ", "") == accountNumber.replace(" ", "")
-                                            }
-
-                                            if (matchingAccountUI != null) {
-                                                selectToAccount(matchingAccountUI)
-                                            } else {
-                                                // Create a temporary account for any valid input
-                                                createTemporaryToAccount(accountNumber, validationType)
-                                            }
-                                        } else {
-                                            // For personal ID or phone numbers, always create a temporary account
-                                            createTemporaryToAccount(accountNumber, validationType)
-                                        }
-                                    } else {
-                                        _state.update { it.copy(error = "Invalid account") }
-                                    }
-                                }
-                                is Resource.Error -> {
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            error = result.errorMessage
-                                        )
-                                    }
-                                }
-                                is Resource.Loading -> {
-                                    _state.update { it.copy(isLoading = result.isLoading) }
-                                }
-                            }
-                        }
-                    }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
+            validateAccountUseCase(accountNumber, validationType)
+                .catch { exception ->
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            error = e.message ?: "Validation failed"
+                            error = exception.message ?: "Validation failed"
                         )
                     }
                 }
-            }
+                .collectLatest { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    accountValidation = result.data,
+                                    error = null
+                                )
+                            }
+
+                            if (result.data.isValid) {
+                                if (validationType == "ACCOUNT_NUMBER") {
+                                    val matchingAccountUI = _state.value.accounts.find {
+                                        it.accountNumber.replace(" ", "") == accountNumber.replace(" ", "")
+                                    }
+
+                                    if (matchingAccountUI != null) {
+                                        selectToAccount(matchingAccountUI)
+                                    } else {
+                                        createTemporaryToAccount(accountNumber, validationType)
+                                    }
+                                } else {
+                                    createTemporaryToAccount(accountNumber, validationType)
+                                }
+                            } else {
+                                _state.update { it.copy(error = "Invalid account") }
+                            }
+                        }
+                        is Resource.Error -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = result.errorMessage
+                                )
+                            }
+                        }
+                        is Resource.Loading -> {
+                            _state.update { it.copy(isLoading = result.isLoading) }
+                        }
+                    }
+                }
         }
     }
 
     private fun createTemporaryToAccount(identifier: String, type: String) {
-        viewModelScope.launch(defaultDispatcher) {
-            // Create a display-friendly name based on the type
-            val name = when (type) {
-                "ACCOUNT_NUMBER" -> "External Account"
-                "PERSONAL_ID" -> "ID: ${identifier.take(4)}****${identifier.takeLast(3)}"
-                "PHONE_NUMBER" -> "Phone: ${identifier.take(3)}****${identifier.takeLast(2)}"
-                else -> "External Account"
-            }
+        val name = when (type) {
+            "ACCOUNT_NUMBER" -> "External Account"
+            "PERSONAL_ID" -> "ID: ${identifier.take(4)}****${identifier.takeLast(3)}"
+            "PHONE_NUMBER" -> "Phone: ${identifier.take(3)}****${identifier.takeLast(2)}"
+            else -> "External Account"
+        }
 
-            val tempAccountUI = AccountUI(
-                id = -1, // Temporary ID
-                accountName = name,
-                accountNumber = identifier,
-                valuteType = _state.value.fromAccount?.valuteType ?: "GEL", // Default to same currency
-                cardType = "VISA", // Default
-                balance = 0.0, // Unknown balance
-                cardLogo = null,
-                maskedNumber = if (identifier.length > 4) "**** ${identifier.takeLast(4)}" else identifier
-            )
+        val tempAccountUI = AccountUI(
+            id = -1,
+            accountName = name,
+            accountNumber = identifier,
+            valuteType = _state.value.fromAccount?.valuteType ?: "GEL",
+            cardType = "VISA",
+            balance = 0.0,
+            cardLogo = null,
+            maskedNumber = if (identifier.length > 4) "**** ${identifier.takeLast(4)}" else identifier
+        )
 
-            withContext(Dispatchers.Main) {
-                selectToAccount(tempAccountUI)
-            }
+        viewModelScope.launch {
+            selectToAccount(tempAccountUI)
         }
     }
 
     private fun fetchExchangeRate(fromCurrency: String, toCurrency: String) {
-        viewModelScope.launch(errorHandler + ioDispatcher) {
-            withContext(Dispatchers.Main) {
-                _state.update { it.copy(isLoading = true) }
-            }
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
 
-            try {
-                getExchangeRateUseCase(fromCurrency, toCurrency)
-                    .catch { exception ->
-                        // Even on exception, we'll use our fallback rate
-                        withContext(Dispatchers.Main) {
-                            _state.update { it.copy(isLoading = false) }
-                        }
-                    }
-                    .flowOn(ioDispatcher)
-                    .collectLatest { result ->
-                        withContext(Dispatchers.Main) {
-                            when (result) {
-                                is Resource.Success -> {
-                                    val exchangeRateUI = withContext(defaultDispatcher) {
-                                        ExchangeRateUI.fromDomain(result.data)
-                                    }
-
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            exchangeRate = exchangeRateUI,
-                                            error = null
-                                        )
-                                    }
-
-                                    // When we get a new exchange rate, update the receive amount based on current sell amount
-                                    updateSellAmount(_state.value.sellAmount)
-                                }
-                                is Resource.Error -> {
-                                    // Error is already handled in the use case by providing fallback rates
-                                    _state.update { it.copy(isLoading = false) }
-                                }
-                                is Resource.Loading -> {
-                                    _state.update { it.copy(isLoading = result.isLoading) }
-                                }
-                            }
-                        }
-                    }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
+            getExchangeRateUseCase(fromCurrency, toCurrency)
+                .catch {
                     _state.update { it.copy(isLoading = false) }
                 }
-            }
+                .collectLatest { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            val exchangeRateUI = ExchangeRateUI.fromDomain(result.data)
+
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    exchangeRate = exchangeRateUI,
+                                    error = null
+                                )
+                            }
+                            updateSellAmount(_state.value.sellAmount)
+                        }
+                        is Resource.Error -> {
+                            _state.update { it.copy(isLoading = false) }
+                        }
+                        is Resource.Loading -> {
+                            _state.update { it.copy(isLoading = result.isLoading) }
+                        }
+                    }
+                }
         }
     }
 
     private fun updateSellAmount(amount: Double) {
-        // If already updating, don't start another update to prevent feedback loop
         if (isUpdatingAmount) return
 
-        viewModelScope.launch(Dispatchers.Main) {
-            try {
-                isUpdatingAmount = true
+        viewModelScope.launch {
+            isUpdatingAmount = true
 
-                // Update the sell amount
-                _state.update { it.copy(sellAmount = amount) }
+            _state.update { it.copy(sellAmount = amount) }
 
-                // Calculate receive amount if exchange rate is available
-                _state.value.exchangeRate?.let { rate ->
-                    // Calculate with rounding to prevent floating point issues
-                    val receiveAmount = round(amount * rate.rate)
+            _state.value.exchangeRate?.let { rate ->
+                val receiveAmount = round(amount * rate.rate)
 
-                    // Only update if the change is significant
-                    if (abs(_state.value.receiveAmount - receiveAmount) > 0.001) {
-                        _state.update { it.copy(receiveAmount = receiveAmount) }
-                    }
-                } ?: run {
-                    // If same currency or rate not yet available
-                    _state.update { it.copy(receiveAmount = amount) }
+                if (abs(_state.value.receiveAmount - receiveAmount) > 0.001) {
+                    _state.update { it.copy(receiveAmount = receiveAmount) }
                 }
-            } finally {
-                isUpdatingAmount = false
+            } ?: run {
+                _state.update { it.copy(receiveAmount = amount) }
             }
+
+            isUpdatingAmount = false
         }
     }
 
     private fun updateReceiveAmount(amount: Double) {
-        // If already updating, don't start another update to prevent feedback loop
         if (isUpdatingAmount) return
 
-        viewModelScope.launch(Dispatchers.Main) {
-            try {
-                isUpdatingAmount = true
+        viewModelScope.launch {
+            isUpdatingAmount = true
 
-                // Update the receive amount
-                _state.update { it.copy(receiveAmount = amount) }
+            _state.update { it.copy(receiveAmount = amount) }
 
-                // Calculate sell amount if exchange rate is available
-                _state.value.exchangeRate?.let { rate ->
-                    if (rate.rate > 0) {
-                        // Calculate with rounding to prevent floating point issues
-                        val sellAmount = round(amount / rate.rate)
+            _state.value.exchangeRate?.let { rate ->
+                if (rate.rate > 0) {
+                    val sellAmount = round(amount / rate.rate)
 
-                        // Only update if the change is significant
-                        if (abs(_state.value.sellAmount - sellAmount) > 0.001) {
-                            _state.update { it.copy(sellAmount = sellAmount) }
-                        }
-                    } else {
-                        _state.update { it.copy(error = "Invalid exchange rate") }
+                    if (abs(_state.value.sellAmount - sellAmount) > 0.001) {
+                        _state.update { it.copy(sellAmount = sellAmount) }
                     }
-                } ?: run {
-                    // If same currency or rate not yet available
-                    _state.update { it.copy(sellAmount = amount) }
+                } else {
+                    _state.update { it.copy(error = "Invalid exchange rate") }
                 }
-            } finally {
-                isUpdatingAmount = false
+            } ?: run {
+                _state.update { it.copy(sellAmount = amount) }
             }
+
+            isUpdatingAmount = false
         }
     }
 
-    // Helper function to round to 2 decimal places
-    private fun round(value: Double): Double {
-        return Math.round(value * 100) / 100.0
-    }
-
-    private fun updateDescription(description: String) {
-        _state.update { it.copy(description = description) }
-    }
+    private fun round(value: Double): Double = Math.round(value * 100) / 100.0
 
     private fun transfer(fromAccount: String, toAccount: String, amount: Double) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            // Validate source account and funds
             val sourceAccount = accountManager.getAccount(fromAccount)
             when {
                 sourceAccount == null -> {
@@ -440,64 +343,48 @@ class TransferViewModel @Inject constructor(
                 }
             }
 
-            try {
-                // Process transfer
-                var success = false
-                transferMoneyUseCase(fromAccount, toAccount, amount).collect { result ->
-                    when (result) {
-                        is Resource.Success -> success = result.data.isSuccessful
-                        is Resource.Error -> _state.update { it.copy(isLoading = false, error = result.errorMessage) }
-                        is Resource.Loading -> _state.update { it.copy(isLoading = result.isLoading) }
-                    }
+            var success = false
+            transferMoneyUseCase(fromAccount, toAccount, amount).collect { result ->
+                when (result) {
+                    is Resource.Success -> success = result.data.isSuccessful
+                    is Resource.Error -> _state.update { it.copy(isLoading = false, error = result.errorMessage) }
+                    is Resource.Loading -> _state.update { it.copy(isLoading = result.isLoading) }
                 }
+            }
 
-                if (!success) {
-                    _state.update { it.copy(isLoading = false, error = "Failed to transfer money") }
-                    return@launch
-                }
-
-                // On success: reload accounts, update UI, reset inputs
+            if (success) {
                 loadAccounts()
-                delay(100) // Wait briefly to ensure accounts are loaded
-                updateSelectedAccounts()
                 resetInputValues()
-
                 _state.update { it.copy(isLoading = false, transferSuccess = true, error = null) }
                 _effect.send(TransferEffect.NavigateToSuccess("Transfer completed successfully"))
-
-            } catch (e: Exception) {
-                _state.update { it.copy(isLoading = false, error = e.message ?: "Transfer failed") }
+            } else {
+                _state.update { it.copy(isLoading = false, error = "Failed to transfer money") }
             }
         }
     }
 
     private fun updateSelectedAccounts() {
-        viewModelScope.launch(Dispatchers.Main) {
-            val accounts = _state.value.accounts
-            val currentFromAccount = _state.value.fromAccount
-            val currentToAccount = _state.value.toAccount
+        val accounts = _state.value.accounts
+        val currentFromAccount = _state.value.fromAccount
+        val currentToAccount = _state.value.toAccount
 
-            // Only proceed if we have accounts and at least one selected account
-            if (accounts.isEmpty() || (currentFromAccount == null && currentToAccount == null)) {
-                return@launch
-            }
+        if (accounts.isEmpty() || (currentFromAccount == null && currentToAccount == null)) {
+            return
+        }
 
-            // Find updated accounts by matching account numbers
-            val updatedFromAccount = currentFromAccount?.let { selected ->
-                accounts.find { it.accountNumber == selected.accountNumber }
-            }
+        val updatedFromAccount = currentFromAccount?.let { selected ->
+            accounts.find { it.accountNumber == selected.accountNumber }
+        }
 
-            val updatedToAccount = currentToAccount?.let { selected ->
-                accounts.find { it.accountNumber == selected.accountNumber }
-            }
+        val updatedToAccount = currentToAccount?.let { selected ->
+            accounts.find { it.accountNumber == selected.accountNumber }
+        }
 
-            // Update state with refreshed account data
-            _state.update { state ->
-                state.copy(
-                    fromAccount = updatedFromAccount ?: state.fromAccount,
-                    toAccount = updatedToAccount ?: state.toAccount
-                )
-            }
+        _state.update { state ->
+            state.copy(
+                fromAccount = updatedFromAccount ?: state.fromAccount,
+                toAccount = updatedToAccount ?: state.toAccount
+            )
         }
     }
 
@@ -511,12 +398,8 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-    private fun clearError() {
-        _state.update { it.copy(error = null) }
-    }
-
     fun showFromAccountBottomSheet() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             _effect.send(TransferEffect.ShowFromAccountBottomSheet)
         }
     }

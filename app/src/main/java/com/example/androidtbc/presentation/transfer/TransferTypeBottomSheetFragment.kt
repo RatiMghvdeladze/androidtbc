@@ -1,10 +1,10 @@
 package com.example.androidtbc.presentation.transfer
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.core.widget.doAfterTextChanged
 import com.example.androidtbc.databinding.BottomSheetTransferTypeBinding
 import com.example.androidtbc.domain.validators.AccountValidator
@@ -30,53 +30,54 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        updateInputValidationHint() // Set initial state
     }
 
     private fun setupListeners() {
-        binding.rgTransferType.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = view?.findViewById<RadioButton>(checkedId)
-            currentValidationType = when {
-                radioButton?.text?.contains("Account Number", ignoreCase = true) == true -> "ACCOUNT_NUMBER"
-                radioButton?.text?.contains("Personal ID", ignoreCase = true) == true -> "PERSONAL_ID"
-                radioButton?.text?.contains("Phone Number", ignoreCase = true) == true -> "PHONE_NUMBER"
-                else -> "ACCOUNT_NUMBER"
+        with(binding) {
+            // Radio button selection logic
+            rgTransferType.setOnCheckedChangeListener { _, checkedId ->
+                currentValidationType = when {
+                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Account Number", ignoreCase = true) == true -> "ACCOUNT_NUMBER"
+                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Personal ID", ignoreCase = true) == true -> "PERSONAL_ID"
+                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Phone Number", ignoreCase = true) == true -> "PHONE_NUMBER"
+                    else -> "ACCOUNT_NUMBER"
+                }
+                updateInputValidationHint()
+                etAccountInput.text?.clear()
+                btnConfirm.isEnabled = false
             }
 
-            // Update input validation hint and clear field
-            updateInputValidationHint()
-            binding.etAccountInput.text?.clear()
-            binding.btnConfirm.isEnabled = false
-        }
+            // Input validation
+            etAccountInput.doAfterTextChanged { text ->
+                validateInput(text.toString())
+            }
 
-        binding.etAccountInput.doAfterTextChanged { text ->
-            validateInput(text.toString())
-        }
-
-        binding.btnConfirm.setOnClickListener {
-            val input = binding.etAccountInput.text.toString()
-            if (validateInput(input)) {
-                onTypeSelected?.invoke(currentValidationType, input)
+            // Confirm button
+            btnConfirm.setOnClickListener {
+                val input = etAccountInput.text.toString()
+                if (validateInput(input)) {
+                    onTypeSelected?.invoke(currentValidationType, input)
+                }
             }
         }
-
-        // Set initial state
-        updateInputValidationHint()
     }
 
     private fun updateInputValidationHint() {
-        val hint = when (currentValidationType) {
-            "ACCOUNT_NUMBER" -> "Enter 23 symbol account number"
-            "PERSONAL_ID" -> "Enter 11 digit personal ID"
-            "PHONE_NUMBER" -> "Enter 9 digit phone number"
-            else -> "Enter account details"
-        }
-        binding.tilAccountInput.hint = hint
+        with(binding) {
+            // Set appropriate hint and input type
+            tilAccountInput.hint = when (currentValidationType) {
+                "ACCOUNT_NUMBER" -> "Enter 23 symbol account number"
+                "PERSONAL_ID" -> "Enter 11 digit personal ID"
+                "PHONE_NUMBER" -> "Enter 9 digit phone number"
+                else -> "Enter account details"
+            }
 
-        // Update input type
-        binding.etAccountInput.inputType = when (currentValidationType) {
-            "ACCOUNT_NUMBER" -> android.text.InputType.TYPE_CLASS_TEXT
-            "PERSONAL_ID", "PHONE_NUMBER" -> android.text.InputType.TYPE_CLASS_NUMBER
-            else -> android.text.InputType.TYPE_CLASS_TEXT
+            etAccountInput.inputType = when (currentValidationType) {
+                "ACCOUNT_NUMBER" -> InputType.TYPE_CLASS_TEXT
+                "PERSONAL_ID", "PHONE_NUMBER" -> InputType.TYPE_CLASS_NUMBER
+                else -> InputType.TYPE_CLASS_TEXT
+            }
         }
     }
 
@@ -88,12 +89,7 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
             else -> false
         }
 
-        if (isValid) {
-            binding.tilAccountInput.error = null
-        } else {
-            binding.tilAccountInput.error = "Invalid format"
-        }
-
+        binding.tilAccountInput.error = if (isValid) null else "Invalid format"
         binding.btnConfirm.isEnabled = isValid
         return isValid
     }

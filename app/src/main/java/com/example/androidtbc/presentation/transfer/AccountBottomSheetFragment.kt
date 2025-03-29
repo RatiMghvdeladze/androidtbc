@@ -1,7 +1,6 @@
 package com.example.androidtbc.presentation.transfer
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,16 +19,12 @@ class AccountBottomSheetFragment : BottomSheetDialogFragment() {
     private var onAccountSelected: ((AccountUI) -> Unit)? = null
 
     private val accountAdapter by lazy {
-        AccountAdapter { account ->
-            onAccountSelected?.invoke(account)
-        }
+        AccountAdapter { account -> onAccountSelected?.invoke(account) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            accounts = it.getParcelableArrayList(ARG_ACCOUNTS) ?: emptyList()
-        }
+        arguments?.getParcelableArrayList<AccountUI>(ARG_ACCOUNTS)?.let { accounts = it }
     }
 
     override fun onCreateView(
@@ -43,22 +38,15 @@ class AccountBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-    }
-
-    private fun setupRecyclerView() {
         binding.rvAccounts.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = accountAdapter
         }
-
         accountAdapter.submitList(accounts)
     }
 
-    // Add this method to your AccountBottomSheetFragment class
     fun refreshAccounts(updatedAccounts: List<AccountUI>) {
         if (updatedAccounts.isNotEmpty()) {
-            Log.d("AccountBottomSheet", "Refreshing accounts list with ${updatedAccounts.size} accounts")
             accounts = updatedAccounts
             accountAdapter.submitList(updatedAccounts)
         }

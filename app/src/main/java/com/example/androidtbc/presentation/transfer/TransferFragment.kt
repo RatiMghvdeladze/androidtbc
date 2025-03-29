@@ -6,14 +6,13 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.FragmentTransferBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.extension.launchLatest
 import com.example.androidtbc.presentation.extension.showSnackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -26,8 +25,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
     private val viewModel: TransferViewModel by viewModels()
     private var fromAccountBottomSheet: AccountBottomSheetFragment? = null
     private var transferTypeBottomSheet: TransferTypeBottomSheetFragment? = null
-
-    // Number formatter for currency display
     private val numberFormatter = NumberFormat.getNumberInstance(Locale.US).apply {
         maximumFractionDigits = 2
     }
@@ -40,7 +37,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun setupListeners() {
         with(binding) {
-            // Navigation - using modern approach instead of deprecated onBackPressed()
+            // Navigation
             btnBack.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
@@ -49,41 +46,39 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
             cvFromAccount.setOnClickListener { viewModel.showFromAccountBottomSheet() }
             cvToAccount.setOnClickListener { showTransferTypeBottomSheet() }
 
-// Updated etSellAmount text change listener
+            // Amount inputs
             etSellAmount.doAfterTextChanged { text ->
                 setAmountError(false)
                 val amount = text?.toString()?.replace(",", "")?.toDoubleOrNull() ?: 0.0
                 viewModel.onEvent(TransferEvent.UpdateSellAmount(amount))
             }
 
-// Updated etReceiveAmount text change listener
             etReceiveAmount.doAfterTextChanged { text ->
                 val amount = text?.toString()?.replace(",", "")?.toDoubleOrNull() ?: 0.0
                 viewModel.onEvent(TransferEvent.UpdateReceiveAmount(amount))
             }
 
-            // Description and transfer action
+            // Description
             etDescription.doAfterTextChanged { text ->
                 viewModel.onEvent(TransferEvent.UpdateDescription(text.toString()))
             }
+
+            // Transfer action
             btnContinue.setOnClickListener {
                 val state = viewModel.state.value
-                val fromAccount = state.fromAccount
-                val toAccount = state.toAccount
 
-                // Validate that an amount is entered
                 if (state.sellAmount <= 0) {
                     setAmountError(true)
                     return@setOnClickListener
-                } else {
-                    setAmountError(false)
                 }
 
-                if (fromAccount != null && toAccount != null) {
+                setAmountError(false)
+
+                if (state.fromAccount != null && state.toAccount != null) {
                     viewModel.onEvent(
                         TransferEvent.Transfer(
-                            fromAccount = fromAccount.accountNumber,
-                            toAccount = toAccount.accountNumber,
+                            fromAccount = state.fromAccount.accountNumber,
+                            toAccount = state.toAccount.accountNumber,
                             amount = state.sellAmount
                         )
                     )
@@ -95,32 +90,16 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     )
                 }
             }
-
-// Also add this to etSellAmount.doAfterTextChanged to clear error when user starts typing
-            etSellAmount.doAfterTextChanged { text ->
-                setAmountError(false)
-                text?.toString()?.replace(",", "")?.toDoubleOrNull()?.let { amount ->
-                    viewModel.onEvent(TransferEvent.UpdateSellAmount(amount))
-                }
-            }
         }
     }
 
     private fun setAmountError(isError: Boolean) {
         with(binding) {
             if (isError) {
-                // Apply error state
                 etSellAmount.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
-
-                // Create a shake animation for better feedback
-                val shakeAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.shake)
-                cvSellAmount.startAnimation(shakeAnimation)
-
-                // Show error message below the field
+                cvSellAmount.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.shake))
                 tvAmountError.visibility = View.VISIBLE
-                tvAmountError.text = "Please enter an amount"
             } else {
-                // Clear error state
                 etSellAmount.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 tvAmountError.visibility = View.GONE
             }
@@ -143,8 +122,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 tvFromAccountNumber.text = account.maskedNumber
                 tvSellCurrency.text = getCurrencySymbol(account.valuteType)
                 tvFromAccountBalance.text = "${account.balance} ${getCurrencySymbol(account.valuteType)}"
-
-                // Card logo
                 ivFromCardLogo.setImageResource(getCardLogo(account.cardType))
             }
 
@@ -154,15 +131,13 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 tvToAccountNumber.text = account.maskedNumber
                 tvReceiveCurrency.text = getCurrencySymbol(account.valuteType)
                 tvToAccountBalance.text = "${account.balance} ${getCurrencySymbol(account.valuteType)}"
-
-                // Card logo
                 ivToCardLogo.setImageResource(getCardLogo(account.cardType))
             }
 
-            // Currency inputs visibility
+            // Currency inputs
             cvReceiveAmount.visibility = if (state.showDifferentCurrencyInputs) View.VISIBLE else View.GONE
 
-            // Update input fields if needed - only if user is not currently editing
+            // Update input fields if not focused
             if (!etSellAmount.hasFocus() && etSellAmount.text.toString().toDoubleOrNull() != state.sellAmount) {
                 etSellAmount.setText(formatAmount(state.sellAmount))
             }
@@ -184,11 +159,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
             // Handle errors
             state.error?.let {
-                root.showSnackbar(
-                    it,
-                    backgroundColorResId = R.color.card_background,
-                    textColorResId = R.color.white
-                )
+                root.showSnackbar(it, R.color.card_background, R.color.white)
                 viewModel.onEvent(TransferEvent.ClearError)
             }
         }
@@ -203,7 +174,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     textColorResId = R.color.white
                 )
             }
-
             is TransferEffect.NavigateToSuccess -> {
                 binding.root.showSnackbar(
                     "Transfer completed successfully",
@@ -211,16 +181,15 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     textColorResId = R.color.white
                 )
 
-                // Reset input fields directly in UI
+                // Reset inputs
                 binding.etSellAmount.text = null
                 binding.etReceiveAmount.text = null
                 binding.etDescription.text = null
 
-                // Reload accounts and show success indicator
+                // Show success and reload
                 viewModel.onEvent(TransferEvent.LoadAccounts)
                 showSuccessIndicator()
             }
-
             is TransferEffect.ShowInsufficientFundsError -> {
                 binding.root.showSnackbar(
                     "Insufficient funds in your account",
@@ -228,7 +197,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     textColorResId = R.color.white
                 )
             }
-
             is TransferEffect.ShowFromAccountBottomSheet -> {
                 viewModel.onEvent(TransferEvent.LoadAccounts)
                 delayedAction(100) { showFromAccountBottomSheet() }
@@ -251,7 +219,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
             viewModel.onEvent(TransferEvent.SelectFromAccount(account))
             fromAccountBottomSheet?.dismiss()
         }
-
         fromAccountBottomSheet?.show(parentFragmentManager, "FromAccountBottomSheet")
     }
 
@@ -264,38 +231,27 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
     }
 
     private fun showSuccessIndicator() {
-        // Get the root view of the activity
-        val rootView = activity?.window?.decorView?.findViewById<ViewGroup>(android.R.id.content)
-            ?: return
-
-        // Inflate the success indicator layout directly
+        val rootView = activity?.window?.decorView?.findViewById<ViewGroup>(android.R.id.content) ?: return
         val successIndicatorLayout = layoutInflater.inflate(R.layout.success_indicator, rootView, false)
 
-        // The layout already has clickable=true and focusable=true in the XML
-
-        // Add the success indicator to the root view
         rootView.addView(successIndicatorLayout)
 
-        // Handle animation - fade in
+        // Animate in
         successIndicatorLayout.alpha = 0f
         successIndicatorLayout.animate()
             .alpha(1f)
             .setDuration(300)
             .start()
 
-        // Remove after delay with fade out
+        // Remove after delay
         delayedAction(2000) {
             successIndicatorLayout.animate()
                 .alpha(0f)
                 .setDuration(300)
                 .withEndAction {
-                    // Remove the success indicator
                     rootView.removeView(successIndicatorLayout)
-
-                    // Reload accounts
                     viewModel.onEvent(TransferEvent.LoadAccounts)
 
-                    // Update bottom sheet if open
                     if (fromAccountBottomSheet?.isAdded == true) {
                         delayedAction(200) {
                             fromAccountBottomSheet?.refreshAccounts(viewModel.state.value.accounts)
@@ -306,17 +262,15 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
         }
     }
 
-    // Helper methods
     private fun delayedAction(delayMillis: Long, action: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             delay(delayMillis)
             action()
         }
     }
 
-    private fun formatAmount(amount: Double): String {
-        return if (amount > 0) numberFormatter.format(amount) else ""
-    }
+    private fun formatAmount(amount: Double): String =
+        if (amount > 0) numberFormatter.format(amount) else ""
 
     private fun getCurrencySymbol(currencyCode: String): String = when (currencyCode) {
         "GEL" -> "₾"
@@ -327,6 +281,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun getCardLogo(cardType: String): Int = when (cardType) {
         "MASTER_CARD" -> R.drawable.ic_mastercard
-        else -> R.drawable.ic_visa // Default and "VISA" case
+        else -> R.drawable.ic_visa
     }
 }
