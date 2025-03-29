@@ -41,15 +41,7 @@ data class AccountUI(
     }
 }
 
-/**
- * Presentation model for Exchange Rate
- */
-/**
- * Presentation model for Exchange Rate
- */
-/**
- * Presentation model for Exchange Rate
- */
+
 @Parcelize
 data class ExchangeRateUI(
     val rate: Double,
@@ -84,9 +76,7 @@ data class ExchangeRateUI(
         }
     }
 }
-/**
- * Presentation model for Transaction Result
- */
+
 data class TransactionResultUI(
     val isSuccessful: Boolean,
     val message: String,

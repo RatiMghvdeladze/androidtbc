@@ -38,11 +38,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true        // Ignore keys not in the data class
-        isLenient = true                // Be lenient during parsing
-        coerceInputValues = true        // Try to coerce values to expected types
-        encodeDefaults = true           // Include default values during serialization
-        explicitNulls = false           // Don't include null values during serialization
+        ignoreUnknownKeys = true
+        explicitNulls = false
     }
 
     @Provides

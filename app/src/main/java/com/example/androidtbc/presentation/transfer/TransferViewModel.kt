@@ -66,43 +66,20 @@ class TransferViewModel @Inject constructor(
 
             getAccountsUseCase()
                 .catch { exception ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = exception.message ?: "Unknown error occurred"
-                        )
-                    }
+                    _state.update { it.copy(isLoading = false, error = exception.message ?: "Unknown error occurred") }
                 }
                 .collectLatest { result ->
                     when (result) {
                         is Resource.Success -> {
                             val accountsUI = result.data.map { AccountUI.fromDomain(it) }
-                            val currentFromAccount = _state.value.fromAccount
-                            val currentToAccount = _state.value.toAccount
+                            _state.update { it.copy(isLoading = false, accounts = accountsUI, error = null) }
 
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    accounts = accountsUI,
-                                    error = null
-                                )
-                            }
-
-                            if (currentFromAccount != null || currentToAccount != null) {
+                            if (_state.value.fromAccount != null || _state.value.toAccount != null) {
                                 updateSelectedAccounts()
                             }
                         }
-                        is Resource.Error -> {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    error = result.errorMessage
-                                )
-                            }
-                        }
-                        is Resource.Loading -> {
-                            _state.update { it.copy(isLoading = result.isLoading) }
-                        }
+                        is Resource.Error -> _state.update { it.copy(isLoading = false, error = result.errorMessage) }
+                        is Resource.Loading -> _state.update { it.copy(isLoading = result.isLoading) }
                     }
                 }
         }
@@ -110,31 +87,15 @@ class TransferViewModel @Inject constructor(
 
     private fun selectFromAccount(account: AccountUI) {
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    fromAccount = account,
-                    error = null
-                )
-            }
-
-            _state.value.toAccount?.let { toAccount ->
-                checkCurrencies(account, toAccount)
-            }
+            _state.update { it.copy(fromAccount = account, error = null) }
+            _state.value.toAccount?.let { toAccount -> checkCurrencies(account, toAccount) }
         }
     }
 
     private fun selectToAccount(account: AccountUI) {
         viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    toAccount = account,
-                    error = null
-                )
-            }
-
-            _state.value.fromAccount?.let { fromAccount ->
-                checkCurrencies(fromAccount, account)
-            }
+            _state.update { it.copy(toAccount = account, error = null) }
+            _state.value.fromAccount?.let { fromAccount -> checkCurrencies(fromAccount, account) }
         }
     }
 
@@ -167,35 +128,22 @@ class TransferViewModel @Inject constructor(
 
             validateAccountUseCase(accountNumber, validationType)
                 .catch { exception ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = exception.message ?: "Validation failed"
-                        )
-                    }
+                    _state.update { it.copy(isLoading = false, error = exception.message ?: "Validation failed") }
                 }
                 .collectLatest { result ->
                     when (result) {
                         is Resource.Success -> {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    accountValidation = result.data,
-                                    error = null
-                                )
-                            }
+                            _state.update { it.copy(isLoading = false, accountValidation = result.data, error = null) }
 
                             if (result.data.isValid) {
-                                if (validationType == "ACCOUNT_NUMBER") {
-                                    val matchingAccountUI = _state.value.accounts.find {
+                                val matchingAccountUI = if (validationType == "ACCOUNT_NUMBER") {
+                                    _state.value.accounts.find {
                                         it.accountNumber.replace(" ", "") == accountNumber.replace(" ", "")
                                     }
+                                } else null
 
-                                    if (matchingAccountUI != null) {
-                                        selectToAccount(matchingAccountUI)
-                                    } else {
-                                        createTemporaryToAccount(accountNumber, validationType)
-                                    }
+                                if (matchingAccountUI != null) {
+                                    selectToAccount(matchingAccountUI)
                                 } else {
                                     createTemporaryToAccount(accountNumber, validationType)
                                 }
@@ -203,17 +151,8 @@ class TransferViewModel @Inject constructor(
                                 _state.update { it.copy(error = "Invalid account") }
                             }
                         }
-                        is Resource.Error -> {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    error = result.errorMessage
-                                )
-                            }
-                        }
-                        is Resource.Loading -> {
-                            _state.update { it.copy(isLoading = result.isLoading) }
-                        }
+                        is Resource.Error -> _state.update { it.copy(isLoading = false, error = result.errorMessage) }
+                        is Resource.Loading -> _state.update { it.copy(isLoading = result.isLoading) }
                     }
                 }
         }
@@ -227,6 +166,8 @@ class TransferViewModel @Inject constructor(
             else -> "External Account"
         }
 
+        val maskedNumber = if (identifier.length > 4) "**** ${identifier.takeLast(4)}" else identifier
+
         val tempAccountUI = AccountUI(
             id = -1,
             accountName = name,
@@ -235,12 +176,10 @@ class TransferViewModel @Inject constructor(
             cardType = "VISA",
             balance = 0.0,
             cardLogo = null,
-            maskedNumber = if (identifier.length > 4) "**** ${identifier.takeLast(4)}" else identifier
+            maskedNumber = maskedNumber
         )
 
-        viewModelScope.launch {
-            selectToAccount(tempAccountUI)
-        }
+        selectToAccount(tempAccountUI)
     }
 
     private fun fetchExchangeRate(fromCurrency: String, toCurrency: String) {
@@ -248,29 +187,16 @@ class TransferViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
 
             getExchangeRateUseCase(fromCurrency, toCurrency)
-                .catch {
-                    _state.update { it.copy(isLoading = false) }
-                }
+                .catch { _state.update { it.copy(isLoading = false) } }
                 .collectLatest { result ->
                     when (result) {
                         is Resource.Success -> {
                             val exchangeRateUI = ExchangeRateUI.fromDomain(result.data)
-
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    exchangeRate = exchangeRateUI,
-                                    error = null
-                                )
-                            }
+                            _state.update { it.copy(isLoading = false, exchangeRate = exchangeRateUI, error = null) }
                             updateSellAmount(_state.value.sellAmount)
                         }
-                        is Resource.Error -> {
-                            _state.update { it.copy(isLoading = false) }
-                        }
-                        is Resource.Loading -> {
-                            _state.update { it.copy(isLoading = result.isLoading) }
-                        }
+                        is Resource.Error -> _state.update { it.copy(isLoading = false) }
+                        is Resource.Loading -> _state.update { it.copy(isLoading = result.isLoading) }
                     }
                 }
         }
@@ -286,7 +212,6 @@ class TransferViewModel @Inject constructor(
 
             _state.value.exchangeRate?.let { rate ->
                 val receiveAmount = round(amount * rate.rate)
-
                 if (abs(_state.value.receiveAmount - receiveAmount) > 0.001) {
                     _state.update { it.copy(receiveAmount = receiveAmount) }
                 }
@@ -309,7 +234,6 @@ class TransferViewModel @Inject constructor(
             _state.value.exchangeRate?.let { rate ->
                 if (rate.rate > 0) {
                     val sellAmount = round(amount / rate.rate)
-
                     if (abs(_state.value.sellAmount - sellAmount) > 0.001) {
                         _state.update { it.copy(sellAmount = sellAmount) }
                     }
@@ -330,19 +254,19 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val sourceAccount = accountManager.getAccount(fromAccount)
-            when {
-                sourceAccount == null -> {
-                    _state.update { it.copy(isLoading = false, error = "Source account not found") }
-                    return@launch
-                }
-                sourceAccount.balance < amount -> {
-                    _state.update { it.copy(isLoading = false) }
-                    _effect.send(TransferEffect.ShowInsufficientFundsError)
-                    return@launch
-                }
+            // Check account and balance
+            val sourceAccount = accountManager.getAccount(fromAccount) ?: run {
+                _state.update { it.copy(isLoading = false, error = "Source account not found") }
+                return@launch
             }
 
+            if (sourceAccount.balance < amount) {
+                _state.update { it.copy(isLoading = false) }
+                _effect.send(TransferEffect.ShowInsufficientFundsError)
+                return@launch
+            }
+
+            // Process transfer
             var success = false
             transferMoneyUseCase(fromAccount, toAccount, amount).collect { result ->
                 when (result) {
@@ -365,20 +289,13 @@ class TransferViewModel @Inject constructor(
 
     private fun updateSelectedAccounts() {
         val accounts = _state.value.accounts
-        val currentFromAccount = _state.value.fromAccount
-        val currentToAccount = _state.value.toAccount
+        val fromAccount = _state.value.fromAccount
+        val toAccount = _state.value.toAccount
 
-        if (accounts.isEmpty() || (currentFromAccount == null && currentToAccount == null)) {
-            return
-        }
+        if (accounts.isEmpty() || (fromAccount == null && toAccount == null)) return
 
-        val updatedFromAccount = currentFromAccount?.let { selected ->
-            accounts.find { it.accountNumber == selected.accountNumber }
-        }
-
-        val updatedToAccount = currentToAccount?.let { selected ->
-            accounts.find { it.accountNumber == selected.accountNumber }
-        }
+        val updatedFromAccount = fromAccount?.let { accounts.find { it.accountNumber == fromAccount.accountNumber } }
+        val updatedToAccount = toAccount?.let { accounts.find { it.accountNumber == toAccount.accountNumber } }
 
         _state.update { state ->
             state.copy(
@@ -389,13 +306,7 @@ class TransferViewModel @Inject constructor(
     }
 
     private fun resetInputValues() {
-        _state.update {
-            it.copy(
-                sellAmount = 0.0,
-                receiveAmount = 0.0,
-                description = ""
-            )
-        }
+        _state.update { it.copy(sellAmount = 0.0, receiveAmount = 0.0, description = "") }
     }
 
     fun showFromAccountBottomSheet() {

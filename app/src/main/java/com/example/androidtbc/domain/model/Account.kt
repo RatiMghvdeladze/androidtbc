@@ -25,17 +25,3 @@ data class TransferResult(
     val status: String,
     val isSuccessful: Boolean
 )
-
-enum class ValuteType {
-    USD, GEL, EUR
-}
-
-enum class CardType {
-    VISA, MASTER_CARD
-}
-
-enum class AccountValidationType {
-    ACCOUNT_NUMBER,
-    PERSONAL_ID,
-    PHONE_NUMBER
-}

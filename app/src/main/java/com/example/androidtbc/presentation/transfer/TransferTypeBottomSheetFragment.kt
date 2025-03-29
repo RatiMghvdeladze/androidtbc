@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import com.example.androidtbc.R
 import com.example.androidtbc.databinding.BottomSheetTransferTypeBinding
 import com.example.androidtbc.domain.validators.AccountValidator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -16,7 +17,7 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private var onTypeSelected: ((String, String) -> Unit)? = null
-    private var currentValidationType = "ACCOUNT_NUMBER"
+    private var currentValidationType = ACCOUNT_NUMBER
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,19 +31,20 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
-        updateInputValidationHint() // Set initial state
+        updateInputValidationHint()
     }
 
     private fun setupListeners() {
         with(binding) {
-            // Radio button selection logic
+            // Simplified radio button selection logic using IDs
             rgTransferType.setOnCheckedChangeListener { _, checkedId ->
-                currentValidationType = when {
-                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Account Number", ignoreCase = true) == true -> "ACCOUNT_NUMBER"
-                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Personal ID", ignoreCase = true) == true -> "PERSONAL_ID"
-                    view?.findViewById<View>(checkedId)?.let { it as? android.widget.RadioButton }?.text?.contains("Phone Number", ignoreCase = true) == true -> "PHONE_NUMBER"
-                    else -> "ACCOUNT_NUMBER"
+                currentValidationType = when (checkedId) {
+                    R.id.rbAccountNumber -> ACCOUNT_NUMBER
+                    R.id.rbPersonalId -> PERSONAL_ID
+                    R.id.rbPhoneNumber -> PHONE_NUMBER
+                    else -> ACCOUNT_NUMBER
                 }
+
                 updateInputValidationHint()
                 etAccountInput.text?.clear()
                 btnConfirm.isEnabled = false
@@ -67,15 +69,15 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
         with(binding) {
             // Set appropriate hint and input type
             tilAccountInput.hint = when (currentValidationType) {
-                "ACCOUNT_NUMBER" -> "Enter 23 symbol account number"
-                "PERSONAL_ID" -> "Enter 11 digit personal ID"
-                "PHONE_NUMBER" -> "Enter 9 digit phone number"
+                ACCOUNT_NUMBER -> "Enter 23 symbol account number"
+                PERSONAL_ID -> "Enter 11 digit personal ID"
+                PHONE_NUMBER -> "Enter 9 digit phone number"
                 else -> "Enter account details"
             }
 
             etAccountInput.inputType = when (currentValidationType) {
-                "ACCOUNT_NUMBER" -> InputType.TYPE_CLASS_TEXT
-                "PERSONAL_ID", "PHONE_NUMBER" -> InputType.TYPE_CLASS_NUMBER
+                ACCOUNT_NUMBER -> InputType.TYPE_CLASS_TEXT
+                PERSONAL_ID, PHONE_NUMBER -> InputType.TYPE_CLASS_NUMBER
                 else -> InputType.TYPE_CLASS_TEXT
             }
         }
@@ -83,9 +85,9 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun validateInput(input: String): Boolean {
         val isValid = when (currentValidationType) {
-            "ACCOUNT_NUMBER" -> AccountValidator.validateAccountNumber(input)
-            "PERSONAL_ID" -> AccountValidator.validatePersonalId(input)
-            "PHONE_NUMBER" -> AccountValidator.validatePhoneNumber(input)
+            ACCOUNT_NUMBER -> AccountValidator.validateAccountNumber(input)
+            PERSONAL_ID -> AccountValidator.validatePersonalId(input)
+            PHONE_NUMBER -> AccountValidator.validatePhoneNumber(input)
             else -> false
         }
 
@@ -100,6 +102,11 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+        // Constants for validation types
+        const val ACCOUNT_NUMBER = "ACCOUNT_NUMBER"
+        const val PERSONAL_ID = "PERSONAL_ID"
+        const val PHONE_NUMBER = "PHONE_NUMBER"
+
         fun newInstance(onTypeSelected: (String, String) -> Unit) =
             TransferTypeBottomSheetFragment().apply {
                 this.onTypeSelected = onTypeSelected

@@ -14,7 +14,7 @@ class ValidateAccountUseCase @Inject constructor(
     operator fun invoke(accountNumber: String, validationType: String): Flow<Resource<ValidationResult>> = flow {
         emit(Resource.Loading(true))
 
-        // First do local validation based on validation type
+        // Perform local validation based on type
         val isLocallyValid = when (validationType) {
             "ACCOUNT_NUMBER" -> AccountValidator.validateAccountNumber(accountNumber)
             "PERSONAL_ID" -> AccountValidator.validatePersonalId(accountNumber)
@@ -27,12 +27,29 @@ class ValidateAccountUseCase @Inject constructor(
             return@flow
         }
 
-        try {
-            // Always return success if local validation passes
-            // This is crucial for the demo because the Mocky API might not always work as expected
+        // Local validation passed, now validate with repository
+        // This is for ACCOUNT_NUMBER type only, as other types are just for demo
+        if (validationType == "ACCOUNT_NUMBER") {
+            repository.validateAccount(accountNumber).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        emit(result)
+                    }
+                    is Resource.Error -> {
+                        // For demo, we'll still consider it valid if local validation passed
+                        emit(Resource.Success(ValidationResult("Success", true)))
+                    }
+                    is Resource.Loading -> {
+                        // Pass through loading state
+                        emit(result)
+                    }
+                }
+            }
+        } else {
+            // For PERSONAL_ID and PHONE_NUMBER, just return success if local validation passed
             emit(Resource.Success(ValidationResult("Success", true)))
-        } catch (e: Exception) {
-            emit(Resource.Error("Error validating account: ${e.message}"))
         }
+
+        emit(Resource.Loading(false))
     }
 }

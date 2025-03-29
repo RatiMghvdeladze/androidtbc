@@ -1,13 +1,14 @@
 package com.example.androidtbc.presentation.transfer
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtbc.databinding.BottomSheetAccountsBinding
-import com.example.androidtbc.presentation.adapter.AccountAdapter
 import com.example.androidtbc.presentation.model.AccountUI
+import com.example.androidtbc.presentation.transfer.adapter.AccountAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class AccountBottomSheetFragment : BottomSheetDialogFragment() {
@@ -24,7 +25,14 @@ class AccountBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getParcelableArrayList<AccountUI>(ARG_ACCOUNTS)?.let { accounts = it }
+
+        // Use the appropriate API based on Android version to handle parcelables
+        accounts = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelableArrayList(ARG_ACCOUNTS, AccountUI::class.java) ?: emptyList()
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getParcelableArrayList(ARG_ACCOUNTS) ?: emptyList()
+        }
     }
 
     override fun onCreateView(

@@ -1,6 +1,5 @@
 package com.example.androidtbc.data.remote.model
 
-import android.util.Log
 import com.example.androidtbc.domain.model.Account
 import com.example.androidtbc.domain.model.ExchangeRate
 import com.example.androidtbc.domain.model.TransferResult
@@ -32,15 +31,14 @@ data class ValidationResponseDto(
 @Serializable
 data class ExchangeRateResponseDto(
     val course: Double,
-    val status: String? = null // Make status optional with a default value of null
+    val status: String? = null
 )
 
 @Serializable
 data class TransferResponseDto(
-    val status: String? = null // Make status optional with a default value of null
+    val status: String? = null
 )
 
-// Mapper extensions
 fun AccountDto.toDomain(): Account {
     return Account(
         id = id,
@@ -69,13 +67,10 @@ fun ExchangeRateResponseDto.toDomain(fromCurrency: String, toCurrency: String): 
 }
 
 fun TransferResponseDto.toDomain(): TransferResult {
-    // Always treat local transfers as successful even if API returns unknown status
-    // This matches the behavior in TransferMoneyUseCase which updates local balances first
     val statusText = status ?: "Success"
-    Log.d("TransferResponseDto", "API status: $status, using statusText: $statusText")
 
     return TransferResult(
         status = statusText,
-        isSuccessful = true // Always return true since we've already updated local balances
+        isSuccessful = true
     )
 }

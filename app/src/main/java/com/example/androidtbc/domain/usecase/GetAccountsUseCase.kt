@@ -8,10 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-/**
- * Use case for retrieving account data, with special handling to preserve
- * local balance changes after transfers
- */
 class GetAccountsUseCase @Inject constructor(
     private val repository: AccountRepository,
     private val accountManager: AccountManager
@@ -19,23 +15,18 @@ class GetAccountsUseCase @Inject constructor(
     operator fun invoke(): Flow<Resource<List<Account>>> = flow {
         emit(Resource.Loading(true))
 
-        // Get current accounts from AccountManager
         val cachedAccounts = accountManager.accounts.value
 
         if (cachedAccounts.isNotEmpty()) {
-            // First emit the cached accounts to update UI immediately
+            // Return cached accounts immediately
             emit(Resource.Success(cachedAccounts))
 
-            // Only fetch from repository during initial app load
+            // Only fetch from repository during initial load
             if (isInitialLoad) {
                 repository.getAccounts().collect { result ->
-                    // Only update AccountManager with API data during initial load
                     if (result is Resource.Success && accountManager.accounts.value.isEmpty()) {
                         accountManager.setAccounts(result.data)
-                    }
-
-                    // If there was an error, pass it through
-                    if (result is Resource.Error) {
+                    } else if (result is Resource.Error) {
                         emit(result)
                     }
                 }
@@ -54,8 +45,6 @@ class GetAccountsUseCase @Inject constructor(
     }
 
     companion object {
-        // Track if this is the first app load
-        // We only fetch from API on first load to avoid overwriting balance changes
         private var isInitialLoad = true
     }
 }
