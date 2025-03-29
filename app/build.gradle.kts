@@ -24,10 +24,10 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
+            buildConfigField("String", "BASE_URL", "\"https://run.mocky.io/\"")
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"insert_base_url_here\"")
+            buildConfigField("String", "BASE_URL", "\"https://run.mocky.io/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -83,10 +83,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }
-
-
 
 buildscript {
     repositories {

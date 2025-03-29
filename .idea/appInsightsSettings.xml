@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.androidtbc" />
+                  <option name="mobileSdkAppId" value="1:1019429816949:android:3bfb4cfc329181aed0463c" />
+                  <option name="projectId" value="tbc-project-2025" />
+                  <option name="projectNumber" value="1019429816949" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
