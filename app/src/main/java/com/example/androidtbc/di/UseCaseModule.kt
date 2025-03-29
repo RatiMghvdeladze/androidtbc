@@ -38,8 +38,9 @@ object UseCaseModule {
     @Singleton
     fun provideTransferMoneyUseCase(
         repository: AccountRepository,
-        accountManager: AccountManager
+        accountManager: AccountManager,
+        getExchangeRateUseCase: GetExchangeRateUseCase
     ): TransferMoneyUseCase {
-        return TransferMoneyUseCase(repository, accountManager)
+        return TransferMoneyUseCase(repository, accountManager, getExchangeRateUseCase)
     }
 }

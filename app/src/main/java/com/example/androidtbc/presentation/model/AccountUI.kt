@@ -47,6 +47,9 @@ data class AccountUI(
 /**
  * Presentation model for Exchange Rate
  */
+/**
+ * Presentation model for Exchange Rate
+ */
 @Parcelize
 data class ExchangeRateUI(
     val rate: Double,
@@ -56,12 +59,12 @@ data class ExchangeRateUI(
 ) : Parcelable {
     companion object {
         fun fromDomain(exchangeRate: ExchangeRate): ExchangeRateUI {
-            // Get currency symbols instead of codes
+            // Get currency symbols
             val fromSymbol = getCurrencySymbol(exchangeRate.fromCurrency)
             val toSymbol = getCurrencySymbol(exchangeRate.toCurrency)
 
-            // Format display text with the currency symbols
-            val displayText = "Lorem Ipsum 1$fromSymbol = ${String.format("%.2f", exchangeRate.rate)}$toSymbol Lorem Ipsum is simply"
+            // Format display text with the currency symbols - cleaned up and simplified
+            val displayText = "1$fromSymbol = ${String.format("%.2f", exchangeRate.rate)}$toSymbol"
 
             return ExchangeRateUI(
                 rate = exchangeRate.rate,

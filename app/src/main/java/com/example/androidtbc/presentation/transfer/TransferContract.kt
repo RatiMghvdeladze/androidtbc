@@ -32,6 +32,7 @@ sealed class TransferEvent {
     data class UpdateDescription(val description: String) : TransferEvent()
     data class Transfer(val fromAccount: String, val toAccount: String, val amount: Double) : TransferEvent()
     data object ClearError : TransferEvent()
+    data object ClearInputs : TransferEvent()
 }
 
 sealed class TransferEffect {

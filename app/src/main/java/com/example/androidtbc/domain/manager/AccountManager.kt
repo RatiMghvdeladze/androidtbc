@@ -45,44 +45,85 @@ class AccountManager @Inject constructor() {
     }
 
     /**
-     * Transfers money between accounts, updating account balances locally
-     * Returns true if the transfer was successful
+     * Transfers money between accounts with proper currency conversion
+     * @param fromAccount Source account number
+     * @param toAccount Destination account number
+     * @param deductAmount Amount to deduct from source account (in source currency)
+     * @param addAmount Amount to add to destination account (in destination currency)
+     * @return true if transfer is successful
      */
-    fun transferMoney(fromAccountNumber: String, toAccountNumber: String, amount: Double): Boolean {
+    fun transferMoneyWithConversion(
+        fromAccount: String,
+        toAccount: String,
+        deductAmount: Double,
+        addAmount: Double
+    ): Boolean {
+        Log.d("AccountManager", "Transferring with conversion: deduct $deductAmount from $fromAccount, add $addAmount to $toAccount")
+
         // Normalize account numbers
-        val normalizedFromAccount = fromAccountNumber.replace(" ", "")
-        val normalizedToAccount = toAccountNumber.replace(" ", "")
+        val normalizedFromAccount = fromAccount.replace(" ", "")
+        val normalizedToAccount = toAccount.replace(" ", "")
 
         // Find source account
-        val fromAccount = getAccount(fromAccountNumber) ?: return false
+        val fromAccountObj = _accounts.value.find {
+            it.accountNumber.replace(" ", "") == normalizedFromAccount
+        }
 
-        // Check for sufficient funds
-        if (fromAccount.balance < amount) return false
+        if (fromAccountObj == null) {
+            Log.e("AccountManager", "Source account not found: $fromAccount")
+            return false
+        }
 
-        // Create updated source account with new balance
-        val updatedFromAccount = fromAccount.copy(balance = fromAccount.balance - amount)
+        // Check if sufficient funds
+        if (fromAccountObj.balance < deductAmount) {
+            Log.e("AccountManager", "Insufficient funds in account $fromAccount: ${fromAccountObj.balance} < $deductAmount")
+            return false
+        }
 
-        // Find and update destination account if it exists in our list
-        val toAccount = getAccount(toAccountNumber)
-        val updatedToAccount = toAccount?.copy(balance = toAccount.balance + amount)
+        // Create updated account with the new balance
+        val updatedFromAccount = fromAccountObj.copy(balance = fromAccountObj.balance - deductAmount)
+        Log.d("AccountManager", "FROM ACCOUNT - BEFORE: ${fromAccountObj.balance}, AFTER: ${updatedFromAccount.balance}")
 
-        // Create new list with updated account balances
+        // Find destination account if it exists in our list
+        val toAccountObj = _accounts.value.find {
+            it.accountNumber.replace(" ", "") == normalizedToAccount
+        }
+
+        var updatedToAccount: Account? = null
+        if (toAccountObj != null) {
+            // Add the converted amount
+            updatedToAccount = toAccountObj.copy(balance = toAccountObj.balance + addAmount)
+            Log.d("AccountManager", "TO ACCOUNT - BEFORE: ${toAccountObj.balance}, AFTER: ${updatedToAccount.balance}")
+            Log.d("AccountManager", "Currency conversion: $deductAmount ${fromAccountObj.valuteType} = $addAmount ${toAccountObj.valuteType}")
+        } else {
+            Log.d("AccountManager", "Target account not found in local list: $toAccount")
+        }
+
+        // Create a new list with updated accounts
         val updatedAccounts = _accounts.value.map { account ->
             when {
-                account.accountNumber.replace(" ", "") == normalizedFromAccount -> updatedFromAccount
-                toAccount != null && account.accountNumber.replace(" ", "") == normalizedToAccount ->
+                account.accountNumber.replace(" ", "") == normalizedFromAccount -> {
+                    Log.d("AccountManager", "Updating source account from ${account.balance} to ${updatedFromAccount.balance}")
+                    updatedFromAccount
+                }
+                toAccountObj != null && account.accountNumber.replace(" ", "") == normalizedToAccount -> {
+                    Log.d("AccountManager", "Updating target account from ${account.balance} to ${updatedToAccount?.balance}")
                     updatedToAccount ?: account
+                }
                 else -> account
             }
         }
 
-        // Update accounts list
+        // Set the updated accounts list
         _accounts.value = updatedAccounts
 
-        // Mark that a transfer has occurred
+        // Mark that we've performed a transfer
         hasPerformedTransfer = true
 
-        // Return success if the source account balance was updated correctly
-        return getAccount(fromAccountNumber)?.balance == updatedFromAccount.balance
+        // Verify the update happened
+        val verifySource = getAccount(fromAccount)
+        Log.d("AccountManager", "Verification - Source account balance: ${verifySource?.balance}")
+
+        return verifySource?.balance == updatedFromAccount.balance
     }
 }

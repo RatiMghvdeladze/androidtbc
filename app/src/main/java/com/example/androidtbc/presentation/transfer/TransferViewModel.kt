@@ -1,6 +1,5 @@
 package com.example.androidtbc.presentation.transfer
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.domain.common.Resource
@@ -64,9 +63,7 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-    // In TransferViewModel
     init {
-        Log.d("TransferViewModel", "Initializing ViewModel and loading accounts")
         loadAccounts()
     }
 
@@ -81,17 +78,16 @@ class TransferViewModel @Inject constructor(
             is TransferEvent.UpdateDescription -> updateDescription(event.description)
             is TransferEvent.Transfer -> transfer(event.fromAccount, event.toAccount, event.amount)
             is TransferEvent.ClearError -> clearError()
+            is TransferEvent.ClearInputs -> resetInputValues()
         }
     }
 
     private fun loadAccounts() {
         viewModelScope.launch {
-            Log.d("TransferViewModel", "Starting to load accounts")
             _state.update { it.copy(isLoading = true) }
 
             getAccountsUseCase()
                 .catch { exception ->
-                    Log.e("TransferViewModel", "Error loading accounts: ${exception.message}")
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -102,7 +98,6 @@ class TransferViewModel @Inject constructor(
                 .collectLatest { result ->
                     when (result) {
                         is Resource.Success -> {
-                            Log.d("TransferViewModel", "Successfully loaded ${result.data.size} accounts")
                             val accountsUI = result.data.map { AccountUI.fromDomain(it) }
 
                             // Store current selected accounts to preserve references
@@ -124,7 +119,6 @@ class TransferViewModel @Inject constructor(
                             }
                         }
                         is Resource.Error -> {
-                            Log.e("TransferViewModel", "Error loading accounts: ${result.errorMessage}")
                             _state.update {
                                 it.copy(
                                     isLoading = false,
@@ -278,7 +272,7 @@ class TransferViewModel @Inject constructor(
 
     private fun createTemporaryToAccount(identifier: String, type: String) {
         viewModelScope.launch(defaultDispatcher) {
-            // Create a display-friendly name based on the type (can be intensive for large identifiers)
+            // Create a display-friendly name based on the type
             val name = when (type) {
                 "ACCOUNT_NUMBER" -> "External Account"
                 "PERSONAL_ID" -> "ID: ${identifier.take(4)}****${identifier.takeLast(3)}"
@@ -312,7 +306,6 @@ class TransferViewModel @Inject constructor(
             try {
                 getExchangeRateUseCase(fromCurrency, toCurrency)
                     .catch { exception ->
-                        Log.e("TransferViewModel", "Error fetching exchange rate: ${exception.message}")
                         // Even on exception, we'll use our fallback rate
                         withContext(Dispatchers.Main) {
                             _state.update { it.copy(isLoading = false) }
@@ -327,8 +320,6 @@ class TransferViewModel @Inject constructor(
                                         ExchangeRateUI.fromDomain(result.data)
                                     }
 
-                                    Log.d("TransferViewModel", "Exchange rate fetched: ${result.data.rate} for ${result.data.fromCurrency} to ${result.data.toCurrency}")
-
                                     _state.update {
                                         it.copy(
                                             isLoading = false,
@@ -341,7 +332,6 @@ class TransferViewModel @Inject constructor(
                                     updateSellAmount(_state.value.sellAmount)
                                 }
                                 is Resource.Error -> {
-                                    Log.e("TransferViewModel", "Error in exchange rate result: ${result.errorMessage}")
                                     // Error is already handled in the use case by providing fallback rates
                                     _state.update { it.copy(isLoading = false) }
                                 }
@@ -352,7 +342,6 @@ class TransferViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                Log.e("TransferViewModel", "Exception in fetchExchangeRate: ${e.message}")
                 withContext(Dispatchers.Main) {
                     _state.update { it.copy(isLoading = false) }
                 }
@@ -360,7 +349,6 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-    // Fixed: These operations now properly calculate and update amounts
     private fun updateSellAmount(amount: Double) {
         // If already updating, don't start another update to prevent feedback loop
         if (isUpdatingAmount) return
@@ -371,13 +359,11 @@ class TransferViewModel @Inject constructor(
 
                 // Update the sell amount
                 _state.update { it.copy(sellAmount = amount) }
-                Log.d("TransferViewModel", "Setting sell amount: $amount")
 
                 // Calculate receive amount if exchange rate is available
                 _state.value.exchangeRate?.let { rate ->
                     // Calculate with rounding to prevent floating point issues
                     val receiveAmount = round(amount * rate.rate)
-                    Log.d("TransferViewModel", "Calculated receive amount: $receiveAmount from sell amount: $amount with rate: ${rate.rate}")
 
                     // Only update if the change is significant
                     if (abs(_state.value.receiveAmount - receiveAmount) > 0.001) {
@@ -403,21 +389,18 @@ class TransferViewModel @Inject constructor(
 
                 // Update the receive amount
                 _state.update { it.copy(receiveAmount = amount) }
-                Log.d("TransferViewModel", "Setting receive amount: $amount")
 
                 // Calculate sell amount if exchange rate is available
                 _state.value.exchangeRate?.let { rate ->
                     if (rate.rate > 0) {
                         // Calculate with rounding to prevent floating point issues
                         val sellAmount = round(amount / rate.rate)
-                        Log.d("TransferViewModel", "Calculated sell amount: $sellAmount from receive amount: $amount with rate: ${rate.rate}")
 
                         // Only update if the change is significant
                         if (abs(_state.value.sellAmount - sellAmount) > 0.001) {
                             _state.update { it.copy(sellAmount = sellAmount) }
                         }
                     } else {
-                        Log.e("TransferViewModel", "Invalid exchange rate: ${rate.rate}")
                         _state.update { it.copy(error = "Invalid exchange rate") }
                     }
                 } ?: run {
@@ -439,15 +422,6 @@ class TransferViewModel @Inject constructor(
         _state.update { it.copy(description = description) }
     }
 
-    // Inside TransferViewModel class
-    /**
-     * Processes a money transfer between accounts
-     * Uses TransferMoneyUseCase to update account balances and verify the transfer
-     */
-    /**
-     * Processes a money transfer between accounts
-     * Simplified version that focuses on the essential transfer logic
-     */
     private fun transfer(fromAccount: String, toAccount: String, amount: Double) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
@@ -467,9 +441,8 @@ class TransferViewModel @Inject constructor(
             }
 
             try {
-                // Process transfer using use case
+                // Process transfer
                 var success = false
-
                 transferMoneyUseCase(fromAccount, toAccount, amount).collect { result ->
                     when (result) {
                         is Resource.Success -> success = result.data.isSuccessful
@@ -483,27 +456,13 @@ class TransferViewModel @Inject constructor(
                     return@launch
                 }
 
-                // On success: reload accounts to get updated balances
+                // On success: reload accounts, update UI, reset inputs
                 loadAccounts()
+                delay(100) // Wait briefly to ensure accounts are loaded
+                updateSelectedAccounts()
+                resetInputValues()
 
-                // Important: Wait a moment to ensure accounts are loaded before updating UI state
-                delay(100)
-
-                // Update any selected accounts with their new balances
-                val updatedAccounts = _state.value.accounts
-                val updatedFromAccount = updatedAccounts.find { it.accountNumber == fromAccount }
-                val updatedToAccount = updatedAccounts.find { it.accountNumber == toAccount }
-
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        transferSuccess = true,
-                        error = null,
-                        fromAccount = updatedFromAccount ?: it.fromAccount,
-                        toAccount = updatedToAccount ?: it.toAccount
-                    )
-                }
-
+                _state.update { it.copy(isLoading = false, transferSuccess = true, error = null) }
                 _effect.send(TransferEffect.NavigateToSuccess("Transfer completed successfully"))
 
             } catch (e: Exception) {
@@ -511,10 +470,7 @@ class TransferViewModel @Inject constructor(
             }
         }
     }
-    /**
-     * Updates the selected accounts with their current values from the accounts list
-     * This ensures the UI displays the most current balances
-     */
+
     private fun updateSelectedAccounts() {
         viewModelScope.launch(Dispatchers.Main) {
             val accounts = _state.value.accounts
@@ -542,10 +498,19 @@ class TransferViewModel @Inject constructor(
                     toAccount = updatedToAccount ?: state.toAccount
                 )
             }
-
-            Log.d("TransferViewModel", "Updated selected accounts: From=${updatedFromAccount?.balance}, To=${updatedToAccount?.balance}")
         }
     }
+
+    private fun resetInputValues() {
+        _state.update {
+            it.copy(
+                sellAmount = 0.0,
+                receiveAmount = 0.0,
+                description = ""
+            )
+        }
+    }
+
     private fun clearError() {
         _state.update { it.copy(error = null) }
     }
