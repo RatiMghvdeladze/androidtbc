@@ -74,9 +74,9 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     private fun updateInputValidationHint() {
         with(binding) {
             tilAccountInput.hint = when (currentValidationType) {
-                ValidationTypeUI.ACCOUNT_NUMBER -> "Enter 23 symbol account number"
-                ValidationTypeUI.PERSONAL_ID -> "Enter 11 digit personal ID"
-                ValidationTypeUI.PHONE_NUMBER -> "Enter 9 digit phone number"
+                ValidationTypeUI.ACCOUNT_NUMBER -> getString(R.string.enter_23_symbol_account_number)
+                ValidationTypeUI.PERSONAL_ID -> getString(R.string.enter_11_digit_personal_id)
+                ValidationTypeUI.PHONE_NUMBER -> getString(R.string.enter_9_digit_phone_number)
             }
 
             etAccountInput.inputType = when (currentValidationType) {
@@ -97,9 +97,9 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun getErrorMessage(): String = when (currentValidationType) {
-        ValidationTypeUI.ACCOUNT_NUMBER -> "Account number must be 23 characters"
-        ValidationTypeUI.PERSONAL_ID -> "Personal ID must be 11 digits"
-        ValidationTypeUI.PHONE_NUMBER -> "Phone number must be 9 digits"
+        ValidationTypeUI.ACCOUNT_NUMBER -> getString(R.string.account_number_must_be_23_characters)
+        ValidationTypeUI.PERSONAL_ID -> getString(R.string.personal_id_must_be_11_digits)
+        ValidationTypeUI.PHONE_NUMBER -> getString(R.string.phone_number_must_be_9_digits)
     }
 
     override fun onDestroyView() {

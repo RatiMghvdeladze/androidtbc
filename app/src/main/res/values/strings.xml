@@ -23,4 +23,10 @@
     <string name="transfer_completed_successfully">Transfer completed successfully</string>
     <string name="insufficient_funds_in_your_account">Insufficient funds in your account</string>
     <string name="no_accounts_available">No accounts available</string>
+    <string name="enter_23_symbol_account_number">Enter 23 symbol account number</string>
+    <string name="enter_11_digit_personal_id">Enter 11 digit personal ID</string>
+    <string name="enter_9_digit_phone_number">Enter 9 digit phone number</string>
+    <string name="account_number_must_be_23_characters">Account number must be 23 characters</string>
+    <string name="personal_id_must_be_11_digits">Personal ID must be 11 digits</string>
+    <string name="phone_number_must_be_9_digits">Phone number must be 9 digits</string>
 </resources>
