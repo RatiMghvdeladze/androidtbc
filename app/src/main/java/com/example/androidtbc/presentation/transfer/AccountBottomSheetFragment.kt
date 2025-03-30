@@ -26,7 +26,6 @@ class AccountBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Use the appropriate API based on Android version to handle parcelables
         accounts = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelableArrayList(ARG_ACCOUNTS, AccountUI::class.java) ?: emptyList()
         } else {

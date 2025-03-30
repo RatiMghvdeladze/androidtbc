@@ -14,25 +14,20 @@ class TransferMoneyUseCase @Inject constructor(
     operator fun invoke(fromAccount: String, toAccount: String, amount: Double): Flow<Resource<TransferResult>> = flow {
         emit(Resource.Loading(true))
 
-        // Get source account
         val sourceAccount = accountManager.getAccount(fromAccount) ?: run {
             emit(Resource.Error("Source account not found"))
             return@flow
         }
 
-        // Check for sufficient funds
         if (sourceAccount.balance < amount) {
             emit(Resource.Error("Insufficient funds in your account"))
             return@flow
         }
 
-        // Get target account
         val targetAccount = accountManager.getAccount(toAccount)
 
-        // Calculate amount to add to target account
         var amountToAdd = amount
 
-        // Handle currency conversion if needed
         if (targetAccount != null && sourceAccount.valuteType != targetAccount.valuteType) {
             getExchangeRateUseCase(sourceAccount.valuteType, targetAccount.valuteType).collect { result ->
                 if (result is Resource.Success) {
@@ -41,7 +36,6 @@ class TransferMoneyUseCase @Inject constructor(
             }
         }
 
-        // Perform the local transfer
         val localTransferSuccess = accountManager.transferMoneyWithConversion(
             fromAccount = fromAccount,
             toAccount = toAccount,

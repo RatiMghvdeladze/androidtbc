@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#050510"
@@ -11,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Header with Title and Back Button -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
@@ -32,7 +30,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Transfer internally"
+                android:text="@string/transfer_internally"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -43,14 +41,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- From Account Section -->
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvFromLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            android:text="From"
+            android:text="@string/from"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +71,6 @@
                 android:background="@drawable/bg_account_card"
                 android:padding="16dp">
 
-                <!-- Card contents remain the same -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvFromCardLogoContainer"
                     android:layout_width="40dp"
@@ -121,7 +118,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="•••• 2345"
+                    android:text="@string/_2345"
                     android:textColor="#8E8E9F"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -130,14 +127,14 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
-        <!-- To Account Section -->
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvToLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="To"
+            android:text="@string/to"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +157,6 @@
                 android:background="@drawable/bg_account_card"
                 android:padding="16dp">
 
-                <!-- Card contents remain the same -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvToCardLogoContainer"
                     android:layout_width="40dp"
@@ -208,7 +204,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="•••• 2345"
+                    android:text="@string/_2345"
                     android:textColor="#8E8E9F"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -217,7 +213,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
-        <!-- Amount Section -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/amountContainer"
             android:layout_width="match_parent"
@@ -246,7 +242,7 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sell"
+                        android:text="@string/sell"
                         android:textColor="#8E8E9F"
                         android:textSize="16sp" />
 
@@ -262,7 +258,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:hint="0.00"
+                            android:hint="@string/_0_00"
                             android:inputType="numberDecimal"
                             android:textColor="@color/white"
                             android:textColorHint="#6E6E8E"
@@ -304,7 +300,7 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sell"
+                        android:text="@string/sell"
                         android:textColor="#8E8E9F"
                         android:textSize="16sp" />
 
@@ -342,34 +338,31 @@
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Error message for amount -->
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvAmountError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="4dp"
-            android:text="Please enter an amount"
+            android:text="@string/please_enter_an_amount"
             android:textColor="#FF5252"
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/amountContainer" />
 
-        <!-- Exchange Rate Text -->
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvExchangeRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Lorem Ipsum 1₾ = 0.25 ₾ Lorem Ipsum is simply"
+            android:text="@string/lorem_ipsum_1_0_25_lorem_ipsum_is_simply"
             android:textColor="#8E8E9F"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAmountError" />
 
-        <!-- Description Section -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cvDescription"
             android:layout_width="match_parent"
@@ -389,7 +382,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Description"
+                    android:text="@string/description"
                     android:textColor="#8E8E9F"
                     android:textSize="16sp" />
 
@@ -399,7 +392,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@android:color/transparent"
-                    android:hint="Transfer between your accounts"
+                    android:hint="@string/transfer_between_your_accounts"
                     android:inputType="textMultiLine"
                     android:maxLines="3"
                     android:textColor="@color/white"
@@ -408,7 +401,6 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
-        <!-- Updated Continue Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnContinue"
             android:layout_width="match_parent"
@@ -417,7 +409,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
             android:background="@drawable/bg_continue_button"
-            android:text="Continue"
+            android:text="@string/continuee"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -425,7 +417,6 @@
             app:layout_constraintTop_toBottomOf="@id/cvDescription"
             app:layout_constraintVertical_bias="1.0" />
 
-        <!-- Progress Bar -->
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"

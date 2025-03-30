@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivSuccess"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -36,12 +36,12 @@
                 app:layout_constraintVertical_chainStyle="packed"
                 app:tint="@color/success_green" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvSuccessMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Transfer Successful"
+                android:text="@string/transfer_successful"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="18sp"

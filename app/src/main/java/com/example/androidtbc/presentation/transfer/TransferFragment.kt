@@ -39,16 +39,13 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun setupListeners() {
         with(binding) {
-            // Navigation
             btnBack.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
-            // Account selection
             cvFromAccount.setOnClickListener { viewModel.showFromAccountBottomSheet() }
             cvToAccount.setOnClickListener { showTransferTypeBottomSheet() }
 
-            // Amount inputs
             etSellAmount.doAfterTextChanged { text ->
                 setAmountError(false)
                 val amount = text?.toString()?.replace(",", "")?.toDoubleOrNull() ?: 0.0
@@ -60,12 +57,10 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 viewModel.onEvent(TransferEvent.UpdateReceiveAmount(amount))
             }
 
-            // Description
             etDescription.doAfterTextChanged { text ->
                 viewModel.onEvent(TransferEvent.UpdateDescription(text.toString()))
             }
 
-            // Transfer action
             btnContinue.setOnClickListener {
                 val state = viewModel.state.value
 
@@ -118,10 +113,8 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun updateUI(state: TransferState) {
         with(binding) {
-            // Loading indicator
             progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
 
-            // From account display
             state.fromAccount?.let { account ->
                 tvFromAccountName.text = "@${account.accountName}"
                 tvFromAccountNumber.text = account.maskedNumber
@@ -130,7 +123,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 ivFromCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
             }
 
-            // To account display
             state.toAccount?.let { account ->
                 tvToAccountName.text = "@${account.accountName}"
                 tvToAccountNumber.text = account.maskedNumber
@@ -139,10 +131,8 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 ivToCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
             }
 
-            // Currency inputs
             cvReceiveAmount.visibility = if (state.showDifferentCurrencyInputs) View.VISIBLE else View.GONE
 
-            // Update input fields if not focused
             if (!etSellAmount.hasFocus() && etSellAmount.text.toString().toDoubleOrNull() != state.sellAmount) {
                 etSellAmount.setText(formatAmount(state.sellAmount))
             }
@@ -151,18 +141,15 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 etReceiveAmount.setText(formatAmount(state.receiveAmount))
             }
 
-            // Exchange rate
             tvExchangeRate.apply {
                 visibility = if (state.exchangeRate != null) View.VISIBLE else View.GONE
                 text = state.exchangeRate?.displayText
             }
 
-            // Description
             if (state.description.isNotEmpty() && etDescription.text.toString() != state.description) {
                 etDescription.setText(state.description)
             }
 
-            // Handle errors
             state.error?.let {
                 root.showSnackbar(it, R.color.card_background, R.color.white)
                 viewModel.onEvent(TransferEvent.ClearError)
@@ -186,7 +173,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     textColorResId = R.color.white
                 )
 
-                // Reset inputs and show success
                 resetInputFields()
                 showSuccessIndicator()
             }
@@ -242,14 +228,12 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
         rootView.addView(successIndicatorLayout)
 
-        // Animate in
         successIndicatorLayout.alpha = 0f
         successIndicatorLayout.animate()
             .alpha(1f)
             .setDuration(300)
             .start()
 
-        // Remove after delay
         delayedAction(2000) {
             successIndicatorLayout.animate()
                 .alpha(0f)

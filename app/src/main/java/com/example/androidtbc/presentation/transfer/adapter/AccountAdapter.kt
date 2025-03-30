@@ -32,23 +32,20 @@ class AccountAdapter(
         private val binding: ItemAccountBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onAccountSelected(getItem(position))
-                }
-            }
-        }
-
         fun bind(account: AccountUI) {
             with(binding) {
                 tvAccountName.text = account.accountName
                 tvAccountNumber.text = account.maskedNumber
 
-                // Use utility classes
                 tvBalance.text = CurrencyUtils.formatAmountWithCurrency(account.balance, account.valuteType)
                 ivCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
+
+                binding.root.setOnClickListener {
+                    val position = bindingAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        onAccountSelected(getItem(position))
+                    }
+                }
             }
         }
     }

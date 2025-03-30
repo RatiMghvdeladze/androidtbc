@@ -37,7 +37,6 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun setupListeners() {
         with(binding) {
-            // Radio button selection logic
             rgTransferType.setOnCheckedChangeListener { _, checkedId ->
                 currentValidationType = when (checkedId) {
                     R.id.rbAccountNumber -> ValidationTypeUI.ACCOUNT_NUMBER
@@ -52,19 +51,15 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
                 tilAccountInput.error = null
             }
 
-            // Input validation
             etAccountInput.doAfterTextChanged { text ->
                 val input = text.toString()
                 val isValid = validateInput(input)
 
-                // Show/hide error based on input validity
                 tilAccountInput.error = if (input.isNotEmpty() && !isValid) getErrorMessage() else null
 
-                // Update button state
                 btnConfirm.isEnabled = isValid
             }
 
-            // Confirm button
             btnConfirm.setOnClickListener {
                 val input = etAccountInput.text.toString()
                 if (validateInput(input)) {
@@ -78,7 +73,6 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun updateInputValidationHint() {
         with(binding) {
-            // Set appropriate hint and input type based on validation type
             tilAccountInput.hint = when (currentValidationType) {
                 ValidationTypeUI.ACCOUNT_NUMBER -> "Enter 23 symbol account number"
                 ValidationTypeUI.PERSONAL_ID -> "Enter 11 digit personal ID"

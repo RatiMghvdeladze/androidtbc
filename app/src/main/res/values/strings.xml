@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">androidtbc</string>
+    <string name="transfer_successful">Transfer Successful</string>
+    <string name="continuee">Continue</string>
+    <string name="transfer_between_your_accounts">Transfer between your accounts</string>
+    <string name="description">Description</string>
+    <string name="lorem_ipsum_1_0_25_lorem_ipsum_is_simply">Lorem Ipsum 1₾ = 0.25 ₾ Lorem Ipsum is simply</string>
+    <string name="please_enter_an_amount">Please enter an amount</string>
+    <string name="sell">Sell</string>
+    <string name="_0_00">0.00</string>
+    <string name="_2345">•••• 2345</string>
+    <string name="to">To</string>
+    <string name="from">From</string>
+    <string name="transfer_internally">Transfer internally</string>
+    <string name="confirm">Confirm</string>
+    <string name="enter_account_details">Enter account details</string>
+    <string name="phone_number_9_digits">Phone Number (9 digits)</string>
+    <string name="personal_id_11_digits">Personal ID (11 digits)</string>
+    <string name="account_number_23_symbols">Account Number (23 symbols)</string>
+    <string name="select_transfer_type">Select Transfer Type</string>
+    <string name="select_account">Select Account</string>
 </resources>

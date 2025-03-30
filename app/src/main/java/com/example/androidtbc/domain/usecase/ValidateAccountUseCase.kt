@@ -15,7 +15,6 @@ class ValidateAccountUseCase @Inject constructor(
     operator fun invoke(accountNumber: String, validationType: ValidationType): Flow<Resource<ValidationResult>> = flow {
         emit(Resource.Loading(true))
 
-        // Perform local validation based on type
         val isLocallyValid = when (validationType) {
             ValidationType.ACCOUNT_NUMBER -> AccountValidator.validateAccountNumber(accountNumber)
             ValidationType.PERSONAL_ID -> AccountValidator.validatePersonalId(accountNumber)
@@ -27,8 +26,6 @@ class ValidateAccountUseCase @Inject constructor(
             return@flow
         }
 
-        // Local validation passed, now validate with repository
-        // This is for ACCOUNT_NUMBER type only, as other types are just for demo
         if (validationType == ValidationType.ACCOUNT_NUMBER) {
             repository.validateAccount(accountNumber).collect { result ->
                 when (result) {
@@ -36,17 +33,14 @@ class ValidateAccountUseCase @Inject constructor(
                         emit(result)
                     }
                     is Resource.Error -> {
-                        // For demo, we'll still consider it valid if local validation passed
                         emit(Resource.Success(ValidationResult("Success", true)))
                     }
                     is Resource.Loading -> {
-                        // Pass through loading state
                         emit(result)
                     }
                 }
             }
         } else {
-            // For PERSONAL_ID and PHONE_NUMBER, just return success if local validation passed
             emit(Resource.Success(ValidationResult("Success", true)))
         }
 

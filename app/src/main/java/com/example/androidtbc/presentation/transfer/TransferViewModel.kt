@@ -41,7 +41,6 @@ class TransferViewModel @Inject constructor(
     private val _effect = Channel<TransferEffect>()
     val effect = _effect.receiveAsFlow()
 
-    // Flag to prevent feedback loops in bidirectional updates
     private var isUpdatingAmount = false
 
     init {
@@ -87,7 +86,6 @@ class TransferViewModel @Inject constructor(
 
     private fun selectFromAccount(account: AccountUI) {
         viewModelScope.launch {
-            // Check if the selected "from" account is the same as the "to" account
             if (_state.value.toAccount?.accountNumber == account.accountNumber) {
                 _state.update { it.copy(error = "Cannot transfer from the same account") }
                 _effect.send(TransferEffect.ShowSnackbar("Please select a different account"))
@@ -101,7 +99,6 @@ class TransferViewModel @Inject constructor(
 
     private fun selectToAccount(account: AccountUI) {
         viewModelScope.launch {
-            // Check if the selected "to" account is the same as the "from" account
             if (_state.value.fromAccount?.accountNumber == account.accountNumber) {
                 _state.update { it.copy(error = "Cannot transfer to the same account") }
                 _effect.send(TransferEffect.ShowSnackbar("Please select a different account"))
@@ -262,7 +259,6 @@ class TransferViewModel @Inject constructor(
 
     private fun transfer(fromAccount: String, toAccount: String, amount: Double) {
         viewModelScope.launch {
-            // Check that accounts are different
             if (fromAccount == toAccount) {
                 _state.update { it.copy(error = "Cannot transfer to the same account") }
                 _effect.send(TransferEffect.ShowSnackbar("Source and destination accounts cannot be the same"))
@@ -271,7 +267,6 @@ class TransferViewModel @Inject constructor(
 
             _state.update { it.copy(isLoading = true) }
 
-            // Check account and balance
             val sourceAccount = accountManager.getAccount(fromAccount) ?: run {
                 _state.update { it.copy(isLoading = false, error = "Source account not found") }
                 return@launch
@@ -283,7 +278,6 @@ class TransferViewModel @Inject constructor(
                 return@launch
             }
 
-            // Process transfer
             var success = false
             transferMoneyUseCase(fromAccount, toAccount, amount).collect { result ->
                 when (result) {

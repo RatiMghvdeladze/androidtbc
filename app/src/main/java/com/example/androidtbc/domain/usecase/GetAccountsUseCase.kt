@@ -18,10 +18,10 @@ class GetAccountsUseCase @Inject constructor(
         val cachedAccounts = accountManager.accounts.value
 
         if (cachedAccounts.isNotEmpty()) {
-            // Return cached accounts immediately
+            // return cached accounts immediately
             emit(Resource.Success(cachedAccounts))
 
-            // Only fetch from repository during initial load
+            // fetch from repository during initial load
             if (isInitialLoad) {
                 repository.getAccounts().collect { result ->
                     if (result is Resource.Success && accountManager.accounts.value.isEmpty()) {
@@ -33,7 +33,7 @@ class GetAccountsUseCase @Inject constructor(
                 isInitialLoad = false
             }
         } else {
-            // No cached accounts, fetch from repository
+            // mo cached accounts, fetch from repository
             repository.getAccounts().collect { result ->
                 emit(result)
                 if (result is Resource.Success) {
