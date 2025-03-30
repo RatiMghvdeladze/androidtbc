@@ -32,23 +32,18 @@ class AccountManager @Inject constructor() {
         deductAmount: Double,
         addAmount: Double
     ): Boolean {
-        // Get normalized account numbers and accounts
         val normalizedFromAccount = fromAccount.replace(" ", "")
         val normalizedToAccount = toAccount.replace(" ", "")
 
         val fromAccountObj = getAccount(fromAccount) ?: return false
 
-        // Check if sufficient funds
         if (fromAccountObj.balance < deductAmount) return false
 
-        // Get destination account if it exists
         val toAccountObj = getAccount(toAccount)
 
-        // Create updated accounts
         val updatedFromAccount = fromAccountObj.copy(balance = fromAccountObj.balance - deductAmount)
         val updatedToAccount = toAccountObj?.copy(balance = toAccountObj.balance + addAmount)
 
-        // Create a new list with updated accounts
         val updatedAccounts = _accounts.value.map { account ->
             when {
                 account.accountNumber.replace(" ", "") == normalizedFromAccount -> updatedFromAccount
@@ -58,7 +53,6 @@ class AccountManager @Inject constructor() {
             }
         }
 
-        // Set the updated accounts list
         _accounts.value = updatedAccounts
         hasPerformedTransfer = true
 
