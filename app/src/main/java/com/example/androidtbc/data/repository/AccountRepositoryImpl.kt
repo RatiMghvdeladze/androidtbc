@@ -7,7 +7,6 @@ import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.common.mapResource
 import com.example.androidtbc.domain.model.Account
 import com.example.androidtbc.domain.model.ExchangeRate
-import com.example.androidtbc.domain.model.TransferResult
 import com.example.androidtbc.domain.model.ValidationResult
 import com.example.androidtbc.domain.repository.AccountRepository
 import kotlinx.coroutines.Dispatchers
@@ -35,10 +34,5 @@ class AccountRepositoryImpl @Inject constructor(
         apiHelper.handleHttpRequest { apiService.getExchangeRate(fromCurrency, toCurrency) }
             .mapResource { it.toDomain(fromCurrency, toCurrency) }
             .catch { e -> emit(Resource.Error("Error processing exchange rate data: ${e.message}")) }
-            .flowOn(Dispatchers.Default)
-
-    override fun transferMoney(fromAccount: String, toAccount: String, amount: Double): Flow<Resource<TransferResult>> =
-        apiHelper.handleHttpRequest { apiService.transferMoney(fromAccount, toAccount, amount) }
-            .mapResource { it.toDomain() }
             .flowOn(Dispatchers.Default)
 }

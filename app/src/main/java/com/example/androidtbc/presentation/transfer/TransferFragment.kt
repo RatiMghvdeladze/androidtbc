@@ -12,6 +12,8 @@ import com.example.androidtbc.databinding.FragmentTransferBinding
 import com.example.androidtbc.presentation.base.BaseFragment
 import com.example.androidtbc.presentation.extension.launchLatest
 import com.example.androidtbc.presentation.extension.showSnackbar
+import com.example.androidtbc.presentation.utils.CardUtils
+import com.example.androidtbc.presentation.utils.CurrencyUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -72,8 +74,6 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     return@setOnClickListener
                 }
 
-                setAmountError(false)
-
                 if (state.fromAccount != null && state.toAccount != null) {
                     viewModel.onEvent(
                         TransferEvent.Transfer(
@@ -95,12 +95,17 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun setAmountError(isError: Boolean) {
         with(binding) {
+            etSellAmount.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (isError) R.color.error_red else R.color.white
+                )
+            )
+
             if (isError) {
-                etSellAmount.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
                 cvSellAmount.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.shake))
                 tvAmountError.visibility = View.VISIBLE
             } else {
-                etSellAmount.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
                 tvAmountError.visibility = View.GONE
             }
         }
@@ -120,18 +125,18 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
             state.fromAccount?.let { account ->
                 tvFromAccountName.text = "@${account.accountName}"
                 tvFromAccountNumber.text = account.maskedNumber
-                tvSellCurrency.text = getCurrencySymbol(account.valuteType)
-                tvFromAccountBalance.text = "${account.balance} ${getCurrencySymbol(account.valuteType)}"
-                ivFromCardLogo.setImageResource(getCardLogo(account.cardType))
+                tvSellCurrency.text = CurrencyUtils.getCurrencySymbol(account.valuteType)
+                tvFromAccountBalance.text = CurrencyUtils.formatAmountWithCurrency(account.balance, account.valuteType)
+                ivFromCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
             }
 
             // To account display
             state.toAccount?.let { account ->
                 tvToAccountName.text = "@${account.accountName}"
                 tvToAccountNumber.text = account.maskedNumber
-                tvReceiveCurrency.text = getCurrencySymbol(account.valuteType)
-                tvToAccountBalance.text = "${account.balance} ${getCurrencySymbol(account.valuteType)}"
-                ivToCardLogo.setImageResource(getCardLogo(account.cardType))
+                tvReceiveCurrency.text = CurrencyUtils.getCurrencySymbol(account.valuteType)
+                tvToAccountBalance.text = CurrencyUtils.formatAmountWithCurrency(account.balance, account.valuteType)
+                ivToCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
             }
 
             // Currency inputs
@@ -167,7 +172,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun handleEffect(effect: TransferEffect) {
         when (effect) {
-            is TransferEffect.ShowToast -> {
+            is TransferEffect.ShowSnackbar -> {
                 binding.root.showSnackbar(
                     effect.message,
                     backgroundColorResId = R.color.card_background,
@@ -181,13 +186,8 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     textColorResId = R.color.white
                 )
 
-                // Reset inputs
-                binding.etSellAmount.text = null
-                binding.etReceiveAmount.text = null
-                binding.etDescription.text = null
-
-                // Show success and reload
-                viewModel.onEvent(TransferEvent.LoadAccounts)
+                // Reset inputs and show success
+                resetInputFields()
                 showSuccessIndicator()
             }
             is TransferEffect.ShowInsufficientFundsError -> {
@@ -202,6 +202,12 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                 delayedAction(100) { showFromAccountBottomSheet() }
             }
         }
+    }
+
+    private fun resetInputFields() {
+        binding.etSellAmount.text = null
+        binding.etReceiveAmount.text = null
+        binding.etDescription.text = null
     }
 
     private fun showFromAccountBottomSheet() {
@@ -252,9 +258,9 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     rootView.removeView(successIndicatorLayout)
                     viewModel.onEvent(TransferEvent.LoadAccounts)
 
-                    if (fromAccountBottomSheet?.isAdded == true) {
+                    fromAccountBottomSheet?.takeIf { it.isAdded }?.let {
                         delayedAction(200) {
-                            fromAccountBottomSheet?.refreshAccounts(viewModel.state.value.accounts)
+                            it.refreshAccounts(viewModel.state.value.accounts)
                         }
                     }
                 }
@@ -271,16 +277,4 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
 
     private fun formatAmount(amount: Double): String =
         if (amount > 0) numberFormatter.format(amount) else ""
-
-    private fun getCurrencySymbol(currencyCode: String): String = when (currencyCode) {
-        "GEL" -> "₾"
-        "EUR" -> "€"
-        "USD" -> "$"
-        else -> currencyCode
-    }
-
-    private fun getCardLogo(cardType: String): Int = when (cardType) {
-        "MASTER_CARD" -> R.drawable.ic_mastercard
-        else -> R.drawable.ic_visa
-    }
 }

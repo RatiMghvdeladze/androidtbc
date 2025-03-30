@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidtbc.R
 import com.example.androidtbc.databinding.ItemAccountBinding
 import com.example.androidtbc.presentation.model.AccountUI
+import com.example.androidtbc.presentation.utils.CardUtils
+import com.example.androidtbc.presentation.utils.CurrencyUtils
 
 class AccountAdapter(
     private val onAccountSelected: (AccountUI) -> Unit
@@ -44,10 +45,10 @@ class AccountAdapter(
             with(binding) {
                 tvAccountName.text = account.accountName
                 tvAccountNumber.text = account.maskedNumber
-                tvBalance.text = "${account.balance} ${account.valuteType}"
-                ivCardLogo.setImageResource(
-                    if (account.cardType == "MASTER_CARD") R.drawable.ic_mastercard else R.drawable.ic_visa
-                )
+
+                // Use utility classes
+                tvBalance.text = CurrencyUtils.formatAmountWithCurrency(account.balance, account.valuteType)
+                ivCardLogo.setImageResource(CardUtils.getCardLogoResource(account.cardType))
             }
         }
     }

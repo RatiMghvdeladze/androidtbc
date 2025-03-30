@@ -2,7 +2,6 @@ package com.example.androidtbc.data.remote.api
 
 import com.example.androidtbc.data.remote.model.AccountDto
 import com.example.androidtbc.data.remote.model.ExchangeRateResponseDto
-import com.example.androidtbc.data.remote.model.TransferResponseDto
 import com.example.androidtbc.data.remote.model.ValidationResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
@@ -22,11 +21,4 @@ interface ApiService {
         @Query("from_account") fromAccount: String,
         @Query("to_account") toAccount: String
     ): Response<ExchangeRateResponseDto>
-
-    @GET("a78769e5-98ef-4a56-a3d4-ed7683447806")
-    suspend fun transferMoney(
-        @Query("from_account") fromAccount: String,
-        @Query("to_account") toAccount: String,
-        @Query("money") amount: Double
-    ): Response<TransferResponseDto>
 }

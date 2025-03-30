@@ -3,18 +3,16 @@ package com.example.androidtbc.presentation.model
 import android.os.Parcelable
 import com.example.androidtbc.domain.model.Account
 import com.example.androidtbc.domain.model.ExchangeRate
+import com.example.androidtbc.presentation.utils.CurrencyUtils
 import kotlinx.parcelize.Parcelize
 
-/**
- * Presentation model for Account
- */
 @Parcelize
 data class AccountUI(
     val id: Int,
     val accountName: String,
     val accountNumber: String,
-    val valuteType: String,
-    val cardType: String,
+    val valuteType: CurrencyTypeUI,
+    val cardType: CardTypeUI,
     val balance: Double,
     val cardLogo: String?,
     val maskedNumber: String
@@ -27,13 +25,16 @@ data class AccountUI(
                 account.accountNumber
             }
 
+            // Round the balance to 2 decimal places
+            val roundedBalance = (Math.round(account.balance * 100) / 100.0)
+
             return AccountUI(
                 id = account.id,
                 accountName = account.accountName,
                 accountNumber = account.accountNumber,
-                valuteType = account.valuteType,
-                cardType = account.cardType,
-                balance = account.balance,
+                valuteType = CurrencyTypeUI.fromDomain(account.valuteType),
+                cardType = CardTypeUI.fromDomain(account.cardType),
+                balance = roundedBalance,
                 cardLogo = account.cardLogo,
                 maskedNumber = maskedNumber
             )
@@ -41,47 +42,33 @@ data class AccountUI(
     }
 }
 
-
 @Parcelize
 data class ExchangeRateUI(
     val rate: Double,
-    val fromCurrency: String,
-    val toCurrency: String,
+    val fromCurrency: CurrencyTypeUI,
+    val toCurrency: CurrencyTypeUI,
     val displayText: String
 ) : Parcelable {
     companion object {
         fun fromDomain(exchangeRate: ExchangeRate): ExchangeRateUI {
-            // Get currency symbols
-            val fromSymbol = getCurrencySymbol(exchangeRate.fromCurrency)
-            val toSymbol = getCurrencySymbol(exchangeRate.toCurrency)
+            // Convert domain currency types to presentation currency types
+            val fromCurrencyUI = CurrencyTypeUI.fromDomain(exchangeRate.fromCurrency)
+            val toCurrencyUI = CurrencyTypeUI.fromDomain(exchangeRate.toCurrency)
 
-            // Format display text with the currency symbols - cleaned up and simplified
+            // Get currency symbols using the utils with presentation types
+            val fromSymbol = CurrencyUtils.getCurrencySymbol(fromCurrencyUI)
+            val toSymbol = CurrencyUtils.getCurrencySymbol(toCurrencyUI)
+
+            // Format display text with the currency symbols
             val displayText = "1$fromSymbol = ${String.format("%.2f", exchangeRate.rate)}$toSymbol"
 
             return ExchangeRateUI(
                 rate = exchangeRate.rate,
-                fromCurrency = exchangeRate.fromCurrency,
-                toCurrency = exchangeRate.toCurrency,
+                fromCurrency = fromCurrencyUI,
+                toCurrency = toCurrencyUI,
                 displayText = displayText
             )
         }
 
-        private fun getCurrencySymbol(currencyCode: String): String {
-            return when (currencyCode) {
-                "GEL" -> "₾"
-                "EUR" -> "€"
-                "USD" -> "$"
-                else -> currencyCode
-            }
-        }
     }
 }
-
-data class TransactionResultUI(
-    val isSuccessful: Boolean,
-    val message: String,
-    val fromAccount: AccountUI?,
-    val toAccount: AccountUI?,
-    val amount: Double,
-    val date: String
-)

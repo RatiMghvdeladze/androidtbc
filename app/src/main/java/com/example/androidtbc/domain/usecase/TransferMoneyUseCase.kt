@@ -3,13 +3,11 @@ package com.example.androidtbc.domain.usecase
 import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.manager.AccountManager
 import com.example.androidtbc.domain.model.TransferResult
-import com.example.androidtbc.domain.repository.AccountRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class TransferMoneyUseCase @Inject constructor(
-    private val repository: AccountRepository,
     private val accountManager: AccountManager,
     private val getExchangeRateUseCase: GetExchangeRateUseCase
 ) {
@@ -43,7 +41,7 @@ class TransferMoneyUseCase @Inject constructor(
             }
         }
 
-        // Perform the local transfer first
+        // Perform the local transfer
         val localTransferSuccess = accountManager.transferMoneyWithConversion(
             fromAccount = fromAccount,
             toAccount = toAccount,
@@ -51,31 +49,12 @@ class TransferMoneyUseCase @Inject constructor(
             addAmount = amountToAdd
         )
 
-        if (!localTransferSuccess) {
+        if (localTransferSuccess) {
+            emit(Resource.Success(TransferResult("Success", true)))
+        } else {
             emit(Resource.Error("Failed to transfer money"))
-            return@flow
         }
 
-        // Now notify the API of the transfer
-        var apiTransferSuccess = true
-        repository.transferMoney(fromAccount, toAccount, amount).collect { result ->
-            when (result) {
-                is Resource.Success -> {
-                    // API call succeeded
-                    apiTransferSuccess = result.data.isSuccessful
-                }
-                is Resource.Error -> {
-                    // API failed, but we already updated local state, so log but continue
-                    apiTransferSuccess = false
-                }
-                is Resource.Loading -> {
-                    // Ignore loading state
-                }
-            }
-        }
-
-        // We prioritize local state, so return success even if API failed
-        emit(Resource.Success(TransferResult("Success", true)))
         emit(Resource.Loading(false))
     }
 }

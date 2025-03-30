@@ -9,6 +9,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.example.androidtbc.R
 import com.example.androidtbc.databinding.BottomSheetTransferTypeBinding
 import com.example.androidtbc.domain.validators.AccountValidator
+import com.example.androidtbc.presentation.model.ValidationTypeUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
@@ -16,8 +17,8 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: BottomSheetTransferTypeBinding? = null
     private val binding get() = _binding!!
 
-    private var onTypeSelected: ((String, String) -> Unit)? = null
-    private var currentValidationType = ACCOUNT_NUMBER
+    private var onTypeSelected: ((ValidationTypeUI, String) -> Unit)? = null
+    private var currentValidationType = ValidationTypeUI.ACCOUNT_NUMBER
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,23 +37,31 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun setupListeners() {
         with(binding) {
-            // Simplified radio button selection logic using IDs
+            // Radio button selection logic
             rgTransferType.setOnCheckedChangeListener { _, checkedId ->
                 currentValidationType = when (checkedId) {
-                    R.id.rbAccountNumber -> ACCOUNT_NUMBER
-                    R.id.rbPersonalId -> PERSONAL_ID
-                    R.id.rbPhoneNumber -> PHONE_NUMBER
-                    else -> ACCOUNT_NUMBER
+                    R.id.rbAccountNumber -> ValidationTypeUI.ACCOUNT_NUMBER
+                    R.id.rbPersonalId -> ValidationTypeUI.PERSONAL_ID
+                    R.id.rbPhoneNumber -> ValidationTypeUI.PHONE_NUMBER
+                    else -> ValidationTypeUI.ACCOUNT_NUMBER
                 }
 
                 updateInputValidationHint()
                 etAccountInput.text?.clear()
                 btnConfirm.isEnabled = false
+                tilAccountInput.error = null
             }
 
             // Input validation
             etAccountInput.doAfterTextChanged { text ->
-                validateInput(text.toString())
+                val input = text.toString()
+                val isValid = validateInput(input)
+
+                // Show/hide error based on input validity
+                tilAccountInput.error = if (input.isNotEmpty() && !isValid) getErrorMessage() else null
+
+                // Update button state
+                btnConfirm.isEnabled = isValid
             }
 
             // Confirm button
@@ -60,6 +69,8 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
                 val input = etAccountInput.text.toString()
                 if (validateInput(input)) {
                     onTypeSelected?.invoke(currentValidationType, input)
+                } else {
+                    tilAccountInput.error = getErrorMessage()
                 }
             }
         }
@@ -67,33 +78,34 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun updateInputValidationHint() {
         with(binding) {
-            // Set appropriate hint and input type
+            // Set appropriate hint and input type based on validation type
             tilAccountInput.hint = when (currentValidationType) {
-                ACCOUNT_NUMBER -> "Enter 23 symbol account number"
-                PERSONAL_ID -> "Enter 11 digit personal ID"
-                PHONE_NUMBER -> "Enter 9 digit phone number"
-                else -> "Enter account details"
+                ValidationTypeUI.ACCOUNT_NUMBER -> "Enter 23 symbol account number"
+                ValidationTypeUI.PERSONAL_ID -> "Enter 11 digit personal ID"
+                ValidationTypeUI.PHONE_NUMBER -> "Enter 9 digit phone number"
             }
 
             etAccountInput.inputType = when (currentValidationType) {
-                ACCOUNT_NUMBER -> InputType.TYPE_CLASS_TEXT
-                PERSONAL_ID, PHONE_NUMBER -> InputType.TYPE_CLASS_NUMBER
-                else -> InputType.TYPE_CLASS_TEXT
+                ValidationTypeUI.ACCOUNT_NUMBER -> InputType.TYPE_CLASS_TEXT
+                ValidationTypeUI.PERSONAL_ID, ValidationTypeUI.PHONE_NUMBER -> InputType.TYPE_CLASS_NUMBER
             }
         }
     }
 
     private fun validateInput(input: String): Boolean {
-        val isValid = when (currentValidationType) {
-            ACCOUNT_NUMBER -> AccountValidator.validateAccountNumber(input)
-            PERSONAL_ID -> AccountValidator.validatePersonalId(input)
-            PHONE_NUMBER -> AccountValidator.validatePhoneNumber(input)
-            else -> false
-        }
+        if (input.isEmpty()) return false
 
-        binding.tilAccountInput.error = if (isValid) null else "Invalid format"
-        binding.btnConfirm.isEnabled = isValid
-        return isValid
+        return when (currentValidationType) {
+            ValidationTypeUI.ACCOUNT_NUMBER -> AccountValidator.validateAccountNumber(input)
+            ValidationTypeUI.PERSONAL_ID -> AccountValidator.validatePersonalId(input)
+            ValidationTypeUI.PHONE_NUMBER -> AccountValidator.validatePhoneNumber(input)
+        }
+    }
+
+    private fun getErrorMessage(): String = when (currentValidationType) {
+        ValidationTypeUI.ACCOUNT_NUMBER -> "Account number must be 23 characters"
+        ValidationTypeUI.PERSONAL_ID -> "Personal ID must be 11 digits"
+        ValidationTypeUI.PHONE_NUMBER -> "Phone number must be 9 digits"
     }
 
     override fun onDestroyView() {
@@ -102,12 +114,7 @@ class TransferTypeBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        // Constants for validation types
-        const val ACCOUNT_NUMBER = "ACCOUNT_NUMBER"
-        const val PERSONAL_ID = "PERSONAL_ID"
-        const val PHONE_NUMBER = "PHONE_NUMBER"
-
-        fun newInstance(onTypeSelected: (String, String) -> Unit) =
+        fun newInstance(onTypeSelected: (ValidationTypeUI, String) -> Unit) =
             TransferTypeBottomSheetFragment().apply {
                 this.onTypeSelected = onTypeSelected
             }

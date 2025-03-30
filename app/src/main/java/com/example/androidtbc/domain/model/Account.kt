@@ -4,8 +4,8 @@ data class Account(
     val id: Int,
     val accountName: String,
     val accountNumber: String,
-    val valuteType: String,
-    val cardType: String,
+    val valuteType: CurrencyType,
+    val cardType: CardType,
     val balance: Double,
     val cardLogo: String?
 )
@@ -17,8 +17,8 @@ data class ValidationResult(
 
 data class ExchangeRate(
     val rate: Double,
-    val fromCurrency: String,
-    val toCurrency: String
+    val fromCurrency: CurrencyType,
+    val toCurrency: CurrencyType
 )
 
 data class TransferResult(

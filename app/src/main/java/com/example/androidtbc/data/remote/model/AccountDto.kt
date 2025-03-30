@@ -1,8 +1,9 @@
 package com.example.androidtbc.data.remote.model
 
 import com.example.androidtbc.domain.model.Account
+import com.example.androidtbc.domain.model.CardType
+import com.example.androidtbc.domain.model.CurrencyType
 import com.example.androidtbc.domain.model.ExchangeRate
-import com.example.androidtbc.domain.model.TransferResult
 import com.example.androidtbc.domain.model.ValidationResult
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,19 +35,17 @@ data class ExchangeRateResponseDto(
     val status: String? = null
 )
 
-@Serializable
-data class TransferResponseDto(
-    val status: String? = null
-)
-
 fun AccountDto.toDomain(): Account {
+    // Round the balance to 2 decimal places
+    val roundedBalance = (Math.round(balance * 100) / 100.0)
+
     return Account(
         id = id,
         accountName = accountName,
         accountNumber = accountNumber,
-        valuteType = valuteType,
-        cardType = cardType,
-        balance = balance,
+        valuteType = CurrencyType.fromString(valuteType),
+        cardType = CardType.fromString(cardType),
+        balance = roundedBalance,
         cardLogo = cardLogo
     )
 }
@@ -59,18 +58,10 @@ fun ValidationResponseDto.toDomain(): ValidationResult {
 }
 
 fun ExchangeRateResponseDto.toDomain(fromCurrency: String, toCurrency: String): ExchangeRate {
+    // We're making sure to use the course value directly from the API response
     return ExchangeRate(
         rate = course,
-        fromCurrency = fromCurrency,
-        toCurrency = toCurrency
-    )
-}
-
-fun TransferResponseDto.toDomain(): TransferResult {
-    val statusText = status ?: "Success"
-
-    return TransferResult(
-        status = statusText,
-        isSuccessful = true
+        fromCurrency = CurrencyType.fromString(fromCurrency),
+        toCurrency = CurrencyType.fromString(toCurrency)
     )
 }

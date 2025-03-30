@@ -3,7 +3,7 @@ package com.example.androidtbc.domain.validators
 object AccountValidator {
     fun validateAccountNumber(accountNumber: String): Boolean {
         val trimmed = accountNumber.trim()
-        return trimmed.length <= 23
+        return trimmed.length == 23 || trimmed.length == 22
     }
 
     fun validatePersonalId(personalId: String): Boolean {

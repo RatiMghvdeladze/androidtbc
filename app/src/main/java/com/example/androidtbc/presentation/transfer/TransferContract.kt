@@ -3,7 +3,7 @@ package com.example.androidtbc.presentation.transfer
 import com.example.androidtbc.domain.model.ValidationResult
 import com.example.androidtbc.presentation.model.AccountUI
 import com.example.androidtbc.presentation.model.ExchangeRateUI
-import com.example.androidtbc.presentation.model.TransactionResultUI
+import com.example.androidtbc.presentation.model.ValidationTypeUI
 
 data class TransferState(
     val isLoading: Boolean = false,
@@ -19,14 +19,13 @@ data class TransferState(
     val description: String = "",
     val error: String? = null,
     val transferSuccess: Boolean = false,
-    val transactionResult: TransactionResultUI? = null
 )
 
 sealed class TransferEvent {
     data object LoadAccounts : TransferEvent()
     data class SelectFromAccount(val account: AccountUI) : TransferEvent()
     data class SelectToAccount(val account: AccountUI) : TransferEvent()
-    data class ValidateAccount(val accountNumber: String, val validationType: String) : TransferEvent()
+    data class ValidateAccount(val accountNumber: String, val validationType: ValidationTypeUI) : TransferEvent()
     data class UpdateSellAmount(val amount: Double) : TransferEvent()
     data class UpdateReceiveAmount(val amount: Double) : TransferEvent()
     data class UpdateDescription(val description: String) : TransferEvent()
@@ -36,7 +35,7 @@ sealed class TransferEvent {
 }
 
 sealed class TransferEffect {
-    data class ShowToast(val message: String) : TransferEffect()
+    data class ShowSnackbar(val message: String) : TransferEffect()
     data class NavigateToSuccess(val transactionResult: String) : TransferEffect()
     data object ShowInsufficientFundsError : TransferEffect()
     data object ShowFromAccountBottomSheet : TransferEffect()
