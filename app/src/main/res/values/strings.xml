@@ -19,4 +19,8 @@
     <string name="account_number_23_symbols">Account Number (23 symbols)</string>
     <string name="select_transfer_type">Select Transfer Type</string>
     <string name="select_account">Select Account</string>
+    <string name="please_select_accounts">Please select accounts</string>
+    <string name="transfer_completed_successfully">Transfer completed successfully</string>
+    <string name="insufficient_funds_in_your_account">Insufficient funds in your account</string>
+    <string name="no_accounts_available">No accounts available</string>
 </resources>

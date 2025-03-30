@@ -79,7 +79,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
                     )
                 } else {
                     root.showSnackbar(
-                        "Please select accounts",
+                        getString(R.string.please_select_accounts),
                         backgroundColorResId = R.color.card_background,
                         textColorResId = R.color.white
                     )
@@ -168,7 +168,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
             }
             is TransferEffect.NavigateToSuccess -> {
                 binding.root.showSnackbar(
-                    "Transfer completed successfully",
+                    getString(R.string.transfer_completed_successfully),
                     backgroundColorResId = R.color.card_background,
                     textColorResId = R.color.white
                 )
@@ -178,7 +178,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
             }
             is TransferEffect.ShowInsufficientFundsError -> {
                 binding.root.showSnackbar(
-                    "Insufficient funds in your account",
+                    getString(R.string.insufficient_funds_in_your_account),
                     backgroundColorResId = R.color.card_background,
                     textColorResId = R.color.white
                 )
@@ -200,7 +200,7 @@ class TransferFragment : BaseFragment<FragmentTransferBinding>(
         val accounts = viewModel.state.value.accounts
         if (accounts.isEmpty()) {
             binding.root.showSnackbar(
-                "No accounts available",
+                getString(R.string.no_accounts_available),
                 backgroundColorResId = R.color.card_background,
                 textColorResId = R.color.white
             )
