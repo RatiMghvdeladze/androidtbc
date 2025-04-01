@@ -1,10 +1,8 @@
 package com.example.androidtbc.presentation.register
 
-import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.androidtbc.R
@@ -30,10 +28,12 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             etPassword.doAfterTextChanged { viewModel.onEvent(RegisterEvent.ClearValidationErrors) }
             etRepeatPassword.doAfterTextChanged { viewModel.onEvent(RegisterEvent.ClearValidationErrors) }
             btnRegister.setOnClickListener {
+                val email = etEmail.text.toString()
+                val password = etPassword.text.toString()
                 viewModel.onEvent(
                     RegisterEvent.RegisterUser(
-                        email = etEmail.text.toString(),
-                        password = etPassword.text.toString(),
+                        email = email,
+                        password = password,
                         repeatPassword = etRepeatPassword.text.toString()
                     )
                 )
@@ -79,10 +79,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 binding.root.showSnackbar(event.message)
             }
             is RegisterEvent.NavigateBack -> {
-                setFragmentResult("register_request", Bundle().apply {
-                    putString("email", event.email)
-                    putString("password", event.password)
-                })
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("email", event.email)
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("password", event.password)
+
                 findNavController().popBackStack()
             }
             is RegisterEvent.RegisterUser,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019429816949",
+    "project_id": "tbc-project-2025",
+    "storage_bucket": "tbc-project-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019429816949:android:3bfb4cfc329181aed0463c",
+        "android_client_info": {
+          "package_name": "com.example.androidtbc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmVBgp8xVfJYp7jhpiBxtVhczPaUZ_9r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
