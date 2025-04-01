@@ -19,10 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class LoginComposeFragment : Fragment() {
     private val viewModel: LoginViewModel by viewModels()
-
     private var emailFromRegister: String? = null
     private var passwordFromRegister: String? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,91 +29,71 @@ class LoginComposeFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
-            setContent {
-                val state = viewModel.state.collectAsState().value
-
-                AppTheme {
-                    LoginScreen(
-                        state = state,
-                        email = emailFromRegister,
-                        password = passwordFromRegister,
-                        onLogin = { email, password, rememberMe ->
-                            viewModel.onEvent(LoginEvent.LoginUser(email, password, rememberMe))
-                        },
-                        onRegisterClick = {
-                            emailFromRegister = null
-                            passwordFromRegister = null
-
-                            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-                        }
-                    )
-                }
-            }
+            setLoginContent()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkForRegistrationData()
+        observeLoginEvents()
+        viewModel.onEvent(LoginEvent.CheckUserSession)
+    }
+
+    private fun checkForRegistrationData() {
         findNavController().currentBackStackEntry?.savedStateHandle?.apply {
             get<String>("email")?.let { email ->
                 emailFromRegister = email
                 remove<String>("email")
-
-                view.invalidate()
+                view?.invalidate()
             }
 
             get<String>("password")?.let { password ->
                 passwordFromRegister = password
                 remove<String>("password")
-
-                view.invalidate()
+                view?.invalidate()
             }
         }
+    }
 
+    private fun observeLoginEvents() {
         launchLatest(viewModel.events) { event ->
-                when (event) {
-                    is LoginEvent.NavigateToHome -> {
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                    }
-                    is LoginEvent.ShowSnackbar -> {
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {}
+            when (event) {
+                is LoginEvent.NavigateToHome -> {
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 }
-
+                is LoginEvent.ShowSnackbar -> {
+                    Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
         }
+    }
 
-        viewModel.onEvent(LoginEvent.CheckUserSession)
+    private fun ComposeView.setLoginContent() {
+        setContent {
+            val state = viewModel.state.collectAsState().value
+            AppTheme {
+                LoginScreen(
+                    state = state,
+                    email = emailFromRegister,
+                    password = passwordFromRegister,
+                    onLogin = { email, password, rememberMe ->
+                        viewModel.onEvent(LoginEvent.LoginUser(email, password, rememberMe))
+                    },
+                    onRegisterClick = {
+                        emailFromRegister = null
+                        passwordFromRegister = null
+                        findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+                    }
+                )
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-
-        view?.let {
-            (it as? ComposeView)?.let { composeView ->
-                composeView.setContent {
-                    val state = viewModel.state.collectAsState().value
-
-                    AppTheme {
-                        LoginScreen(
-                            state = state,
-                            email = emailFromRegister,
-                            password = passwordFromRegister,
-                            onLogin = { email, password, rememberMe ->
-                                viewModel.onEvent(LoginEvent.LoginUser(email, password, rememberMe))
-                            },
-                            onRegisterClick = {
-                                emailFromRegister = null
-                                passwordFromRegister = null
-
-                                findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-                            }
-                        )
-                    }
-                }
-            }
-        }
+        (view as? ComposeView)?.setLoginContent()
     }
 }

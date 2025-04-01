@@ -49,6 +49,24 @@ import com.example.androidtbc.presentation.theme.AppTheme
 
 
 @Composable
+fun textFieldColors(): TextFieldColors {
+    return TextFieldDefaults.colors(
+        focusedContainerColor = Color.White,
+        unfocusedContainerColor = Color.White,
+        focusedIndicatorColor = Color(0xFFB683F7),
+        unfocusedIndicatorColor = Color(0xFFB683F7),
+        focusedLabelColor = Color(0xFFB683F7),
+        unfocusedLabelColor = Color(0xFFB683F7),
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        cursorColor = Color.Black
+    )
+}
+
+val PrimaryColor = Color(0xFFB683F7)
+val BackgroundColor = Color(0xFFF5F5F5)
+
+@Composable
 fun LoginScreen(
     state: LoginState,
     email: String? = null,
@@ -63,7 +81,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+            .background(BackgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -107,17 +125,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 textStyle = TextStyle(fontSize = 24.sp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFFB683F7),
-                    unfocusedIndicatorColor = Color(0xFFB683F7),
-                    focusedLabelColor = Color(0xFFB683F7),
-                    unfocusedLabelColor = Color(0xFFB683F7),
-                    focusedTextColor = Color.Black, // Change the focused text color to black
-                    unfocusedTextColor = Color.Black, // Change the unfocused text color to black
-                    cursorColor = Color.Black
-                )
+                colors = textFieldColors()
             )
 
             OutlinedTextField(
@@ -131,17 +139,7 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(fontSize = 24.sp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFFB683F7),
-                    unfocusedIndicatorColor = Color(0xFFB683F7),
-                    focusedLabelColor = Color(0xFFB683F7),
-                    unfocusedLabelColor = Color(0xFFB683F7),
-                    focusedTextColor = Color.Black, // Change the focused text color to black
-                    unfocusedTextColor = Color.Black, // Change the unfocused text color to black
-                    cursorColor = Color.Black
-                )
+                colors = textFieldColors()
             )
 
             Row(
@@ -158,7 +156,7 @@ fun LoginScreen(
                         checked = rememberMe,
                         onCheckedChange = { rememberMe = it },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = Color(0xFFB683F7)
+                            checkedColor = PrimaryColor
                         )
                     )
                     Text(
@@ -193,8 +191,8 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFB683F7),
-                    disabledContainerColor = Color(0xFFB683F7).copy(alpha = 0.6f)
+                    containerColor = PrimaryColor,
+                    disabledContainerColor = PrimaryColor.copy(alpha = 0.6f)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -221,7 +219,6 @@ fun LoginScreenContent(
     email: String,
     password: String,
     rememberMe: Boolean,
-    textFieldColors: TextFieldColors,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
@@ -235,7 +232,7 @@ fun LoginScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+            .background(BackgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -243,7 +240,7 @@ fun LoginScreenContent(
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(95.dp))
+            Spacer(modifier = Modifier.height(65.dp))
 
             Text(
                 text = stringResource(R.string.login),
@@ -273,10 +270,12 @@ fun LoginScreenContent(
                 },
                 label = { Text(text = stringResource(R.string.email)) },
                 leadingIcon = {
-                    Icon(painter = painterResource(id = R.drawable.ic_email),
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_email),
                         contentDescription = "Email",
-                        tint = Color(0xFFB683F7)
-                    ) },
+                        tint = PrimaryColor
+                    )
+                },
                 isError = state.emailError != null,
                 supportingText = { state.emailError?.let { Text(text = it) } },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -284,7 +283,7 @@ fun LoginScreenContent(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 textStyle = TextStyle(fontSize = 24.sp),
-                colors = textFieldColors
+                colors = textFieldColors()
             )
 
             OutlinedTextField(
@@ -294,14 +293,20 @@ fun LoginScreenContent(
                     onPasswordChange(it)
                 },
                 label = { Text(text = stringResource(R.string.password)) },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.ic_lock), contentDescription = "Password", tint = Color(0xFFB683F7)) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_lock),
+                        contentDescription = "Password",
+                        tint = PrimaryColor
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = state.passwordError != null,
                 supportingText = { state.passwordError?.let { Text(text = it) } },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(fontSize = 24.sp),
-                colors = textFieldColors
+                colors = textFieldColors()
             )
 
             Row(
@@ -321,7 +326,7 @@ fun LoginScreenContent(
                             onRememberMeChange(it)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = Color(0xFFB683F7)
+                            checkedColor = PrimaryColor
                         )
                     )
                     Text(
@@ -356,8 +361,8 @@ fun LoginScreenContent(
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFB683F7),
-                    disabledContainerColor = Color(0xFFB683F7).copy(alpha = 0.6f)
+                    containerColor = PrimaryColor,
+                    disabledContainerColor = PrimaryColor.copy(alpha = 0.6f)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
@@ -388,21 +393,11 @@ fun LoginScreenPreview() {
             passwordError = null
         )
 
-        val textFieldColors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = Color(0xFFB683F7),
-            unfocusedIndicatorColor = Color(0xFFB683F7),
-            focusedLabelColor = Color(0xFFB683F7),
-            unfocusedLabelColor = Color(0xFFB683F7)
-        )
-
         LoginScreenContent(
             state = previewState,
-            email = "user@example.com",
-            password = "Password123",
+            email = "john@doe.com",
+            password = "helloWorld",
             rememberMe = false,
-            textFieldColors = textFieldColors,
             onEmailChange = {},
             onPasswordChange = {},
             onRememberMeChange = {},
@@ -422,22 +417,11 @@ fun LoginScreenWithErrorsPreview() {
             passwordError = "Password must be at least 6 characters"
         )
 
-        val textFieldColors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = Color(0xFFB683F7),
-            unfocusedIndicatorColor = Color(0xFFB683F7),
-            focusedLabelColor = Color(0xFFB683F7),
-            unfocusedLabelColor = Color(0xFFB683F7)
-        )
-
-
         LoginScreenContent(
             state = previewState,
-            email = "user@example",
-            password = "pass",
+            email = "john@doe.com",
+            password = "helloWorld",
             rememberMe = false,
-            textFieldColors = textFieldColors,
             onEmailChange = {},
             onPasswordChange = {},
             onRememberMeChange = {},
@@ -457,22 +441,11 @@ fun LoginScreenLoadingPreview() {
             passwordError = null
         )
 
-        val textFieldColors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = Color(0xFFB683F7),
-            unfocusedIndicatorColor = Color(0xFFB683F7),
-            focusedLabelColor = Color(0xFFB683F7),
-            unfocusedLabelColor = Color(0xFFB683F7)
-        )
-
-
         LoginScreenContent(
             state = previewState,
             email = "john@doe.com",
             password = "helloWorld",
             rememberMe = true,
-            textFieldColors = textFieldColors,
             onEmailChange = {},
             onPasswordChange = {},
             onRememberMeChange = {},
