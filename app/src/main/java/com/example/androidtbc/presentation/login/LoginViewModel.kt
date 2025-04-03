@@ -25,6 +25,7 @@ class LoginViewModel @Inject constructor(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val checkRememberMeUseCase: CheckRememberMeUseCase
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(LoginState())
     val state = _state.asStateFlow()
 
@@ -36,9 +37,36 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.LoginUser -> login(event.email, event.password, event.rememberMe)
             is LoginEvent.ClearValidationErrors -> clearValidationErrors()
             is LoginEvent.CheckUserSession -> checkUserSession()
-
-            is LoginEvent.ShowSnackbar, is LoginEvent.NavigateToHome -> {}
+            else -> {}
         }
+    }
+
+    fun validateEmail(email: String) {
+        val result = validateEmailUseCase(email)
+        _state.value = _state.value.copy(
+            emailError = when (result) {
+                is ValidationResult.Error -> result.errorMessage
+                ValidationResult.Success -> null
+            }
+        )
+    }
+
+    fun validatePassword(password: String) {
+        val result = validatePasswordUseCase(password)
+        _state.value = _state.value.copy(
+            passwordError = when (result) {
+                is ValidationResult.Error -> result.errorMessage
+                ValidationResult.Success -> null
+            }
+        )
+    }
+
+    private fun clearValidationErrors() {
+        _state.value = _state.value.copy(
+            emailError = null,
+            passwordError = null,
+            errorMessage = null
+        )
     }
 
     private fun checkUserSession() {
@@ -55,47 +83,30 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-    private fun clearValidationErrors() {
-        _state.value = _state.value.copy(
-            emailError = null,
-            passwordError = null,
-            errorMessage = null
-        )
-    }
 
     private fun login(email: String, password: String, rememberMe: Boolean) {
-        var hasErrors = false
-
-        when (val emailValidation = validateEmailUseCase(email)) {
-            is ValidationResult.Error -> {
-                _state.value = _state.value.copy(emailError = emailValidation.errorMessage)
-                hasErrors = true
-            }
-            is ValidationResult.Success -> {
-                _state.value = _state.value.copy(emailError = null)
-            }
+        val emailValidation = validateEmailUseCase(email)
+        if (emailValidation is ValidationResult.Error) {
+            _state.value = _state.value.copy(emailError = emailValidation.errorMessage)
+            return
         }
 
-        when (val passwordValidation = validatePasswordUseCase(password)) {
-            is ValidationResult.Error -> {
-                _state.value = _state.value.copy(passwordError = passwordValidation.errorMessage)
-                hasErrors = true
-            }
-            is ValidationResult.Success -> {
-                _state.value = _state.value.copy(passwordError = null)
-            }
-        }
-
-        if (hasErrors) {
+        val passwordValidation = validatePasswordUseCase(password)
+        if (passwordValidation is ValidationResult.Error) {
+            _state.value = _state.value.copy(passwordError = passwordValidation.errorMessage)
             return
         }
 
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+            _state.value = _state.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
 
             loginUseCase(email, password, rememberMe).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        // Successful login
                         _state.value = _state.value.copy(
                             isLoading = false,
                             loginSuccess = result.data

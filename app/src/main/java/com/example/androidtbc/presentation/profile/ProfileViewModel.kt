@@ -43,6 +43,7 @@ class ProfileViewModel @Inject constructor(
                     isEmpty = event.isEmpty
                 )
             }
+
             else -> {
             }
         }
@@ -50,46 +51,38 @@ class ProfileViewModel @Inject constructor(
 
     private fun checkSessionStatus() {
         viewModelScope.launch {
-            try {
-                checkSessionActiveUseCase().collect { isActive ->
-                    _state.value = _state.value.copy(isSessionActive = isActive)
-                    if (!isActive) {
-                        _eventChannel.send(ProfileEvent.NavigateToLogin)
-                    }
+            checkSessionActiveUseCase().collect { isActive ->
+                _state.value = _state.value.copy(isSessionActive = isActive)
+                if (!isActive) {
+                    _eventChannel.send(ProfileEvent.NavigateToLogin)
                 }
-            } catch (e: Exception) {
-                _eventChannel.send(ProfileEvent.ShowSnackbar("Error checking session: ${e.message}"))
             }
+
         }
     }
 
     private fun loadUserEmail() {
         viewModelScope.launch {
-            try {
-                getUserEmailUseCase().collect { email ->
-                    _state.value = _state.value.copy(userEmail = email)
-                }
-            } catch (e: Exception) {
-                _eventChannel.send(ProfileEvent.ShowSnackbar("Error loading email: ${e.message}"))
+            getUserEmailUseCase().collect { email ->
+                _state.value = _state.value.copy(userEmail = email)
             }
         }
     }
 
     private fun logoutUser() {
         viewModelScope.launch {
-            try {
-                _state.value = _state.value.copy(isLoading = true)
-                logoutUserUseCase()
-                _state.value = _state.value.copy(isLoading = false, isSessionActive = false)
-                _eventChannel.send(ProfileEvent.NavigateToLogin)
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(isLoading = false)
-                _eventChannel.send(ProfileEvent.ShowSnackbar("Error logging out: ${e.message}"))
-            }
+            _state.value = _state.value.copy(isLoading = true)
+            logoutUserUseCase()
+            _state.value = _state.value.copy(isLoading = false, isSessionActive = false)
+            _eventChannel.send(ProfileEvent.NavigateToLogin)
         }
     }
 
-    private fun updateViewState(isLoading: Boolean, errorMessage: String? = null, isEmpty: Boolean = false) {
+    private fun updateViewState(
+        isLoading: Boolean,
+        errorMessage: String? = null,
+        isEmpty: Boolean = false
+    ) {
         _state.value = _state.value.copy(
             isLoading = isLoading,
             errorMessage = errorMessage,

@@ -8,9 +8,6 @@ import com.example.androidtbc.domain.common.mapResource
 import com.example.androidtbc.domain.datastore.DataStoreManager
 import com.example.androidtbc.domain.datastore.PreferenceKey
 import com.example.androidtbc.domain.repository.RegisterRepository
-import com.example.androidtbc.domain.usecase.validation.ValidateEmailUseCase
-import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
-import com.example.androidtbc.domain.usecase.validation.ValidationResult
 import com.example.mysecondapp.data.common.ApiHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,46 +17,9 @@ class RegisterRepositoryImpl @Inject constructor(
     private val apiHelper: ApiHelper,
     private val apiService: ApiService,
     private val dataStoreManager: DataStoreManager,
-    private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : RegisterRepository {
     override suspend fun register(email: String, password: String, repeatPassword: String): Flow<Resource<String>> = flow {
         emit(Resource.Loading(isLoading = true))
-
-        when(val result = validateEmailUseCase(email)){
-            is ValidationResult.Error -> {
-                emit(Resource.Error(result.errorMessage))
-                emit(Resource.Loading(isLoading = false))
-                return@flow
-            }
-            ValidationResult.Success -> {}
-        }
-
-        when(val result = validatePasswordUseCase(password)){
-            is ValidationResult.Error -> {
-                emit(Resource.Error(result.errorMessage))
-                emit(Resource.Loading(isLoading = false))
-                return@flow
-            }
-            ValidationResult.Success -> {}
-        }
-
-        when(val result = validatePasswordUseCase(repeatPassword)){
-            is ValidationResult.Error -> {
-                emit(Resource.Error(result.errorMessage))
-                emit(Resource.Loading(isLoading = false))
-                return@flow
-            }
-            ValidationResult.Success -> {}
-        }
-
-        if(password != repeatPassword){
-            emit(Resource.Error("Passwords do not match"))
-            emit(Resource.Loading(isLoading = false))
-            return@flow
-        }
-
-
         apiHelper.handleHttpRequest {
             apiService.registerUser(AuthUserRequest(email, password))
         }.mapResource {

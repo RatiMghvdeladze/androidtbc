@@ -52,6 +52,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.paging:paging-compose:3.2.1")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)

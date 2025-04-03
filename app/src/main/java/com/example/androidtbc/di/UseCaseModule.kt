@@ -4,14 +4,10 @@ import com.example.androidtbc.domain.usecase.auth.CheckRememberMeUseCase
 import com.example.androidtbc.domain.usecase.auth.CheckRememberMeUseCaseImpl
 import com.example.androidtbc.domain.usecase.auth.CheckSessionActiveUseCase
 import com.example.androidtbc.domain.usecase.auth.CheckSessionActiveUseCaseImpl
-import com.example.androidtbc.domain.usecase.auth.ClearTokenUseCase
-import com.example.androidtbc.domain.usecase.auth.ClearTokenUseCaseImpl
 import com.example.androidtbc.domain.usecase.auth.CompleteLogoutUseCase
 import com.example.androidtbc.domain.usecase.auth.CompleteLogoutUseCaseImpl
 import com.example.androidtbc.domain.usecase.auth.FetchUserEmailUseCase
 import com.example.androidtbc.domain.usecase.auth.FetchUserEmailUseCaseImpl
-import com.example.androidtbc.domain.usecase.auth.FetchUserSessionUseCase
-import com.example.androidtbc.domain.usecase.auth.FetchUserSessionUseCaseImpl
 import com.example.androidtbc.domain.usecase.auth.LoginUseCase
 import com.example.androidtbc.domain.usecase.auth.LoginUseCaseImpl
 import com.example.androidtbc.domain.usecase.auth.RegisterUseCase
@@ -55,12 +51,6 @@ abstract class UseCaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindFetchUserSessionUseCase(
-        fetchUserSessionUseCaseImpl: FetchUserSessionUseCaseImpl
-    ) : FetchUserSessionUseCase
-
-    @Binds
-    @Singleton
     abstract fun bindFetchUserEmailUseCase(
         fetchUserEmailUseCaseImpl: FetchUserEmailUseCaseImpl
     ) : FetchUserEmailUseCase
@@ -70,12 +60,6 @@ abstract class UseCaseModule {
     abstract fun bindCompleteLogOutUseCase(
         completeLogoutUseCaseImpl: CompleteLogoutUseCaseImpl
     ) : CompleteLogoutUseCase
-
-    @Binds
-    @Singleton
-    abstract fun bindClearTokenUseCase(
-        clearTokenUseCaseImpl: ClearTokenUseCaseImpl
-    ) : ClearTokenUseCase
 
     @Binds
     @Singleton

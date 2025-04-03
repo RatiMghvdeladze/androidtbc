@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtbc.domain.common.Resource
 import com.example.androidtbc.domain.usecase.auth.RegisterUseCase
+import com.example.androidtbc.domain.usecase.validation.ValidateEmailUseCase
+import com.example.androidtbc.domain.usecase.validation.ValidatePasswordUseCase
+import com.example.androidtbc.domain.usecase.validation.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
@@ -26,9 +31,38 @@ class RegisterViewModel @Inject constructor(
         when (event) {
             is RegisterEvent.RegisterUser -> register(event.email, event.password, event.repeatPassword)
             is RegisterEvent.ClearValidationErrors -> clearValidationErrors()
-
-            is RegisterEvent.ShowSnackbar, is RegisterEvent.NavigateBack -> {}
+            else -> {}
         }
+    }
+
+    fun validateEmail(email: String) {
+        val result = validateEmailUseCase(email)
+        _state.value = _state.value.copy(
+            emailError = when (result) {
+                is ValidationResult.Error -> result.errorMessage
+                ValidationResult.Success -> null
+            }
+        )
+    }
+
+    fun validatePassword(password: String) {
+        val result = validatePasswordUseCase(password)
+        _state.value = _state.value.copy(
+            passwordError = when (result) {
+                is ValidationResult.Error -> result.errorMessage
+                ValidationResult.Success -> null
+            }
+        )
+    }
+
+    fun validateRepeatPassword(password: String, repeatPassword: String) {
+        _state.value = _state.value.copy(
+            repeatPasswordError = if (password != repeatPassword) {
+                "Passwords do not match"
+            } else {
+                null
+            }
+        )
     }
 
     private fun clearValidationErrors() {
@@ -41,6 +75,27 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun register(email: String, password: String, repeatPassword: String) {
+        val emailValidation = validateEmailUseCase(email)
+        if (emailValidation is ValidationResult.Error) {
+            _state.value = _state.value.copy(emailError = emailValidation.errorMessage)
+            return
+        }
+
+        val passwordValidation = validatePasswordUseCase(password)
+        if (passwordValidation is ValidationResult.Error) {
+            _state.value = _state.value.copy(passwordError = passwordValidation.errorMessage)
+            return
+        }
+
+        if (repeatPassword.isEmpty()) {
+            _state.value = _state.value.copy(repeatPasswordError = "Repeat password cannot be empty")
+            return
+        }
+
+        if (password != repeatPassword) {
+            _state.value = _state.value.copy(repeatPasswordError = "Passwords do not match")
+            return
+        }
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, errorMessage = null)
 
@@ -85,4 +140,5 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
+
 }

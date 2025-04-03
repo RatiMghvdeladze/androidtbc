@@ -48,6 +48,7 @@ class HomeViewModel @Inject constructor(
                     _eventChannel.send(event)
                 }
             }
+
             is HomeEvent.UpdateViewState -> {
                 updateViewState(
                     isLoading = event.isLoading,
@@ -55,6 +56,7 @@ class HomeViewModel @Inject constructor(
                     isEmpty = event.isEmpty
                 )
             }
+
             else -> {}
         }
     }
@@ -62,26 +64,24 @@ class HomeViewModel @Inject constructor(
     private fun loadUsers() {
         viewModelScope.launch {
             updateViewState(isLoading = true)
-            try {
-                getUsersUseCase()
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _users.value = pagingData
-                        _eventChannel.send(HomeEvent.UserDataLoaded(pagingData))
-                        updateViewState(
-                            isLoading = false
-                        )
-                    }
-            } catch (e: Exception) {
-                updateViewState(
-                    isLoading = false,
-                    errorMessage = "Error loading users: ${e.message}"
-                )
-            }
+            getUsersUseCase()
+                .cachedIn(viewModelScope)
+                .collect { pagingData ->
+                    _users.value = pagingData
+                    _eventChannel.send(HomeEvent.UserDataLoaded(pagingData))
+                    updateViewState(
+                        isLoading = false
+                    )
+                }
         }
+
     }
 
-    private fun updateViewState(isLoading: Boolean, errorMessage: String? = null, isEmpty: Boolean = false) {
+    private fun updateViewState(
+        isLoading: Boolean,
+        errorMessage: String? = null,
+        isEmpty: Boolean = false
+    ) {
         _state.value = _state.value.copy(
             isLoading = isLoading,
             errorMessage = errorMessage,
